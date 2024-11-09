@@ -1,0 +1,567 @@
+SECTION WA
+
++reg ext[31..0](*)
+  +ext reg[0..31](FE)
+
++reg io cmd[31..30](*)
+  +io counter out[0..1]
++reg io cmd[29..23](*)
+  +sys mask[0..6](KX)
++reg io cmd[22..3](*)
+  0
++reg io cmd[2](*)
+  +permit out
++reg io cmd[1](*)
+  +ipl out
++reg io cmd[0](*)
+  +inst out
+
++io counter in[0..1]
+  +reg io resp[31..30](*)
++io in unused[29..2]
+  +reg io resp[29..2](*)
++cond code pos 0 ioce 1
+  +reg io resp[1](*)
++cond code pos 1 ioce 1
+  +reg io resp[0](*)
+
++int unused[31..7]
+  +reg io int[31..7](*)
++int chan[0..6]
+  +reg io int[6..0](*)
+
++io int req[0..6]
+  AND
+    +int chan[0..6]
+    +sys mask[0..6](KX)
+
+-i-o intrpt req ioce 1
+  NOR
+    +io int req[0..6]
+
+-prev ipl
+  NOT
+    +ipl
++ipl
+  +initial program load ioce 1(KX)
+-prev inst
+  NOT
+    +inst
++inst
+  +i-o instruction ioce 1(KX)
+
+-prev permit
+  NOT
+    +permit
++permit
+  +permit i-o interrupt ioce 1(KX)
+
++do ipl
+  AND
+    +ipl
+    -prev ipl
+    NAND
+      +inst out
+      +permit out
++do inst
+  AND
+    +inst
+    -prev inst
+    NAND
+      +ipl out
+      +permit out
++do permit
+  AND
+    +permit
+    -prev permit
+    NAND
+      +ipl out
+      +inst out
+
++ipl out
+  OR
+    +do ipl
+    AND
+      +ipl out
+      OR
+        XOR
+          +io counter out[0]
+          +io counter in[0]
+        XOR
+          +io counter out[1]
+          +io counter in[1]
+
++inst out
+  OR
+    +do inst
+    AND
+      +inst out
+      OR
+        XOR
+          +io counter out[0]
+          +io counter in[0]
+        XOR
+          +io counter out[1]
+          +io counter in[1]
+
++permit out
+  OR
+    +do permit
+    AND
+      +permit out
+      OR
+        XOR
+          +io counter out[0]
+          +io counter in[0]
+        XOR
+          +io counter out[1]
+          +io counter in[1]
+
++io counter eq
+  NOR
+    XOR
+      +io counter out[0]
+      +io counter in[0]
+    XOR
+      +io counter out[1]
+      +io counter in[1]
+
++io counter out[1]
+  OR
+    AND
+      OR
+        +do ipl
+        +do inst
+        +do permit
+      NOT
+        +io counter out[1]
+    AND
+      NOR
+        +do ipl
+        +do inst
+        +do permit
+      +io counter out[1]
++io counter out[0]
+  OR
+    AND
+      OR
+        +do ipl
+        +do inst
+        +do permit
+      XOR
+        +io counter out[0]
+        +io counter out[1]
+    AND
+      NOR
+        +do ipl
+        +do inst
+        +do permit
+      +io counter out[1]
+
++response ioce 1
+  +io counter eq
+
+; ===
+; SE INTERFACE
+; ===
+
++reg se cmd[31..30](*)
+  +se counter out[0..1]
++reg se cmd[29..25](*)
+  +in key[0..4](MB)
++reg se cmd[24..4](*)
+  0
++reg se cmd[3](*)
+  +cancel
++reg se cmd[2](*)
+  +insert key
++reg se cmd[1](*)
+  +set key
++reg se cmd[0](*)
+  +store
+
++reg se addr[31..24](*)
+  +mark[0..7]
++reg se addr[23](*)
+  0
++reg se addr[22..3](*)
+  +addr[1..20]
++reg se addr[2..0](*)
+  0
+
++reg se wdata hi[31..0](*)
+  +wdata[0..31]
++reg se wdata lo[31..0](*)
+  +wdata[32..63]
+
++wdata[0..63]
+  OR
+    AND
+      +delay sel 2
+      +store
+      +sdbi[0..63](MB)
+    AND
+      NOT
+        +delay sel 2
+      +wdata[0..63]
+
++se counter in[1..0]
+  +reg se resp[31..30](*)
++se resp unused[29..0]
+  +reg se resp[29..0](*)
+
++sdbo[0..31]
+  OR
+    AND
+      +sdbo pulse
+      NOT
+        +store
+      +reg se rdata hi[31..0](*)
+    AND
+      OR
+        NOT
+          +sdbo pulse
+        +store
+      +sdbo[0..31]
+
++sdbo[32..63]
+  OR
+    AND
+      +sdbo pulse
+      NOT
+        +store
+      +reg se rdata lo[31..0](*)
+    AND
+      OR
+        NOT
+          +sdbo pulse
+        +store
+      +sdbo[32..63]
+
+-prev sel
+  NOT
+    +sel
++sel
+  ANDNOT
+    -select se 1 even(MC)
+    +se busy
+
++do sel
+  AND
+    +sel
+    -prev sel
+
++cancel
+  OR
+    AND
+      +cancel(MC)
+      +do sel
+    AND
+      NOT
+        +do sel
+      +cancel
+
++store
+  OR
+    AND
+      +do sel
+      +store to se(MC)
+    AND
+      NOT
+        +do sel
+      +store
++insert key
+  OR
+    AND
+      +do sel
+      +insert key(MC)
+    AND
+      NOT
+        +do sel
+      +insert key
++set key
+  OR
+    AND
+      +do sel
+      +set key(MC)
+    AND
+      NOT
+        +do sel
+      +set key
+
++addr[1..20]
+  OR
+    AND
+      +do sel
+      +sab[1..20](MA)
+    AND
+      NOT
+        +do sel
+      +addr[1..20]
+
++mark[0..7]
+  OR
+    AND
+      +do sel
+      +mark[0..7](MB)
+    AND
+      NOT
+        +do sel
+      +mark[0..7]
+
++se counter eq
+  ANDNOT
+    XOR
+      +se counter out[0]
+      +se counter in[1]
+    XOR
+      +se counter out[1]
+      +se counter in[0]
+
+-prev se counter eq
+  NOT
+    +se counter eq
+
++se counter pulse
+  AND
+    +se counter eq
+    -prev se counter eq
+
++inc se counter
+  OR
+    AND
+      +do sel
+      NOT
+        +store to se(MC)
+    AND
+      +delay sel 2
+      +store
+
++se counter out[1]
+  XOR
+    +inc se counter
+    +se counter out[1]
++se counter out[0]
+  OR
+    AND
+      +inc se counter
+      XOR
+        +se counter out[0]
+        +se counter out[1]
+    AND
+      NOT
+        +inc se counter
+      +se counter out[0]
+
+SPECIAL
+  DOUBLETD40NS
+    +do sel
+    OUT
+    +delay sel
+
+SPECIAL
+  DOUBLETD200NS
+    +do sel
+    OUT
+    +delay sel 2
+
+-accept se 1
+  NOT
+    +accept
+
++accept pulse
+  OR
+    AND
+      +se counter pulse
+      NOT
+        +store
+    AND
+      +delay sel
+      +store
+
+SPECIAL
+  DOUBLESS200NS
+    +accept pulse
+    OUT
+    +accept
+
+SPECIAL
+  DOUBLETD200NS
+    +accept pulse
+    OUT
+    +delay accept
+
++advance pulse
+  OR
+    AND
+      +temp
+        TD
+          +se counter pulse
+      +store
+    AND
+      +delay accept
+      NOT
+        +store
+
+SPECIAL
+  DOUBLESS200NS
+    +advance pulse
+    OUT
+    +advance sdbo
+
+SPECIAL
+  DOUBLETD210NS
+    +advance pulse
+    OUT
+    +sdbo pulse
+
+SPECIAL
+  DOUBLETD340NS
+    +advance pulse
+    OUT
+    +adv del
+
++se busy
+  OR
+    +accept pulse
+    AND
+      +se busy
+      NOT
+        +adv del
+
+;+se cmd[2](*)
+;  +normal operation(MB)
+;+se cmd[1](*)
+;  +double cycle(MB)
+
+;+se cmd2[26..24](*)
+;  +log addr[0..2](CW)
+;+se cmd2[20..16](*)
+;  +in key[0..4](MB)
+;+se cmd2[8](*)
+;  NOT
+;    -logout select 1(KU)
+;+se cmd2[7](*)
+;  NOT
+;    -suppress log check se 1(MA)
+;+se cmd2[6](*)
+;  NOT
+;    -logout stop 1(KU)
+;+se cmd2[5](*)
+;  NOT
+;    -logout complete 1(KU)
+;+se cmd2[3](*)
+;  +stor addr comp(MA)
+
++out key [0..4]
+  0
+
++key advance
+  0
+
++prot addr check
+  0
+-sbo gate se 1
+  1
+-se 1 ready
+  0
+-se 1 stopped
+  1
+-se 1 addr chk
+  1
+-se 1 data chk
+  1
++elc se 1
+  0
+-logout advance 1
+  1
+-logout se 1 stopped
+  1
+
++out key parity
+  NOT
+    XOR
+      +out key[0..4]
+
+;    +in key parity(MB)
+;    +mark parity(MB)
+;    +sdbi parity[0..7](MB)
+
++sdbo parity[0]
+  NOT
+    XOR
+      +sdbo[0..7]
++sdbo parity[1]
+  NOT
+    XOR
+      +sdbo[8..15]
++sdbo parity[2]
+  NOT
+    XOR
+      +sdbo[16..23]
++sdbo parity[3]
+  NOT
+    XOR
+      +sdbo[24..31]
++sdbo parity[4]
+  NOT
+    XOR
+      +sdbo[32..39]
++sdbo parity[5]
+  NOT
+    XOR
+      +sdbo[40..47]
++sdbo parity[6]
+  NOT
+    XOR
+      +sdbo[48..55]
++sdbo parity[7]
+  NOT
+    XOR
+      +sdbo[56..63]
+
+; PAGE WA301
+
+
+;+ioce cmd[10](*)
+;  NOT
+;    -proc interrupt ioce 1(KX)
+;+ioce cmd[7](*)
+;  NOT
+;    -proc start ioce 1(KX)
+;+ioce cmd[6](*)
+;  +flt load ioce 1(KX)
+;+ioce cmd[5](*)
+;  NOT
+;    -proc stop ioce 1(KX)
+;+ioce cmd[4](*)
+;  NOT
+;    -scon select ioce 1(KX)
+;+ioce cmd[3](*)
+;  +ioce logout ioce 1(KX)
+;+ioce cmd[2](*)
+;  NOT
+;    -satr sel ioce 1(KX)
+;+ioce cmd[1](*)
+;  +permit mck intrpt ioce 1(KX)
+;+ioce cmd[0](*)
+;  +flt back space ioce 1(KX)
+
+-wrd ext intrpt ioce 1
+  1
+-mck int req ioce 1
+  1
+-elc ioce 1
+  1
++flt complete ioce 1
+  0
++check response ioce 1
+  0
++reset ros timer ioce 1
+  0
++psa lockout ioce 1
+  0
++tic ioce 1
+  0
++gap ioce 1
+  0

@@ -1,0 +1,1195 @@
+SECTION KD
+
+; PAGE KD101
+
+; FOLDED INTO -storage req ic 4 cycles
+;-ic storage req 4 cycles
+;  NAND
+;    +temp kd101 3b an andnot
+;    +ros reg decode early eop
+;    -temp kd101 2c ag nor
+
+CLOCK
+
++temp kd101 3b an andnot
+  ANDNOT
+    AND
+      -ic 21-22 eq 01
+      -ic 21-22 eq 10
+    AND
+      -ic 21-22 eq 10
+      +pre decode rr format
+
+-temp kd101 2c ag nor
+  NOR
+    +r 00-01 eq 11 ss format(RR)
+    +execute in progress tgr ap4
+    +pre decode branch inst
+
+-ic storage req 3 cycles
+  NOR
+    AND
+      +allow 3 cycle ic req
+      -temp kd101 2c ag nor
+      +ros reg decode branch eop
+      -pre decode branch
+    AND
+      +temp kd101 3b an andnot
+      -temp kd101 2c ag nor
+      +ros reg decode normal eop
+      -inhibit neop if req
+
+-turn on i fetch 1 at eop
+  NOR
+    AND
+      -temp kd101 2c ag nor
+      +temp kd101 3b an andnot
+      +ros decode normal eop
+      -i fetch 2 lth
+    AND
+      -temp kd101 2c ag nor
+      +allow 3 cycle ic req
+      +ros decode branch eop
+
++i fetch 1 lth bus
+  ANDNOT
+    +flt inhibit clock
+    -i fetch 1 lth
+
+NOCLOCK
+
+-i fetch 1 tgr
+  NOR
+    AND
+      -i fetch 1 lth
+      +clock p2
+      +i fetch 3 lth
+    AND
+      +temp
+        ORNOT
+          -turn on i fetch 1 at eop
+          -temp kd101 4f a5 nand
+      +clock p2
+    AND
+      +st bus[54](KU)
+      +scan in word 3
+    AND
+      -clock p1
+      -master reset
+      -block i fetch tgr
+      +temp i fetch 1 tgr
++temp i fetch 1 tgr
+  ORNOT
+    -i fetch 1 tgr
+    -temp
+      NAND
+        +i fetch 2 lth
+        +clock p2
+        +rst asc if pal eq or gtr 0(DR)
+
+CLOCK
+
+-temp kd101 4f a5 nand
+  NAND
+    +temp kd101 3b an andnot
+    -temp kd101 2c ag nor
+    +ros decode early eop
+
++block neop ic req
+  NOT
+    -temp kd101 4f a5 nand
+
++st bus[54..56]
+  +st bus[54..56](KU)
+
+-ind i fetch 1 tgr
+  NOT
+    +temp i fetch 1 tgr
+
+NOCLOCK
+
+-i fetch 1 lth
+  NOR
+    +i fetch 1 lth
+    AND
+      +temp i fetch 1 tgr
+      -clock p1
++i fetch 1 lth
+  ANDNOT
+    AND
+      -clock p1
+      -i fetch 1 tgr
+    -i fetch 1 lth
+
+; PAGE KD111
+
+-ind i fetch 2 tgr
+  NOT
+    +temp i fetch 2 tgr
++temp i fetch 2 tgr
+  NOT
+    -temp i fetch 2 tgr
+-temp i fetch 2 tgr
+  NOR
+    AND
+      +i fetch 1 lth
+      +clock p2
+      -i fetch 3 lth
+    AND
+      +st bus[55](KU)
+      +scan in word 3
+    AND
+      -master reset
+      -block i fetch tgr
+      +temp i fetch 2 tgr
+      -clock p1
+
+-i fetch 2 lth
+  NOR
+    +i fetch 2 lth
+    AND
+      +temp i fetch 2 tgr
+      -clock p1
++i fetch 2 lth
+  ANDNOT
+    AND
+      -clock p1
+      -temp i fetch 2 tgr
+    -i fetch 2 lth
+
+CLOCK
+
+-i fetch 2 lth bus
+  NAND
+    +i fetch 2 lth
+    -flt inhibit clock
++i fetch 2 latch
+  NOT
+    -i fetch 2 lth
+
+-if 1 lthOif 3 lth not flt
+  NAND
+    -flt inhibit clock
+    +i fetch 1 lth
+    +i fetch 3 lth
+
+-ind i fetch 3 tgr
+  NOT
+    +i fetch 3 tgr
+
++ros decode i fetch reset
+  +i fetch reset(KZ)
+
+NOCLOCK
+
++i fetch 3 tgr
+  NOT
+    -temp i fetch 3 tgr
+-temp i fetch 3 tgr
+  NOR
+    AND
+      +i fetch 2 lth
+      +clock p2
+    AND
+      +clock p2
+      -i fetch 1 lth
+      +i fetch 3 lth
+    AND
+      +st bus[56](KU)
+      +scan in word 3
+    AND
+      -master reset
+      -block i fetch tgr
+      -clock p1
+      +i fetch 3 tgr
+
+-i fetch 3 lth
+  NOR
+    +i fetch 3 lth
+    AND
+      +i fetch 3 tgr
+      -clock p1
++i fetch 3 lth
+  ANDNOT
+    AND
+      -clock p1
+      -temp i fetch 3 tgr
+    -i fetch 3 lth
+
+CLOCK
+
+-i fetch 3 lth bus
+  NOT
+    +i fetch 3 lth
+
+-rs branch reset 3 cycle req
+  NAND
+    +i fetch reset(KZ)
+    +e bit[0](RE)
+    +all branch instructions
+
++bxh or bxle
+  NOT
+    -temp
+      NAND
+        +all branch instructions
+        +e bit[0](RE)
+
+; PAGE KD201
+
++rr format or shifts
+  ORNOT
+    -shift instructions
+    -rr format(DN)
+
+-storage req d 4 cycles
+  NAND
+    +set execute tgr(DR)
+    +pre decode ss format
+    +d 21-22 eq 10
+
+NOCLOCK
+
+-storage req d 3 cycles
+  NOR
+    AND
+      -bocOcond not met
+      +all branch instructions
+      +ros reg decode if reset
+      -rr Oe12-15 eq 0(DN)
+    AND
+      +ros reg decode if reset
+      +rx or rs format(DN)
+      +d 21-22 eq 01 + 10
+      +execute in progress tgr ap4
+      -inhibit operand requests
+
++ic-pb and 1-pa 60
+  ANDNOT
+    +ros decode normal eop
+    -temp
+      NAND
+        +i fetch 1 lth
+        -i fetch 3 lth
+        -inhibit if padd gate(KU)
+
++all branch instructions
+  NOT
+    -all branch instructions(RE)
+
+-inhibit operand requests
+  NOR
+    +rr format or shifts
+    +temp
+      ORNOT
+        -ops inhibiting operand req(DN)
+        -bocOcond not met
+        -i-o instructions(DN)
+
+-storage req ic 4 cycles
+  NOR
+    AND
+      +pre decode ss format
+      -ic 21 eq 1
+      +ros reg decode normal eop
+      -execute in progress tgr
+    AND
+      +pre decode ss format
+      +ros reg decode branch eop
+      -d 21 eq 1
+    AND
+      +temp kd101 3b an andnot
+      +ros reg decode early eop
+      -temp kd101 2c ag nor
+
+-bocOcond not met
+  NAND
+    +branch on condition ar4(DN)
+    -condition met for br on cond(RW)
+
++rx and e12-15 eq 0 or rs
+  ORNOT
+    -temp
+      NAND
+        -temp
+          NOT
+            +rx format(DN)
+        +rx or rs format(DN)
+    -temp
+      NAND
+        +rx format(DN)
+        +e 12-15 eq 0
+
+-storage req from ic 3 cycles
+  NOR
+    AND
+      +temp
+        ORNOT
+          -bocOcond not met
+          -rr Oe12-15 eq 0(DN)
+      +temp
+        NOT
+          -temp
+            NAND
+              -execute in progress tgr
+              +branch on condition ar4(DN)
+      +temp
+        NOT
+          -temp
+            NOR
+              AND
+                +ic 21-22 eq 01+10
+                +pre decode rx format
+                +e 12-15 eq 0
+              AND
+                -e12-15 eq 0000(RE)
+                +rx format(DN)
+                +ic 21-22 eq 00+11
+              AND
+                +pre decode rr format
+                +ic 21-22 eq 10
+      +ros reg decode if reset
+    AND
+      +ic 21-22 eq 10
+      +ros reg decode normal eop
+      +pre decode ss format
+    AND
+      -execute in progress tgr
+      +pre decode ss format
+      +ros reg decode branch eop
+      +d 21-22 eq 10
+
+; PAGE KD501
+
+-block i fetch tgr
+  NOR
+    AND
+      +temp
+        NOT
+          -temp kd501 2b ca nand
+      +temp
+        NOT
+          -exceptional condition to i fe(RE)
+    AND
+      +st bus[57](KU)
+      +scan in word 3
+    AND
+      -reset stadOp1
+      -temp kd501 2b ca nand
+      -master reset
+      +block i fetch tgr
++block i fetch tgr
+  NOT
+    -block i fetch tgr
++block i fetch tgr bus
+  +block i fetch tgr
+-ind block i fetch tgr
+  NOT
+    +block i fetch tgr
+-temp kd501 2b ca nand
+  NAND
+    +ros decode normal+branch eop
+    +clock p0-2 to bcu(KC)
+    -temp
+      NAND
+        +execute in progress tgr ap4
+        +stat g bus(RW)
+
+-i fetch storage req in prog
+  NAND
+    -temp kd501 1b ac nand
+    +i fetch 2 lth
+    -pre decode shift instns(RR)
+    -pre decode rr format
+-temp kd501 1b ac nand
+  NAND
+    +pre decode rx format
+    -r 12-15 equals zero(RR)
+
++stat g
+  +stat g bus(RW)
+
+-reset stadOp1
+  NAND
+    -clock p1
+    +ros dec reset stad(KS)
+
++rx format and r12-15 not zero
+  NOT
+    -temp kd501 1b ac nand
+
+-ind program store compare
+  NOT
+    +program store compare tgr
++program store compare tgr
+  ORNOT
+    -temp
+      NAND
+        +set asc per address stor com(DR)
+        +eff pal 40-63 eq 0 O clock p4
+        +clock p2 and p4
+    -temp
+      NAND
+        +set asc if pal eq or gtr 0(DR)
+        +clock p2 and p4
+        +adder 32 carry
+    -temp
+      NOR
+        AND
+          +st bus[58](KU)
+          +scan in word 3
+        AND
+          -reset execute tgr
+          -master reset
+          -rst psc on success branch
+          +program store compare tgr
+
+-reset execute tgr
+  AND
+    NAND
+      -execute in progress tgr
+      +clock p2 and p4
+      -eff pal 40-63 eq 0 O clock p3
+      +rst asc if pal eq or gtr 0(DR)
+      +adder 32 carry
+    NAND
+      +clock p2
+      +reset asc exec tgr(DR)
+
+; PAGE KD601
+
++execute in progress tgr be4
+  ORNOT
+    -temp kd601 6k cd nor
+    -execute in progress tgr
++execute in progress tgr bf4
+  NOT
+    -execute in progress tgr
++execute in progress tgr ap4
+  ORNOT
+    -temp
+      NAND
+        +set execute tgr(DR)
+        +clock p2
+    -execute in progress tgr
+-temp kd601 6k cd nor
+  NOR
+    AND
+      +execute in progress tgr ap4
+      +temp 3h bx not
+    AND
+      -ros decode normal+branch eop
+      +temp
+        NOT
+          -temp kd601 6k cd nor
++temp 3h bx not
+  NOT
+    -rst psc on success branch
+
+-ind execute in progress
+  NOT
+    +execute in progress tgr ap4
++scan in word 3
+  NOT
+    -scan in word 3(KM)
+-execute in progress tgr
+  NOR
+    AND
+      +st bus[59](KU)
+      +scan in word 3
+    AND
+      -reset execute tgr
+      -master reset
+      -temp
+        NOT
+          +temp 3h bx not
+      +execute in progress tgr ap4
+
+-sample 60 cyc lth
+  NOR
+    AND
+      ++60 cycle pulse
+      -clock p1
+      -disable time clock(KW)
+    AND
+      -master reset
+      -reset sample 60 cyc lth
+      +temp
+        NOT
+          -sample 60 cyc lth
+
+-rst psc on success branch
+  NOR
+    AND
+      +clock p3Op5
+      +all branch instructions
+      +reset ascOexc on branch(AR)
+    AND
+      +clock p3Op5
+      +bxh or bxle
+      +reset ascOexc on bxh+bxle(DR)
+
+-scan in word 3
+  -scan in word 3(KM)
+
++bocOcond not metOexc tgr
+  AND
+    NOT
+      -execute in progress tgr
+    ORNOT
+      -rr bocOe12-15 eq 0
+      -bocOcond not met
+
+-time clock step tgr
+  NOR
+    AND
+      +scan in word 3
+      +st bus[60](KU)
+    AND
+      -master reset
+      -reset tcs tgr
+      +time clock step tgr
++time clock step tgr
+  ORNOT
+    -temp
+      NAND
+        +clock p2
+        +set tcs tgr
+        -ros decode normal+branch eop
+    -time clock step tgr
+
+-ind time clock step
+  NOT
+    +time clock step tgr
+
++block d req
+  ANDNOT
+    AND
+      -inhibit operand requests
+      -inhibit tnisf
+      -block i fetch tgr
+    AND
+      -block i fetch tgr
+      -ros reg decode if reset
+
+; PAGE KD611
+
++set tcs tgr
+  ORNOT
+    -sample 60 cyc lth
+
+CLOCK
+
+-reset sample 60 cyc lth
+  NAND
+    +clock p0 no inhibit
+    +reset tcs tgr(DR)
+
+NOCLOCK
+
+-reset tcs tgr
+  -reset sample 60 cyc lth
+
+; PAGE KD701
+
+-ind i fetch req tgr
+  NOT
+    +i fetch storage req tgr
+-i fetch storage req
+  NOR
+    AND
+      +clock p2
+      -d 21 eq 1
+      +ros decode branch eop
+      +pre decode ss format
+    AND
+      +clock p2
+      +ros decode normal eop
+      +pre decode ss format
+      -ic 21 eq 1
+    AND
+      +st bus[61](KU)
+      +scan in word 3
+    AND
+      -temp
+        NAND
+          -flt inhibit clock
+          -clock p1
+          -temp 5k bp nand
+          +temp
+            ORNOT
+              -temp 6h ca not
+              -temp
+                NAND
+                  +ros reg decode normal eop
+                  +rst branch invalid addr(DR)
+      -master reset
+      +i fetch storage req tgr
+-temp 5k bp nand
+  NAND
+    -allow ifsr reset
+    -master reset
+    +temp
+      ORNOT
+        -temp 5j bn nand
+        -temp 5k bp nand
+-temp 5j bn nand
+  NAND
+    +turn i fetch request tgr(DR)
+    +clock p2
+-temp 6h ca not
+  NOT
+    +late bcu clean up for cpu req(MC)
++i fetch storage req tgr
+  AND
+    ORNOT
+      -temp
+        NOR
+          AND
+            +if1 tgr O not if3
+            -clock p1
+          AND
+            +rosr ton inst mem fetch req(DR)
+            -inhibit tnisf
+            -clock p1
+      -temp 5j bn nand
+      -i fetch storage req
+    ORNOT
+      -clock p1
+      +d reg store
+      -ros reg decode beop
+      -ros decode neop
+
+-inhibit tnisf
+  NAND
+    +ic 21-22 eq 00
+    +cond not met
+    +branch on condition bn4(DN)
+
++if1 tgr O not if3
+  ANDNOT
+    -i fetch 1 tgr
+    +i fetch 3 tgr
+
++late clean up
+  NOT
+    -temp 6h ca not
+
+-ind branch invalid adr tgr
+  NOT
+    +branch invalid addr trg
++branch invalid addr trg
+  NOT
+    -branch invalid adr tgr
+-branch invalid adr tgr
+  NOR
+    AND
+      +st bus[62](KU)
+      +scan in word 3
+    AND
+      +i fetch storage req tgr
+      -clocked block branch invalid
+      -block branch invalid
+      +inv addr
+    AND
+      -reset invld inst adr
+      -master reset
+      +branch invalid addr trg
+-reset invld inst adr
+  NAND
+    -clock p0 minus 1(CS)
+    +rst branch invalid addr(DR)
+
+-invalid adr tgr from bcu
+  -invalid address(MC)
+
+; PAGE KD711
+
++ton delayed if protect gate
+  NOT
+    -temp
+      NOR
+        AND
+          -temp
+            NOT
+              +rosl ton inst mem fetch req(DR)
+          +gate if inv add tgr
+        AND
+          +i fetch 1 lth
+          -temp 3k ap nor
+        AND
+          +gate if inv add tgr
+          -temp
+            NOT
+              +ic 21-22 eq 00
+          +cond not met
+
+-clocked block branch invalid
+  NAND
+    +temp 7c az ornot
+    -clock p1
+    -master reset
+
++temp 7c az ornot
+  ORNOT
+    -block branch invalid
+    -clocked block branch invalid
+
+-cond met for br on cond
+  NOT
+    +temp 1e ba not
++temp 1e ba not
+  NOT
+    -condition met for br on cond(RW)
++cond not met
+  NAND
+    +branch on condition bn4(DN)
+    -rr bocOe12-15 eq 0
+    +temp 1e ba not
+-rr bocOe12-15 eq 0
+  NAND
+    +branch on condition ar4(DN)
+    +e 12-15 eq 0
+    +rr format or shifts
+
+-ind i fetch invalid adr tgr
+  NOT
+    +temp 4k as ornot
++temp 4k as ornot
+  ORNOT
+    -temp
+      NAND
+        +protection check
+        +delayed if stor request
+        +delayed if protect gate
+    -temp 3k ap nor
+-temp 3k ap nor
+  NOR
+    AND
+      +scan in word 3
+      +st bus[53](KU)
+    AND
+      +i fetch storage req tgr
+      +inv addr
+      +temp 7c az ornot
+    AND
+      -block branch invalid
+      -master reset
+      +temp 4k as ornot
+
+-invalid instruction address
+  NOT
+    +temp 7l bj ornot
++temp 7l bj ornot
+  ORNOT
+    -branch invalid adr tgr
+    -protected branch address
+    -temp
+      NOR
+        AND
+          +temp 4k as ornot
+          +temp 4l bs not
+          +ic 21-22 eq 00
+        AND
+          +temp 4k as ornot
+          +ic 21-22 eq 11
+          +temp 4l bs not
+          -pre decode rr format
+        AND
+          -block branch invalid
+          +temp 7l bj ornot
+          -master reset
+          -reset invld inst adr
+
++temp 4l bs not
+  NOT
+    -temp
+      NAND
+        +rosr neop or beop
+        -clock p1
+
+-block branch invalid
+  NAND
+    +ton delayed if protect gate
+    +clock p2
+
+; PAGE KD721
+
++block protection interrupts
+  ORNOT
+    -temp delayed if stor request
+    -temp kd721 4n be nor
+
++delayed if stor request
+  NOT
+    -temp delayed if stor request
+-temp delayed if stor request
+  NOR
+    AND
+      +late clean up
+      +i fetch storage req tgr
+      -temp
+        NOR
+          +if1 tgr O not if3
+          +rosr ton inst mem fetch req(DR)
+          AND
+            +pre decode ss format
+            +ros decode normal+branch eop
+    AND
+      -temp cpu 5 lth+p3
+      -temp
+        NAND
+          -clock p1
+          -ros decode neop
+          -ros reg decode beop
+          +d reg store
+      -master reset
+      +delayed if stor request
+-temp cpu 5 lth+p3
+  NAND
+    +clock p2
+    +cpu 5 lth(MC)
+
++protection check
+  NOT
+    -temp
+      NAND
+        +protection check(MC)
+        -temp kd721 4n be nor
+
++delayed if protect gate
+  NOT
+    -temp kd721 4f ar nor
+-temp kd721 4f ar nor
+  NOR
+    AND
+      -clock p1
+      +i fetch storage req tgr
+      +ton delayed if protect gate
+    AND
+      -temp cpu 5 lth+p3
+      -master reset
+      +delayed if protect gate
+
++protected branch address
+  NOT
+    -protected branch address
+-protected branch address
+  NOR
+    AND
+      -temp kd721 4f ar nor
+      +protection check
+      +delayed if stor request
+    AND
+      -reset invld inst adr
+      -master reset
+      +protected branch address
+
++d reg store
+  NOT
+    -d reg store(MC)
+
+-ifsr
+  NOT
+    +temp
+      ORNOT
+        -i fetch storage req
+        -temp kd721 4n be nor
+
++inv addr
+  ANDNOT
+    -invalid adr tgr from bcu
+    +temp kd721 5n bf not
++temp kd721 5n bf not
+  NOT
+    -temp kd721 4n be nor
+-temp kd721 4n be nor
+  NOR
+    AND
+      +block i fetch tgr
+      -ros decode normal+branch eop
+    AND
+      -master reset
+      +temp kd721 2n bb ornot
+      +temp kd721 5n bf not
++temp kd721 2n bb ornot
+  ORNOT
+    -reset stadOp1
+    -temp
+      NAND
+        +temp kd721 2n bb ornot
+        +clock p0 no inhibit
+
+; PAGE KD801
+
+-d 21 eq 1
+  NOT
+    +d21 eq1 bus(DS)
++d 21 eq 1 bus
+  +d21 eq1 bus(DS)
++d 21-22 eq 01 + 10
+  ORNOT
+    -d 21-22 eq 01(DR)
+    -temp
+      NOT
+        +d 21-22 eq 10
++d 21-22 eq 10
+  NOT
+    -d 21-22 eq 10(DR)
+
++allow 3 cycle ic req
+  ANDNOT
+    AND
+      -d 21-22 eq 01(DR)
+      -d 21-22 eq 10(DR)
+    AND
+      -d 21-22 eq 10(DR)
+      +pre decode rr format
+
++ic 21-22 eq 00+11
+  NOT
+    +ic 21-22 eq 01+10
++ic 21-22 eq 01+10
+  NOR
+    +ic 21-22 eq 00
+    +ic 21-22 eq 11
++ic 21-22 eq 00
+  NOT
+    -ic 21-22 eq[0](CA)
++ic 21-22 eq 10
+  NOT
+    -ic 21-22 eq[2](CA)
+-ic 21-22 eq 11
+  -ic 21-22 eq[3](CA)
+-ic 21-22 eq 00 bus
+  -ic 21-22 eq[0](CA)
+-ic 21-22 eq 01
+  -ic 21-22 eq[1](CA)
++ic 21-22 eq 11
+  NOT
+    -ic 21-22 eq[3](CA)
+-ic 21 eq 1
+  NOT
+    +ic[21](CA)
+-ic 21-22 eq 10
+  -ic 21-22 eq[2](CA)
+
+-allow ifsr reset
+  NAND
+    +clock p2
+    +gate if inv add tgr
+
++gate if inv add tgr
+  NOT
+    -temp
+      NOT
+        +gate i fetch inv addr(KS)
+
+; PAGE KD802
+
+CLOCK
+
++pre decode rr format
+  NOT
+    -predecode rr format(RE)
+-pre decode rr format
+  NOT
+    +pre decode rr format
+
+-eff pal 40-63 eq 0 O clock p3
+  NOR
+    +temp
+      NOT
+        -pal 40-63 equals 0(AP)
+    AND
+      +ic 21-22 eq 11
+      +pal 40-62 eq zero(DS)
++eff pal 40-63 eq 0 O clock p4
+  NOT
+    -eff pal 40-63 eq 0 O clock p3
+-pal 40-63 equals 0 bus
+  -pal 40-63 equals 0(AP)
+
++pre decode rx format
+  NOT
+    -r 00-01 eq 01 rx format(RR)
++ros decode branch eop
+  NOT
+    -temp
+      NOT
+        +temp
+          NOT
+            -rosl branch eop(KM)
++ros reg decode normal eop
+  NOT
+    -rosr decode norm eop bv4(DR)
++pre decode ss format
+  NOT
+    -temp
+      NOT
+        +r 00-01 eq 11 ss format(RR)
++ros reg decode branch eop
+  NOT
+    -rosr decode branch eop bw4(DR)
+-ros reg decode beop
+  NOT
+    +ros reg decode branch eop
++rosr neop or beop
+  ORNOT
+    -ros reg decode beop
+    -temp
+      NOT
+        +ros reg decode normal eop
++ros decode normal+branch eop
+  NOT
+    -ros decode normal+branch eop
+-ros decode normal+branch eop
+  NOR
+    +ros decode branch eop
+    +ros decode normal eop
++ros decode neop + master rst
+  ORNOT
+    -master reset
+    -ros decode neop
+-ros decode neop
+  NOT
+    +ros decode normal eop
++ros decode normal eop
+  NOT
+    -ros decode normal end op bus(DR)
+
+; PAGE KD803
+
++ros reg decode early eop
+  NOT
+    -rosr early end op(DR)
+
++adder 32 carry
+  NOT
+    -pal carry 32(AP)
+
+; CAVA HACK - delay 4 clocks
+-inhibit neop if req
+  NOT
+    +temp
+      NOT
+        -temp
+          NOT
+            +temp
+              NOT
+                -temp inhibit neop if req
+NOCLOCK
+
+-temp inhibit neop if req
+  NOR
+    AND
+      +block neop ic req
+      +clock p0 no inhibit
+    AND
+      -master reset
+      -i fetch 3 lth
+      -block i fetch tgr
+      +temp
+        NOT
+          -temp inhibit neop if req
+
++ros decode early eop
+  NOT
+    -ros decode early end op(DR)
++shift instructions bus
+  +shift instructions(DN)
+-block pstr gt sdbo to q
+  NAND
+    +e 12-15 eq 0
+    +rr format or shifts
++e 12-15 eq 0
+  NOT
+    -e12-15 eq 0000(RE)
+-pre decode branch
+  -predecode branch instructns(RQ)
+-shift instructions
+  NOT
+    +shift instructions(DN)
++pre decode branch inst
+  NOT
+    -predecode branch instructns(RQ)
++ros reg decode if reset
+  ANDNOT
+    +block i fetch tgr
+    -rosr code bits 25-30 eq 000001(DR)
+-ros reg decode if reset
+  NOT
+    +ros reg decode if reset
+
+; PAGE KD901
+
+CLOCK
+
++cpu clock p4
+  NOT
+    -temp p3
+
++clock p3Op5
+  NOT
+    -temp
+      NAND
+        -temp p3
+        -clock p1
+
++clock p2 and p4
+  NOT
+    -temp
+      NAND
+        +clock p0 no inhibit
+        +clock p2
+
+-temp p3
+  NOT
+    +clock p2
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NAND
+    +clock p0 no inhibit
+    -flt inhibit clock
++clock p0 no inhibit
+  NOT
+    -clock p0 minus 1(CS)
+
+
+++60 cycle pulse
+  NOT
+    -+60 cycle pulse
+-+60 cycle pulse
+  NOT
+    +kd901 ss out
+SPECIAL
+  SS300NS
+    ++60 cycles from transformer(*)
+    OUT
+    +kd901 ss out
+
+-time clock step ss
+  -+60 cycle pulse
+
++flt inhibit clock
+  NOT
+    -flt inhibit clock
+-flt inhibit clock
+  NOT
+    +inhibit sequence tgrs(KX)
+
+NOCLOCK
+
+-master reset
+  NOT
+    +machine reset gate a O b(KC)
++master reset bus
+  +machine reset gate a O b(KC)
+
++inhibit seq tgrs
+  +inhibit sequence tgrs(KX)
+
+-flt inhibit clock bus
+  -flt inhibit clock

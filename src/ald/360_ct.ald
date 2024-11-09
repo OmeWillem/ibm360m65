@@ -1,0 +1,140 @@
+SECTION CT
+
+; PAGE CT011
+
++paddl 61 or d 21
+  NOT
+    -paddl 61
+-paddl 61
+  NOR
+    AND
+      +paddl bit[61](CW)
+      +scan mode lth(DR)
+    AND
+      +i fetch 2 latch(KD)
+      +d 21 eq 1 bus(KD)
+    AND
+      +paddl bit[61](CW)
+      -temp
+        NOT
+          +i fetch 2 latch(KD)
++set marks per paddl 61
+  NOT
+    -set marks per pal 61(DR)
++set marks 4-7
+  NOT
+    -set marks 4-7(DR)
++set marks 0-3
+  NOT
+    -set marks 0-3(DR)
++set marks per stc
+  NOT
+    -set marks per stc(DR)
+-scan set marks 0-3
+  NOT
+    +temp
+      NOT
+        -scan set marks s(KU)
+-scan set marks 4-7
+  NOT
+    +temp
+      NOT
+        -scan set marks t(KU)
+-ind mark tgr[0..7]
+  NOT
+    +mark tgr[0..7]
++mark tgr[0..7]
+  NOT
+    -mark tgr[0..7]
+-mark tgr[0..3]
+  NOR
+    AND
+      -paddl 61
+      +set marks per paddl 61
+      +clock p2
+    AND
+      +set marks 0-3
+      +clock p2
+    AND
+      +stc incr equal[0..3](CS)
+      +set marks per stc
+      +clock p2
+    AND
+      -reset marks
+      +temp ct011 7e bw andnot[0..3]
++temp ct011 7e bw andnot[0..3]
+  ANDNOT
+    AND
+      -mark tgr[0..3]
+      -scan set marks 0-3
+    AND
+      +clock p0(CS)
+      +temp ct011 7f bp not[0..3]
++temp ct011 7f bp not[0..3]
+  NOT
+    +temp ct011 7e bw andnot[0..3]
+
+-mark tgr[4..7]
+  NOR
+    AND
+      +paddl 61 or d 21
+      +set marks per paddl 61
+      +clock p2
+    AND
+      +set marks 4-7
+      +clock p2
+    AND
+      +stc incr equal[4..7](CS)
+      +set marks per stc
+      +clock p2
+    AND
+      -reset marks
+      +temp ct011 7e bw andnot[4..7]
++temp ct011 7e bw andnot[4..7]
+  ANDNOT
+    AND
+      -mark tgr[4..7]
+      -scan set marks 4-7
+    AND
+      +clock p0(CS)
+      +temp ct011 7f bp not[4..7]
++temp ct011 7f bp not[4..7]
+  NOT
+    +temp ct011 7e bw andnot[4..7]
+
+; PAGE CT021
+
+-reset marks
+  NOT
+    +reset marks(MC)
+-reset store tgr
+  NOT
+    +reset marks(MC)
+
+; PAGE CT031
+
++scan set marks
+  ORNOT
+    -scan set marks s(KU)
+    -scan set marks t(KU)
++clock p2
+  NOT
+    -clock p1(CS)
+
+; CT051
++mark parity
+  XOR
+    -reverse mark parity(KU)
+    -mark tgr[0]
+    -mark tgr[1]
+    -mark tgr[2]
+    -mark tgr[3]
+    -mark tgr[4]
+    -mark tgr[5]
+    -mark tgr[6]
+    -mark tgr[7]
+-ind mark parity
+  NOT
+    +mark parity
+            
+      

@@ -1,0 +1,1639 @@
+SECTION KM
+
+; PAGE KM121
+
+CLOCK
+
++any ioce mck
+  NOT
+    -temp
+      NAND
+        +temp psw 13
+        +any ioce mck req
+        -temp supervisor call
+
++temp psw 13
+  NOT
+    -psw bit[13](RW)
+-temp supervisor call
+  NOT
+    +supervisor call(DN)
+
+-ind machine check intr
+  NOT
+    +machine check intr trigger
+
+NOCLOCK
+
++machine check intr trigger
+  NOT
+    -temp
+      NOR
+        AND
+          +rdd time out(KN)
+          +temp psw 13
+          -clock p1
+        AND
+          +any ioce mck req
+          +temp psw 13
+          +clock p0
+        AND
+          +set mach chk trap scan to psw(KU)
+          -clock p1
+        AND
+          +st bus[41](RS_RT)
+          +scan in word 3
+        AND
+          +machine check intr trigger
+          -mach not log + intrpt rst
+
+CLOCK
+
+-scan in word 3
+  -scan in word[3](KU)
++scan in word 3
+  NOT
+    -scan in word[3](KU)
+
+-set code 7 in prog intr tgrs
+  NAND
+    -temp supervisor call
+    +temp set supr call
++temp set supr call
+  NOT
+    -temp
+      NOT
+        +ros set supr call+data intr(DR)
+
+-ind supervisor call intr
+  NOT
+    +supervisor call trg
+
+NOCLOCK
+
++supervisor call trg
+  NOT
+    -supervisor call trigger
+-supervisor call trigger
+  NOR
+    AND
+      +temp set supr call
+      +temp
+        NOT
+          -temp supervisor call
+      +clock p2
+    AND
+      +st bus[42](RS_RT)
+      +scan in word 3
+    AND
+      +supervisor call trg
+      -machine rst + interrupt rst
+      -program interrupt code 4
+
+; PAGE KM141
+
+NOCLOCK
+
+-ind program intr tgr code 1
+  NOT
+    +program interrupt tgr code 1
++program interrupt tgr code 1
+  NOT
+    -program interrupt code 1
+-program interrupt code 1
+  NOR
+    AND
+      +spec + priv op + exec
+      +execute
+      +turn on pi tgrs O not block
+    AND
+      +st bus[43](RS_RT)
+      +scan in word 3
+    AND
+      +invalid operand address
+      +set pit code 04 + 05 + 80
+    AND
+      +turn on pi tgrs O not block
+      +temp
+        ORNOT
+          -set invalid op interrupt(DR)
+          -set cds in pi tgrs for if+dec
+          -set code 7 in prog intr tgrs
+          -set cd 9+11+15 to pi tgr 8O1
+          -set code 13 to prog intr tgr
+    AND
+      -mach rst + prog intr tgrs rst
+      +hold for set reset gate
+      -inst length not avail
+      +program interrupt tgr code 1
+
+-ind program intr tgr code 2
+  NOT
+    +program interrupt tgr code 2
++program interrupt tgr code 2
+  NOT
+    -program interrupt code 2
+-program interrupt code 2
+  NOR
+    AND
+      +spec + priv op + exec
+      +turn on pi tgrs O not block
+    AND
+      +st bus[44](RS_RT)
+      +scan in word 3
+    AND
+      +turn on pi tgrs O not block
+      +temp
+        ORNOT
+          -set code 7 in prog intr tgrs
+          -set code 6 in pi tgrs for if
+          -set cd 10+11+14+15 to pit 8O2
+    AND
+      -mach rst + prog intr tgrs rst
+      +hold for set reset gate
+      -inst length not avail
+      +program interrupt tgr code 2
+
+; PAGE KM151
+
+-ind program intr tgr code 4
+  NOT
+    +program interrupt tgr code 4
++program interrupt tgr code 4
+  NOT
+    -program interrupt code 4
+-program interrupt code 4
+  NOR
+    AND
+      +spec + priv op + exec
+      -privileged operation
+      -execute
+      +turn on pi tgrs O not block
+    AND
+      +st bus[45](RS_RT)
+      +scan in word 3
+    AND
+      +invalid oper adr or stor prot
+      +set pit code 04 + 05 + 80
+    AND
+      +turn on pi tgrs O not block
+      +temp
+        ORNOT
+          -set code 6 in pi tgrs for if
+          -set cds in pi tgrs for if+dec
+          -set code 7 in prog intr tgrs
+          -cd 12+13+14+15 to pi tgr 8O4
+          -set code 4 in int tgrs
+    AND
+      -mach rst + prog intr tgrs rst
+      +hold for set reset gate
+      +program interrupt tgr code 4
+
+-ind program intr tgr code 8
+  NOT
+    +program interrupt tgr code 8
++program interrupt tgr code 8
+  ANDNOT
+    -program interrupt code 8
+    +inst length not avail tgr
+-program interrupt code 8
+  NOR
+    AND
+      +st bus[45](RS_RT)
+      +scan in word 3
+    AND
+      +turn on pi tgrs O not block
+      +temp
+        ORNOT
+          -cd 12+13+14+15 to pi tgr 8O4
+          -set cd 9+11+15 to pi tgr 8O1
+          -set cd 10+11+14+15 to pit 8O2
+    AND
+      +fixed point overflow(AP)
+      -temp
+        NOT
+          +fixed point compare(RW)
+      +set stab if fxpt ovflow(KS)
+      +temp fpo mask
+      +turn on pi tgrs O not block
+    AND
+      +turn on pi tgrs O not block
+      +temp fpo mask
+      +set stab if shft ovflow(KS)
+      +left shift o v check(AP)
+    AND
+      -mach rst + prog intr tgrs rst
+      +hold for set reset gate
+      +program interrupt tgr code 8
++temp fpo mask
+  NOT
+    -fixed point overflow mask(RW)
++fixed point overflow
+  +fixed point overflow(AP)
++left shift overflow check
+  +left shift o v check(AP)
+
+CLOCK
+
+-block cond code 4 O not 8
+  NAND
+    +program interrupt tgr code 4
+    -program interrupt code 8
+    
+
+; PAGE KM156
+-inst length not avail
+  NOT
+    +inst length not avail tgr
+
+; PAGE KM161
+
+-program interrupt
+  NOT
+    +temp pi
++temp pi
+  ORNOT
+    -program interrupt code 1
+    -program interrupt code 2
+    -program interrupt code 4
+    -program interrupt code 8
+
+-prog int trggr lth
+  NOT
+    +program interrupt tgr on ypi
+
+NOCLOCK
+
++program interrupt tgr on ypi
+  NOT
+    -program interrupt tgr lth
+-program interrupt tgr lth
+  NOR
+    AND
+      +temp pi
+      +not clock p1 free running
+    AND
+      -mach rst + prog intr tgrs rst
+      +program interrupt tgr on ypi
+
+-pit code xx0100
+  NOR
+    AND
+      +not clock p1 free running
+      -program interrupt code 1
+      -program interrupt code 2
+      +program interrupt tgr code 4
+      -program interrupt code 8
+    AND
+      -mach rst + prog intr tgrs rst
+      +temp
+        NOT
+          -pit code xx0100
+
+CLOCK
+
+-scan in word 5
+  -scan in word 5(KX)
++scan in word 5
+  NOT
+    -scan in word 5(KX)
+
+; PAGE KM171
+
++f 01 eq 1Onot psw 38
+  ANDNOT
+    +temp
+      NOT
+        -temp flptov
+    +exponent underflow mask(RW)
+-temp flptov
+  NOR
+    AND
+      +add + sub + compare(DN)
+      -temp
+        NOT
+          +f bit[1](RF)
+    AND
+      +temp mult div
+      +stat d(RW)
+-temp mult div
+  NOT
+    +temp mult div
++temp mult div
+  NOT
+    -multiply + divide(DN)
+-multiply + divide
+  -multiply + divide(DN)
+
++floating point bc4
+  +floating point(RS_RT)
++floating point be4
+  NOT
+    -temp
+      NOT
+        +floating point(RS_RT)
+
+-cd 12+13+14+15 to pi tgr 8O4
+  NOR
+    AND
+      +temp
+        ORNOT
+          -exponent underflow mask(RW)
+          -temp flptov
+      +floating point be4
+      +temp set ov un
+    AND
+      +temp set div ck signfc
+      +floating point be4
+      -temp mult div
+    AND
+      +temp set div ck signfc
+      +floating point be4
+      +temp div
+
++temp set ov un
+  NOT
+    -temp
+      NOT
+        +set ovflo undflo(DR)
++temp set div ck signfc
+  NOT
+    -temp
+      NOT
+        +set divide ck or significance(DR)
++temp div
+  NOT
+    -divide(DN)
+
+-set code 13 to prog intr tgr
+  NAND
+    -temp flptov
+    +temp set ov un
+    +floating point be4
+    +exponent underflow mask(RW)
+
++decimal
+  +vfl decimal(DN)
+
+-set cd 10+11+14+15 to pit 8O2
+  NOR
+    AND
+      +temp set ov un
+      +decimal overflow mask(RW)
+      +vfl decimal(DN)
+    AND
+      +temp set div ck signfc
+      +floating point be4
+      -temp mult div
+    AND
+      +temp set div ck signfc
+      +temp div
+      +temp
+        NOT
+          -temp e2
+-temp e2
+  NOT
+    +e bit[2](RE)
+
+-set cd 9+11+15 to pi tgr 8O1
+  NOR
+    AND
+      +temp set div ck signfc
+      -temp mult div
+      -temp e2
+    AND
+      +temp set div ck signfc
+      +temp div
+
+; PAGE KM181
+
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -clock p0-1
+-clock p0-1
+  NOT
+    +temp
+      NOT
+        -clock p0-3
+-clock p0-3
+  -clock p0-3 from gate(KC)
+;  NOT
+;    TD
+;      +temp
+;        NOT
+;          -clock gate e bottom(KC)
+
+;-clock gate e bottom
+;  -clock gate e bottom(KC)
+
++invalid operand address
+  NOT
+    -temp ioa
+-temp ioa
+  NAND
+    -ifsr(KD)
+    -prog int trggr lth
+    +invalid cpu address lth
+
++turn on pi tgrs O not block
+  ANDNOT
+    -temp topit
+    +hold for set reset gate
+-temp topit
+  ORNOT
+    -storage protection to cpu
+    -temp ioa
+    -temp se stopped
+-temp se stopped
+  NAND
+    +se stopped latch
+    -prog int trggr lth
+    -ifsr(KD)
++se stopped
+  NOT
+    -temp se stopped
++hold for set reset gate
+  NOR
+    AND
+      -pit code xx0100
+      -temp topit
+      +clock p0 free running
+    AND
+      +clock p0 free running
+      -inhibit free running osc(KU)
+      -prog int trggr lth
++set pit code 04 + 05 + 80
+  NOT
+    +hold for set reset gate
++invalid oper adr or stor prot
+  ORNOT
+    -storage protection to cpu
+    -temp ioa
+
+; PAGE KM191
+
++translate + edit
+  +translate + edit(DN)
+
+-set code 4 in int tgrs
+  NOR
+    AND
+      +protected branch address(KD)
+      +sample ss inval addr(DR)
+      -temp block siava
+    AND
+      +protected branch address(KD)
+      +edit digit examine ltch(KZ)
+-temp block siava
+  NOR
+    AND
+      +translate + edit(DN)
+      +e bit[6](RE)
+    AND
+      +decimal compare bd4(RW)
+      +e 8-11 eq 1111 bus(DS)
+
+-set cds in pi tgrs for if+dec
+  NOR
+    AND
+      -temp block siava
+      +sample ss inval addr(DR)
+      +branch invalid addr trg(KD)
+    AND
+      +branch invalid addr trg(KD)
+      +edit digit examine ltch(KZ)
+
+-set code 6 in pi tgrs for if
+  NAND
+    +set addr on spec interrupt(DR)
+    ORNOT
+      -ic 23
+      -diagnose(DN)
+
+; PAGE KM201
+
+NOCLOCK
+
++invalid cpu address lth
+  ORNOT
+    -pulse invalid address(MC)
+    -temp
+      NAND
+        +clock p0 free running
+        +invalid cpu address lth
+
++se stopped latch
+  ORNOT
+    -pulse se de stopped(MC)
+    -temp
+      NAND
+        +clock p0 free running
+        +se stopped latch
+
+-se stopped O 360 mode hard stop
+  NAND
+    -temp
+      NOT
+        +hard stop reset(KU)
+    +temp
+      ORNOT
+        -se stopped O 360 mode hard stop
+        -temp
+          NAND
+            +se stopped latch
++hard stop reset
+  +hard stop reset(KU)
+
+; PAGE KM281
+
+CLOCK
+
+-mach not log + intrpt rst
+  NOR
+    AND
+      +reset int tgr(DR)
+      +clock p0
+    +machine reset O not log reset(KU)
+
+-machine rst + interrupt rst
+  NOR
+    AND
+      +reset int tgr(DR)
+      +clock p0
+    +machine reset(KX)
++machine rst + interrupt rst
+  NOT
+    -machine rst + interrupt rst
+
++machine reset O not log reset
+  +machine reset O not log reset(KU)
+
++machine rst O
+  +machine reset(KX)
+
++machine reset
+  +machine reset(KX)
+
+-int priority
+  NOT
+    +temp
+      ORNOT
+        -mach ck intrpt priority tgr(KN)
+        -temp
+          NOT
+            +any intrpt priority(KN)
+        -rosl br+norm end op
+        -rosr norm or branch eop(DR)
+
++reset interrupt triggers
+  +reset int tgr(DR)
+
++mach check int priority tgr
+  NOT
+    -mach ck intrpt priority tgr(KN)
+
+-mach rst + prog intr tgrs rst
+  NOT
+    +reset psa lockout
++reset psa lockout
+  NOT
+    -temp
+      NOR
+        +machine reset(KX)
+        AND
+          +psw to s 00-15 t 32-39(DR)
+          +clock p0
+          +program interrupt priority(KN)
+
+-rdd t o rst
+  NAND
+    +mach ck intrpt priority tgr t(KN)
+    +psw to s 00-15 t 32-39(DR)
+    +clock p0
+
+-reset tcl tgr
+  NAND
+    +psw to s 00-15 t 32-39(DR)
+    +clock p0
+    +external interrupt priority(KN)
+
+-flt rst+mach rstOnot log rst
+  NOR
+    +machine reset O not log reset(KU)
+    +temp
+      NOT
+        -flt scan reset(KU)
+
+; PAGE KM311
+
+NOCLOCK
+
+-i-o int req ioce 1 trig
+  NOR
+    AND
+      +st bus[41](RS_RT)
+      +scan in word 5
+    AND
+      +i-o int req 1 O not inh
+      +i-o int gate
+    AND
+      +i-o int req ioce 1 trig
+      -i-o int reset
++i-o int req ioce 1 trig
+  NOT
+    -i-o int req ioce 1 trig
+
+CLOCK
++i-o int gate
+  ANDNOT
+    +temp
+      ORNOT
+        AND
+          -flt inhibit sequence tgrs(KX)
+          -any ioce mck req
+          -i-o interrupt priority(KN)
+          +temp i-o clk
+          -temp i-o inh
+    +set sys mask(DN)
+
++temp i-o clk
+  ANDNOT
+    -clock p0-3
+    +clock p2
+
+-temp i-o inh
+  NOT
+    +temp
+      ORNOT
+        -rosl br+norm end op
+        -flt inhibit ioce sel O int(KX)
+
+-i-o int reset
+  NOR
+    AND
+      -temp i-o inh
+      +temp i-o clk
+      -i-o interrupt priority(KN)
+      +clock p0
+    +mach reset O not log reset(KC)
+
++mach reset not log reset
+  +mach reset O not log reset(KC)
+
++ioce 1 i-o int req O priority
+  NOT
+    -temp
+      NAND
+        +i-o interrupt priority(KN)
+        +i-o int req ioce 1 trig
+
+; PAGE KM316
+
++i-o int req 1 O not inh
+  NOT
+    -temp
+      NAND
+        +i-o int req ioce 1(FX)
+        +temp int req 1
+
+NOCLOCK
+
++temp int req 1
+  NOR
+    AND
+      +i-o int req ioce 1(FX)
+      +ioce 1 i-o int req O priority
+    AND
+      +i-o int req ioce 1(FX)
+      -temp
+        NOT
+          +temp int req 1
+
+CLOCK
+
+; PAGE KM321
+
+-ind i-o interrupt req trig
+  NOT
+    +any i-o interrupt req trig
++any i-o interrupt req trig
+  ORNOT
+    -i-o int req ioce 1 trig
+
+-ind permit interrupt ioce 1
+  NAND
+    +interrupt gate trig(KX)
+    +i-o int req ioce 1 trig
+
++int gate trig
+  +interrupt gate trig(KX)
+
+; PAGE KM331
++ioce 1 mck int reqOprior
+  NOT
+    -ioce 1 mck int reqOprior
+-ioce 1 mck int reqOprior
+  NAND
+    +mach check int priority tgr
+    +temp int gate
+    +temp ioce mck
++temp int gate
+  NOT
+    -temp
+      NOT
+        +int gate trig
+
+NOCLOCK
+
++temp ioce mck
+  NOT
+    -ioce 1 mck req trig
+-ioce 1 mck req trig
+  NOR
+    AND
+      +mck int req 1Onot inh
+      +clock p4(KX)
+      -int priority
+      -clock p0-1(KX)
+    AND
+      -machine reset(KX)
+      -temp
+        NAND
+          +reset interrupt triggers
+          +clock p0-2(KX)
+      +temp ioce mck
+
+CLOCK
+
++any ioce mck req
+  ORNOT
+    -temp
+      NOT
+        +temp
+          ORNOT
+            -ioce 1 mck req trig
+-any ioce mck req
+  NOT
+    +any ioce mck req
+-ind ioce mck req
+  -any ioce mck req
+
+-ind ioce 1 logout
+  NAND
+    +temp ioce mck
+    +temp int gate
+
+; PAGE KM332
+
++mck int req 1Onot inh
+  NOT
+    -temp
+      NAND
+        +mck int req ioce 1(FX)
+        -temp inhibit mck ioce 1
+
+NOCLOCK
+
+-temp inhibit mck ioce 1
+  NOR
+    AND
+      +mck int req ioce 1(FX)
+      +temp
+        NOT
+          -ioce 1 mck int reqOprior
+    AND
+      +mck int req ioce 1(FX)
+      +temp
+        NOT
+          -temp inhibit mck ioce 1
+
+
+; PAGE KM341
+
+-psa lockout ioce 1
+  NOR
+    AND
+      -temp inhibit psa lockout 1
+      +temp psa lockout 1
+      +clock p0-2Onot p1(KX)
+    AND
+      -reset psa lockout(KX)
+      +temp psa lockout ioce 1
++temp psa lockout ioce 1
+  NOT
+    -psa lockout ioce 1
++temp psa lockout 1
+  NOT
+    -psa lock out ioce 1(FX)
+
+-temp inhibit psa lockout 1
+  NOR
+    AND
+      +temp psa lockout 1
+      +clock p2
+      +temp psa lockout ioce 1
+    AND
+      +temp psa lockout 1
+      +temp
+        NOT
+          -temp inhibit psa lockout 1
+
+CLOCK
+; PAGE KM351
+
+-psa lockout set ce hardstop
+  NAND
+    +temp
+      ORNOT
+        -psa lockout ioce 1
+
++clock p0-1
+  -clock p0-1
+
+; PAGE KM361
+
++restart ros timer ioce 1
+  NOT
+    -reset ros timer ioce 1(FX)
+
++restart ros timer
+  +wrd ioce 1 logout
+
+NOCLOCK
+
++wrd ioce 1 logout
+  NOT
+    -temp
+      NOR
+        AND
+          +temp 4a fj
+          +temp
+            NOT
+              -temp 7h fe
+          +gate response ioce 1(KX)
+        AND
+          +temp 4a fj
+          +wrd ioce 1 logout
+        AND
+          +wrd ioce 1 logout
+          -temp 7h fe
+
+CLOCK
+
++temp 4a fj
+  NOT
+    -temp
+      NAND
+        +restart ros timer ioce 1
+        -inhbt restart ros timr ioce 1
+
+-temp 7h fe
+  NAND
+    -clock p0-1
+    +clock p2
+
+; PAGE KM371
+
+-elc ioce 1
+  NOT
+    +elc ioce 1(FX)
+
+; PAGE KM381
+
+-gate pir to f
+  NOT
+    +temp pirf
++temp pirf
+  NOT
+    -gate pir to f(RF)
+
+-ind pir 1
+  NOT
+    +pir[1]
+
+NOCLOCK
+
++pir[1..3]
+  NOT
+    -pir[1..3]
+-pir[1]
+  NOR
+    AND
+      -gate pir to f
+      +ioce 1 ext int(FX)
+    AND
+      +st bus[41](RS_RT)
+      +temp
+        NOT
+          -temp
+            NOT
+              +scan in word 8(KX)
+    AND
+      -temp
+        NAND
+          +temp reset pir latch
+          +clock p0
+      -mach O not log rst + scan rst
+      +pir[1]
+
+-pir[2..3]
+  1
+
++temp reset pir latch
+  NOT
+    -temp
+      NOR
+        AND
+          +temp reset pir trigger
+          -clock p1
+        AND
+          +clock p0
+          +temp reset pir latch
+
++temp reset pir trigger
+  NOT
+    -temp
+      NOR
+        AND
+          +temp pirf
+          +clock p2
+        AND
+          -clock p1
+          +temp reset pir trigger
+
+CLOCK
+-mach O not log rst + scan rst
+  NOR
+    +scan in word 8(KX)
+    +mach reset O not log reset(KU)
+
+; PAGE KM391
+
++pir intrpt req
+  NOT
+    -pir[1]
++pir parity
+  -pir[1]
+
+; PAGE KM421
+
+-shift instruction
+  NOT
+    +shift instructions bus(KD)
+
++e reg bit[8..15]
+  +e bit[8..15](RE)
+
++d bus[0..23]
+  +d bit[0..23](RD)
++temp flt rr
+  NOT
+    -temp flt rr
+-temp flt rr
+  NOT
+    +floating point rr sp+dp(DN)
+-temp flt rx
+  NOT
+    +floating point rx sp+dp(DN)
+-temp fx pt dvd
+  NOT
+    +fx pt rx dvd+full mult(DN)
+-specif error d+st+e reg
+  NOR
+    AND
+      +e bit[8](RE)
+      +temp
+        ORNOT
+          -temp flt rx
+          -temp flt rr
+    AND
+      +st bit 28+29+30+31 is a one(RS_RT)
+      +temp
+        NOT
+          -insert key + set storage key(DN)
+    AND
+      +e bit[11](RE)
+      +temp
+        ORNOT
+          -temp flt rx
+          -temp flt rr
+          -fx pt rr mult + divide + sco(DN)
+          -shift instruction
+          -temp fx pt dvd
+    AND
+      +e bit[12](RE)
+      +temp flt rr
+    AND
+      +e bit[15](RE)
+      +temp flt rr
+    AND
+      +d bit[21](RD)
+      +enable d reg specif error
+      +e reg decode inst a
+    AND
+      +d bit[22](RD)
+      +enable d reg specif error
+      +e reg decode inst b
+    AND
+      +d bit[23](RD)
+      +enable d reg specif error
+      +e reg decode inst c
+
++e reg decode inst a
+  ORNOT
+    -floating point rx dp(DN)
+    -temp lpsw
+    -temp conv
+
++e reg decode inst b
+  ORNOT
+    -temp flt rx
+    -stm or lm or sps or lps or lc(DN)
+    -temp lpsw
+    -temp conv
+    -fx pt rx full wd not mult+dvd(DN)
+    -temp fx pt dvd
+
++e reg decode inst c
+  ORNOT
+    -temp flt rx
+    -stm or lm or sps or lps or lc(DN)
+    -temp lpsw
+    -fx pt half word + execute(DN)
+    -temp conv
+    -fx pt rx full wd not mult+dvd(DN)
+    -temp fx pt dvd
+
+-temp conv
+  NOT
+    +conv to dec + conv to bin(DN)
+-temp lpsw
+  NOT
+    +lpsw + diagnose + siop(DN)
+
+; PAGE KM426
+
++enable d reg specif error
+  NOT
+    -temp d reg
+-temp d reg
+  NAND
+    +i fetch 2 lth(KD)
+    +rx and e12-15 eq 0 or rs(KD)
+
+-specif error pal
+  NOR
+    AND
+      +paddl[61](AP)
+      -temp d reg
+      +e reg decode inst a
+    AND
+      +paddl[62](AP)
+      -temp d reg
+      +e reg decode inst b
+    AND
+      +paddl[63](AP)
+      -temp d reg
+      +e reg decode inst c
+
+; PAGE KM431
+
+-privileged operation
+  NAND
+    +privileged operations(DN)
+    -supervisor mode(RW)
+
+
+-temp wrd
+  NOT
+    +wrd + rdd + siop spec exc(JA)
+
++block rosar O set bit 7 yiasi
+  ORNOT
+    -specif error d+st+e reg
+    -execute
+    -temp wrd
+    -specif error pal
+    -temp 3b ca
+;    -scon+satr condition spec exc(KR)
+;    -invalid psbar address(MC)
+
+-temp 3b ca
+  AND
+    NOT
+      +ss format(DN)
+    NAND
+      -supervisor mode(RW)
+      +privileged operations(DN)
+
++spec + priv op + exec
+  AND
+    NOT
+      -yiasi bus(RX)
+    ORNOT
+      -specif error d+st+e reg
+      -execute
+      -temp wrd
+      -specif error pal
+      -temp 3b ca
+;      -scon+satr condition spec exc(KR)
+;      -invalid psbar address(MC)
+
+-execute
+  NAND
+    +execute(DN)
+    +execute in progress tgr be4(KD)
++execute
+  NOT
+    -execute
++execute in progress tgr
+  +execute in progress tgr be4(KD)
+
+; PAGE KM811
+
++time clock step trig
+  NOT
+    -timer clock step priority
+-timer clock step priority
+  NOT
+    +time clock step tgr(KD)
+
+-time clk step + intrpt
+  NOR
+    +time clock step trig
+    +temp any intrpt
+
++temp any intrpt
+  ORNOT
+    -machine check int priority av4
+    -external intrpt priority
+    -i-o intrpt priority
+    -supervisor call int priority
+    -prog intr priority
+
+-machine check int priority bk4
+  NOT
+    +machine check int priority
++machine check int priority
+  NOT
+    -machine check int priority av4
+
++gate timer+psw addr to d reg
+  ANDNOT
+    -rosl br + norm end op
+    AND
+      -interrupt priority
+      -timer clock step priority
+
++timer step+stop trig+intrpt
+  ORNOT
+    -manual contl stop priority
+    -timer clock step priority
+    -interrupt priority
+
+-interrupt priority
+  NOT
+    +temp any intrpt
+
+-gate interrupt priority tgrs
+  NAND
+    +rosl br+norm end op
+    +temp any intrpt
+
++set priority trig 1
+  ORNOT
+    -prog intr priority
+    -supervisor call int priority
+    -i-o intrpt priority
+
++set priority trig 2
+  ORNOT
+    -external intrpt priority
+    -i-o intrpt priority
+
+-blk int on start+tcs+mach ck
+  NOR
+    +time clock step tgr(KD)
+    +machine check intr trigger
+    AND
+      -psw wait mask bit
+      +block interrupts on start(KW)
+
+-prog intr priority
+  NAND
+    +prog intr trig latch
+    -blk int on start+tcs+mach ck
+
+-supervisor call int priority
+  NAND
+    +supervisor call trg
+    -blk int on start+tcs+mach ck
+
++d parity 16-23 psw+timer rd
+  ORNOT
+    -timer clock step priority
+    -external intrpt priority
+    -machine check int priority av4
+    -prog intr priority
+
+-machine check int priority av4
+  NAND
+    +machine check intr trigger
+    -timer clock step priority
+
+-i-o intrpt priority
+  NAND
+    -prog intr priority
+    -supervisor call int priority
+    -external intrpt priority
+    -blk int on start+tcs+mach ck
+    +any i-o interrupt req trig
+
+-external intrpt priority
+  NAND
+    -blk int on start+tcs+mach ck
+    +ext int req O mask(JA)
+    -supervisor call int priority
+    -prog intr priority
+
++ext int req O mask
+  +ext int req O mask(JA)
+
+; PAGE KM821
+
+-rosl branch eop
+  -ros decode branch end op(DR)
+
++block rosar on except cond
+  ORNOT
+    -temp inv br adr
+    -man cnt+tcs+psc+intrpt
+    -invalid inst addr priority
+    -rosar bit 6 for i fetch
+-temp inv br adr
+  NAND
+    +temp
+      NOT
+        -ros decode branch end op(DR)
+    +d bit[23](RD)
+
+-ic 23
+  NOT
+    +temp
+      NOT
+        -ic[23](CA)
+
+-invalid inst addr priority
+  NAND
+    -man cnt+tcs+psc+intrpt
+    +temp
+      ORNOT
+        -temp inv br adr
+        -ic 23
+        -invalid instruction address(KD)
+
+-rosar bit 6 for i fetch
+  NOT
+    +temp i f forced ad
++temp i f forced ad
+  ANDNOT
+    +temp
+      ORNOT
+        -man cnt+tcs+psc+intrpt
+        -invalid inst addr priority
+    AND
+      -i fetch storage req in prog(KD)
+      -turn on i fetch 1 at eop(KD)
+
+-temp pre decode shift inst
+  NOT
+    +pre decode shift inst(RR)
++temp toif
+  NOT
+    -turn on i fetch 1 at eop(KD)
+
+-rosar bit 7 for i fetch
+  NAND
+    +temp i f forced ad
+    -temp pre decode shift inst
+    +temp toif
+
+-rosar bit 8 for i fetch
+  NAND
+    +temp i f forced ad
+    -temp pre decode shift inst
+    +temp toif
+    +rx format and r12-15 not zero(KD)
+
+-rosar bit 9 for i fetch
+  NAND
+    +temp i f forced ad
+    -temp pre decode shift inst
+    +r[0](RR)
+
+-rosar bit 10 for i fetch
+  NAND
+    +temp i f forced ad
+    -temp pre decode shift inst
+    +r[1](RR)
+
+; PAGE KM831
+
+-psw wait mask bit
+  NOT
+    +psw wait state mask bit(RW)
+
+-man cnt+tcs+psc+intrpt
+  NOR
+    +time clock step trig
+    +temp mc+psc+int
++temp mc+psc+int
+  ORNOT
+    -interrupt priority
+    -manual contl stop priority
+    -man contl wait priority
+    -man contl repeat priority
+    -temp prog sto comp
+    -lpswOstore in progress
+-temp prog sto comp
+  NAND
+    -man contl wait priority
+    -time clk step + intrpt
+    -man contl repeat priority
+    +program store compare tgr(KD)
+-man contl repeat priority
+  NAND
+    +repeat instruction ba4(KW)
+    -stat g(RW)
+    -time clk step + intrpt
+
+-lpswOstore in progress
+  NAND
+    -timer clock step priority
+    +cpu store in progress
+    +predecode lpsw(RR)
+
+-manual contl stop priority
+  NAND
+    +stop tgr(KW)
+    -time clk step + intrpt
+
+-man contl wait priority
+  NAND
+    +psw wait state mask bit(RW)
+    -time clk step + intrpt
+
++man ctl wait prior
+  NOT
+    -temp
+      NAND
+        -temp cpu sto excep
+        -manual contl stop priority
+        +temp
+          NOT
+            -man contl wait priority
+-temp cpu sto excep
+  NAND
+    +temp mc+psc+int
+    +cpu store in progress
+
++rosar bit 6 for yiaei
+  ORNOT
+    -temp cpu sto excep
+    -manual contl stop priority
+    -man contl wait priority
+    -man contl repeat priority
+    -rosar bit 6 for i fetch
+
++rosar bit 7Od reg 17 yiaei
+  ORNOT
+    -timer clock step priority
+    -rosar bit 7 for i fetch
+
++rosar bit 8Od reg 18 yiaei
+  ORNOT
+    -temp cpu sto excep
+    -temp
+      NAND
+        +temp mc+psc+int
+        -manual contl stop priority
+        -temp prog sto comp
+        -external intrpt priority
+    -rosar bit 8 for i fetch
+
++rosar bit 9Od reg 19 yiaei
+  ORNOT
+    -temp cpu sto excep
+    -manual contl stop priority
+    -timer clock step priority
+    -machine check int priority av4
+    -external intrpt priority
+    -i-o intrpt priority
+    -rosar bit 9 for i fetch
+    -temp prog sto comp
+
++rosar bit 10Od reg 20 yiaei
+  ORNOT
+    -temp cpu sto excep
+    -manual contl stop priority
+    -external intrpt priority
+    -i-o intrpt priority
+    -prog intr priority
+    -rosar bit 10 for i fetch
+    -man contl wait priority
+    -invalid inst addr priority
+
+; PAGE KM841
+
++process stor advance
+  NOT
+    -adv + t o rst stor in prog(MC)
+
++cpu store in progress
+  ORNOT
+    -temp
+      NAND
+        +clock p0 free running
+        +cpu store in progress
+    -temp store to ms
+-temp store to ms
+  NOR
+    AND
+      +temp
+        NOT
+          -store(MC)
+      +processor storage select
+    AND
+      -temp
+        NAND
+          +process stor advance
+          +clock p0 free running
+      -temp
+        NOT
+          +machine reset
+      +temp
+        NOT
+          -temp store to ms
+
+-cpu store in progress
+  NOT
+    +cpu store in progress
+
+; PAGE KM851
+
+-storage protection to cpu
+  NOR
+    AND
+      +temp 4a aa
+      +process stor advance
+    AND
+      -clock p3 free running
+      +temp
+        NOT
+          -storage protection to cpu
++temp 4a aa
+  AND
+    NOT
+      +block protection interrupts(KD)
+    NOT
+      -protected address check(MC)
+
+-except cond to i fetch
+  -exceptional cond to i fetch
+
+-ind inst length not avail
+  NOT
+    +inst length not avail tgr
++inst length not avail tgr
+  NOT
+    -block ilc on late stor prot
+-block ilc on late stor prot
+  NOR
+    AND
+      +temp 4a aa
+      +temp 3e af
+      +process stor advance
+      +clock p0 free running
+    AND
+      +temp
+        NOT
+          -scan in word 4(KN)
+      +st bus[49](RS_RT)
+    AND
+      -temp
+        NAND
+          +machine rst + interrupt rst
+          -program interrupt
+      +inst length not avail tgr
++temp 3e af
+  ORNOT
+    -temp
+      NAND
+        -exceptional cond to i fetch
+        +rosl br+norm end op
+        +clock p2
+    -temp
+      NAND
+        -pulse select successful(MC)
+        +temp 3e af
+-scan in word 4
+  -scan in word 4(KN)
+
++processor storage select
+  NOT
+    -pulse select successful(MC)
+
+; PAGE KM861
+
+-clock p3 free running
+  NOT
+    +temp p2 free
++temp p2 free
+  NOT
+    +not clock p1 free running
++not clock p1 free running
+  NOT
+    +clock p0 free running
++clock p0 free running
+  +clock b0(KC)
+
+-sample external intrt trgs
+  ORNOT
+    -intrpt priority trg 2(KN)
+    -rosl br + norm end op
+-rosl br + norm end op
+  NOT
+    +rosl br+norm end op
++rosl br+norm end op
+  NOT
+    -rosl decode normal + br eop(DR)
+-rosl br+norm end op
+  -rosl decode normal + br eop(DR)
++rosr br+norm end op
+  NOT
+    -rosr norm+branch eop(DR)
+
++prog intr trig latch
+  NOT
+    -program interrupt tgr lth
+
+-exceptional cond to i fetch
+  NOR
+    AND
+      +temp br+nor eop
+      +any i-o interrupt req trig
+      -blk int on start+tcs+mach ck
+    AND
+      +temp br+nor eop
+      +ext int req O mask
+      -blk int on start+tcs+mach ck
+    AND
+      +temp br+nor eop
+      +temp
+        ORNOT
+          -machine check int priority av4
+          -timer clock step priority
+          -lpswOstore in progress
+          -manual contl stop priority
+          -man contl repeat priority
+    AND
+      +temp br+nor eop
+      +temp
+        ORNOT
+          -supervisor call int priority
+          -man contl wait priority
+          -program interrupt tgr lth
+    AND
+      +temp br+nor eop
+      +program store compare tgr(KD)
+      -blk int on start+tcs+mach ck
++temp br+nor eop
+  ORNOT
+    -rosl br + norm end op
+    -rosr norm+branch eop(DR)
+
+; PAGE KM871
+
+NOCLOCK
+
+-inhbt restart ros timr ioce 1
+  NOR
+    AND
+      +temp
+        NOT
+          -gt pal 32-63 to b 32-63(DR)
+      +clock p0
+      +wrd ioce 1 logout
+    AND
+      +restart ros timer ioce 1
+      +temp
+        NOT
+          -inhbt restart ros timr ioce 1
+
+      

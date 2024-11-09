@@ -1,0 +1,475 @@
+SECTION RE
+
+; PAGE RE001
+
+CLOCK
+
+-ind e bit[0..15]
+  NOT
+    +e bit[0..15]
++e bit[0..15]
+  NOT
+    -e bit[0..15]
+-e bit[0..7]
+  NOR
+    AND
+      +r[0..7](RR)
+      +gate r 00-07 to e00-07+p
+    AND
+      -reset e 00-07 O parity
+      +e bit[0..7]
+
+; PAGE RE081
+
+-e bit[8..11]
+  NOR
+    AND
+      +r[8..11](RR)
+      +gate r8-15 to e8-15
+    AND
+      +paddl[56..59](AP)
+      +gate pal56-63 to e8-15
+    AND
+      +incr latch[8..11](CE)
+      +gate incr8-11 to e8-11
+    AND
+      -temp gt r8-15
+      -temp gt pal56-63
+      -temp gt incr8-11
+      +e bit[8..11]
+
+-ind parity e 08-15
+  -e reg bits 8-15 even
+-e reg bits 8-15 even
+  NOT
+    +e reg bits 8-15 even
++e reg bits 8-15 even
+  NOT
+    -temp
+      NOR
+        AND
+          +gate incr8-11 to e8-11
+          +incr bits 8-15 even(CE)
+        AND
+          +gate r8-15 to e8-15
+          +r parity 08-15(RR)
+        AND
+          +gate pal56-63 to e8-15
+          +paddl parity 56-63(AP)
+        AND
+          +gate incr12-15 to e12-15
+          +incr bits 8-15 even(CE)
+        AND
+          -temp gt r8-15
+          -temp gt pal56-63
+          -temp gt incr8-11
+          -temp gt incr12-15
+          +e reg bits 8-15 even
+
+; PAGE RE121
+
+-e bit[12..15]
+  NOR
+    AND
+      +r[12..15](RR)
+      +gate r8-15 to e8-15
+    AND
+      +paddl[60..63](AP)
+      +gate pal56-63 to e8-15
+    AND
+      +incr latch[12..15](CE)
+      +gate incr12-15 to e12-15
+    AND
+      -temp gt r8-15
+      -temp gt pal56-63
+      -temp gt incr12-15
+      +e bit[12..15]
+
+; PAGE RE161
+
+-clock p0 minus one
+  -clock p0-1 from gate(KC)
+;  NOT
+;    +temp
+;      TD
+;        +temp
+;          NOT
+;            -clock gate b bottom(KC)
+;-clock b gate bottom
+;  -clock gate b bottom(KC)
+
+
+-e reg p00-07
+  NOT
+    +temp e p0
+-ind parity e 00-07
+  -e reg p00-07
++temp e p0
+  NOT
+    -parity bit e 00-07
+-parity bit e 00-07
+  NOR
+    AND
+      +r parity 00-07(RR)
+      +gate r 00-07 to e00-07+p
+    AND
+      -reset e 00-07 O parity
+      +temp e p0
+
++gate r 00-07 to e00-07+p
+  NOT
+    -reset e 00-07 O parity
+
+-reset e 00-07 O parity
+  NAND
+    +gt r 00-15 to e 00-15(DR)
+    -exceptional cond to i-fetch(DN)
+    +clock p0 minus 2
+
+-exceptional cond to i-fetch
+  -exceptional cond to i-fetch(DN)
+
++clock p0 minus 2
+  NOT
+    -clock p0 minus 3(RQ)
+
+NOCLOCK
+
+; PAGE RE171
+
+-e reg bits 8-11 even
+  NOT
+    +e reg bits 8-11 even
++e reg bits 8-11 even
+  NOT
+    XOR
+      +e bit[8..11]
++parity of e12-15
+  NOT
+    XOR
+      +e bit[12..15]
++e12-15 eq 0
+  NOT
+    -e12-15 eq 0000
++e12-15 eq 0000
+  +e12-15 eq 0
+-e12-15 eq 0000
+  NAND
+    -e bit[12..15]
+
++parity error e8-15
+  XOR
+    +e bit[8..15]
+    -e reg bits 8-15 even
+
+; PAGE RE181
+
++error reset gate b
+  +error reset gate b(KC)
+
+-ind parity error e 00-15
+  NOT
+    +temp pe
++temp pe
+  NOT
+    -parity error e 00-15
+-parity error e 00-15
+  NOR
+    AND
+      +temp error ltch
+      +temp p0
+    AND
+      -temp error reset
+      +temp pe
+
+CLOCK
+
+-temp error reset
+  NOT
+    +error reset gate b(KC)
++temp p0
+  NOT
+    -temp p0-1
+-temp p0-1
+  NOT
+    +clock p0 minus 2
+
+NOCLOCK
+
++temp error ltch
+  NOT
+    -temp
+      NOR
+        AND
+          +temp sample trig
+          -temp
+            XOR
+              -ind e bit[0..7]
+              -parity bit e 00-07
+          -temp p0-1
+        AND
+          +temp sample trig
+          +parity error e8-15
+          -temp p0-1
+        AND
+          +temp error ltch
+          +clock p0 minus 2
+
++temp sample trig
+  ORNOT
+    -temp
+      NOR
+        AND
+          +gate r 00-07 to e00-07+p
+          +temp p0
+        AND
+          -temp error reset
+          +temp sample trig
+    -ton sample e reg error trigger(KU)
+
+; PAGE RE201
+
+CLOCK
+
+-e reg bit[0..15]
+  NOT
+    +e bit[0..15]
+
+NOCLOCK
+
++gate e5-7 to ext on i-o instr
+  ORNOT
+    -temp
+      NAND
+        +i-o instructions(DN)
+        +spec - k31(DS)
+    -temp
+      NAND
+        -temp
+          NAND
+            -clock p3
+            +neop or beop
+        -temp
+          NOT
+            +error reset gate b
+        +gate e5-7 to ext on i-o instr
+
+; PAGE RE701
+
+-e to lal[0]
+  NOR
+    AND
+      +gt e11 to lal 0(DR)
+      +e bit[11]
+    AND
+      +ros reg to lal[0](DR)
+      +temp gate rr
+
+-e to lal[1..4]
+  NOR
+    AND
+      +gt e 8-11 to lal 01-04
+      +e bit[8..11]
+    AND
+      +gt e 12-15 to lal 01-04
+      +e bit[12..15]
+    AND
+      +ros reg to lal[1..4](DR)
+      +temp gate rr
+
+CLOCK
+
++temp gate rr
+  NOT
+    -gate ros reg 38-42 to lal(DR)
+
+-clock p3
+  NOT
+    +clock p2
++clock p2
+  NOT
+    -clock p1
++clock p2 incr reset
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -clock p0 minus one
+
+; PAGE RE702
+
++gt e 8-11 to lal 01-04
+  ORNOT
+    -ros fld 37-42 eq 001xxx(DR)
+    -temp
+      NAND
+        +ros reg decode i fetch rst(DR)
+        +temp rr format
+        +temp all branch
++temp rr format
+  NOT
+    -predecode rr format(RQ)
++temp all branch
+  NOT
+    -all branch instructions(DN)
+-all branch instructions
+  -all branch instructions(DN)
+-predecode rr format
+  -predecode rr format(RQ)
+
++gt e 12-15 to lal 01-04
+  ANDNOT
+    AND
+      +ros reg decode i fetch rst(DR)
+      +temp rr format
+      +temp all branch
+    -ros fld 36-42 eq 0010xxx(DR)
+
++rosr dec i ftch rst
+  +ros reg decode i fetch rst(DR)
++neop or beop
+  NOT
+    -neop or beop(RQ)
+
+-gt 1 to lal 0 flt pt
+  NOR
+    AND
+      +ros reg decode i fetch rst(DR)
+      -temp
+        NOT
+          +e bit[0]
+      +e bit[2]
+    AND
+      +neop or beop
+      +temp rr format
+      +r[2](RR)
+    +temp
+      NOT
+        -ros fld 38-42 gt 1 to lal 0(DR)
+
+; PAGE RE901
+
++gate r8-15 to e8-15
+  NOT
+    -temp gt r8-15
+-temp gt r8-15
+  NAND
+    -exceptional cond to i-fetch
+    +temp
+      NOT
+        -gt r 00-15 to e 00-15(DR)
+    +clock p0 minus 2
+
++gate incr8-11 to e8-11
+  NOT
+    -temp gt incr8-11
+-temp gt incr8-11
+  NAND
+    -temp do incr8-11
+    +clock p0
+-temp do incr8-11
+  NOR
+    AND
+      +e8-11 to incr8-11(CE)
+      -clock p3
+    AND
+      +clock p2
+      +temp
+        NOT
+          -temp do incr8-11
++gate pal56-63 to e8-15
+  NOT
+    -temp gt pal56-63
+-temp gt pal56-63
+  NAND
+    +temp
+      NOT
+        -gt pal 56-63 to e 08-15(DR)
+    +clock p0
+
++gate incr12-15 to e12-15
+  NOT
+    -temp gt incr12-15
+-temp gt incr12-15
+  NAND
+    -temp do incr12-15
+    +clock p0
+
+NOCLOCK
+
+-temp do incr12-15
+  NOR
+    AND
+      +e12-15 to incr12-15(CE)
+      -clock p3
+    AND
+      +clock p2
+      +temp
+        NOT
+          -temp do incr12-15
+
+-exceptional condition to i fe
+  -exceptional cond to i-fetch
+
+; PAGE RE941
+
+DECODE
+  +e14e15 eq[0..3]
+  +e bit[14..15]
+-e14e15 eq[0..3]
+  NOT
+    +e14e15 eq[0..3]
+
+-gate prod quot saddl 0 1
+  NOR
+    AND
+      +temp fx pt mult
+      +e14e15 eq[2]
+    AND
+      -temp fx pt mult
+      +e14e15 eq[1]
+
+-temp fx pt mult
+  NOT
+    +temp fx pt mult
++temp fx pt mult
+  NOT
+    -fixed point multiply am4(DN)
+
+DECODE
+  +temp gt s[0..3]
+  +e bit[12..13]
+
+-gate s reg byte[0..3]
+  NOT
+    +temp gt s[0..3]
+
+-gate prod quot saddl 2 3
+  NOR
+    AND
+      +temp fx pt mult
+      +e14e15 eq[3]
+    AND
+      -temp fx pt mult
+      +e14e15 eq[2]
+
+-gate prod quot saddl 4 5
+  NOR
+    AND
+      +temp fx pt mult
+      +e14e15 eq[0]
+    AND
+      -temp fx pt mult
+      +e14e15 eq[3]
+
+-gate prod quot saddl 6 7
+  NOR
+    AND
+      +temp fx pt mult
+      +e14e15 eq[1]
+    AND
+      -temp fx pt mult
+      +e14e15 eq[0]

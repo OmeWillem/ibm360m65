@@ -1,0 +1,1113 @@
+SECTION AS
+
+; PAGE AS001
+
++bit carry[0..7]
+  NOT
+    -bit carry[0..7]
+-bit carry[0..7]
+  NOT
+    ANDNOT
+      -sadda[0..7](AR)
+      -saddb[0..7](AR)
++bit transmit[0..7]
+  ORNOT
+    -sadda[0..7](AR)
+    -saddb[0..7](AR)
+-bit transmit[0..7]
+  NOT
+    +bit transmit[0..7]
+-half sum[0..7]
+  NAND
+    -bit carry[0..7]
+    +bit transmit[0..7]
++half sum[0..7]
+  NOT
+    -half sum[0..7]
+
++carry into bit[0..7]
+  NOT
+    -carry into bit[0..7]
+-sum[0..7]
+  NOT
+    +sum[0..7]
+
++sum[0..7]
+  ANDNOT
+    AND
+      -bit carry[0..7]
+      +and function
+    AND
+      -bit carry[0..7]
+      -half sum[0..7]
+      +or function
+    AND
+      -half sum[0..7]
+      +oe function
+    AND
+      -logical function
+      -carry into bit[0..7]
+      -half sum[0..7]        
+    AND
+      -logical function
+      +carry into bit[0..7]
+      +half sum[0..7] 
+
++gate product quotient 1
+  NOT
+    -gate prod quot saddl 0 1(RE)
+
++saddl[0..7]
+  NOT
+    -latched sum[0..7]
+-ind saddl[0..7]
+  NOT
+    +saddl[0..7]
+
+-carry into bit[0]
+  NOR
+    AND
+      +carry into group 2 + bit 3
+      +bit transmit[1..3]
+    AND
+      +bit transmit[1..2]
+      +bit carry[3]
+    AND
+      +bit transmit[1]
+      +bit carry[2]
+    AND
+      +bit carry[1]
+     
+-latched sum[0]
+  NOR
+    AND
+      +gt ones to sal
+      -clock p3
+    AND
+      +sum[0]
+      -clock p3
+      +sum[1]
+      +sum[2]
+    AND
+      +sum[0]       
+      -clock p3
+      -decimal correct bits 00-03
+    AND
+      -clock p3
+      +prod quot bits to sal 0+2+4+6
+      +gate product quotient 1
+    AND
+      +clock p2
+      +saddl[0]
+
+; PAGE AS011
+
++gt ones to sal
+  NOT
+    -force sal ones blk err
+
+-carry into bit[1]
+  NOR
+    AND
+      +carry into group 2 + bit 3
+      +bit transmit[2..3]
+    AND
+      +bit transmit[2]
+      +bit carry[3]
+    AND
+      +bit carry[2]
+     
+-latched sum[1]
+  NOR
+    AND
+      +gt ones to sal
+      -clock p3
+    AND
+      +decimal correct bits 00-03
+      -clock p3
+      +sum[2]
+      -temp
+        NOR
+          AND
+            +half sum[1]
+            -carry into bit[1]
+          AND
+            -half sum[1]
+            +carry into bit[1]
+    AND
+      +sum[1]   
+      -sum[2]    
+      -clock p3
+    AND
+      +sum[1]   
+      -clock p3
+      -decimal correct bits 00-03
+    AND
+      -clock p3
+      +prod quot bits to sal 1+3+5+7
+      +gate product quotient 1
+    AND
+      +clock p2
+      +saddl[1]
+
+; PAGE AS021
+
++gate product quotient 2
+  NOT
+    -gate prod quot saddl 2 3(RE)
+
+-carry into bit[2]
+  NOR
+    AND
+      +carry into group 2 + bit 3
+      +bit transmit[3]
+    AND
+      +bit carry[3]
+     
+-latched sum[2]
+  NOR
+    AND
+      +gt ones to sal
+      -clock p3
+    AND
+      +decimal correct bits 00-03
+      -clock p3
+      -temp
+        NOR
+          AND
+            +half sum[2]
+            -carry into bit[2]
+          AND
+            -half sum[2]
+            +carry into bit[2]
+    AND
+      +sum[2]       
+      -clock p3
+      -decimal correct bits 00-03
+    AND
+      -clock p3
+      +prod quot bits to sal 0+2+4+6
+      +gate product quotient 2
+    AND
+      +clock p2
+      +saddl[2]
+
+; PAGE AP031
+
+-saddl carry out of group 2
+  NOT
+    +saddl carry out of group 2 bf4
+
+-decimal correct bits 00-03
+  NOT
+    +decimal correct bits 00-03
+
++decimal correct bits 00-03
+  ANDNOT
+    -temp
+      NOT
+        +dec cor 00-03 set stats a e
+    +saddl carry out of group 2 bf4
+
+-carry into bit[3]
+  NOT
+    +carry into group 2 + bit 3
+     
+-latched sum[3]
+  NOR
+    AND
+      +gt ones to sal
+      -clock p3
+    AND
+      +sum[3]   
+      -clock p3
+    AND
+      -clock p3
+      +prod quot bits to sal 1+3+5+7
+      +gate product quotient 2
+    AND
+      +clock p2
+      +saddl[3]
+
+; PAGE AS032
+
+-k1 bits 00-03
+  NOR
+    AND
+      -bit carry[2]
+      +bit carry[3]
+      -bit transmit[1]
+      +bit transmit[2]
+    AND
+      +bit carry[1]
+      -bit carry[2]
+      +bit carry[3]
+      +bit transmit[3]
+    AND
+      -bit carry[1]
+      +bit carry[2]
+      +bit transmit[1]
++k1 bits 00-03
+  NOT
+    -k1 bits 00-03
+
+-k2 bits 00-03
+  NOT
+    +k2 bits 00-03
++k2 bits 00-03
+  ANDNOT
+    -carry into group[2]
+    AND
+      -bit carry[1]
+      -bit carry[3]
+      +bit transmit[1]
+      +bit transmit[3]
+    AND
+      +bit carry[2]
+      -bit carry[3]
+      +bit transmit[3]
+    AND
+      -bit carry[3]
+      -bit transmit[2]
+      +bit transmit[3]
+
+-k3 bits 00-03
+  NOT
+    +k3 bits 00-03
++k3 bits 00-03
+  ANDNOT
+    XOR
+      +half sum[2]
+      +temp
+        ANDNOT
+          AND
+            -carry into group[2]
+            -bit carry[3]
+          -bit transmit[3]
+    XOR               
+      +half sum[1]
+      +temp
+        ANDNOT
+          AND
+            -carry into group[2]
+            -bit carry[2..3]
+          AND
+            -bit carry[2]
+            -bit transmit[3]
+          -bit transmit[2]
+    +saddl carry out of group 2 aw4
+    -temp
+      NOT
+        +dec cor 00-03 set stats a e
+
+; PAGE AS034
+
+-oe transmits bits 01-03
+  NOT
+    XOR
+      +bit transmit[1..3]
++oe transmits bits 01-03
+  NOT
+    +oe transmits bits 01-03
+
++even parity bits 00-03
+  NOT
+    -even parity bits 00-03
+
+-even parity bits 00-03
+  XOR
+    +half sum[0]
+    +k1 bits 00-03
+    +k2 bits 00-03
+    +oe transmits bits 01-03
+
+; PAGE AS041     
+
++gate product quotient 3
+  NOT
+    -gate prod quot saddl 4 5(RE)
+
+-carry into bit[4]
+  NOR
+    AND
+      +hot carry into bit 07
+      +bit transmit[5..7]
+    AND
+      +bit transmit[5..6]
+      +bit carry[7]
+    AND
+      +bit transmit[5]
+      +bit carry[6]
+    AND
+      +bit carry[5]
+     
+-latched sum[4]
+  NOR
+    AND
+      +gt ones to sal
+      -clock p3
+    AND
+      +sum[4]
+      -clock p3
+      +sum[5]
+      +sum[6]
+    AND
+      +sum[4]       
+      -clock p3
+      -decimal correct bits 04-07
+    AND
+      -clock p3
+      +prod quot bits to sal 0+2+4+6
+      +gate product quotient 3
+    AND
+      +clock p2
+      +saddl[4]
+
+; PAGE AP051
+
+-carry into bit[5]
+  NOR
+    AND
+      +hot carry into bit 07
+      +bit transmit[6..7]
+    AND
+      +bit transmit[6]
+      +bit carry[7]
+    AND
+      +bit carry[6]
+     
+-latched sum[5]
+  NOR
+    AND
+      +gt ones to sal
+      -clock p3
+    AND
+      +decimal correct bits 04-07
+      -clock p3
+      +sum[6]
+      -temp
+        NOR
+          AND
+            +half sum[5]
+            -carry into bit[5]
+          AND
+            -half sum[5]
+            +carry into bit[5]
+    AND
+      +sum[5]   
+      -sum[6]    
+      -clock p3
+    AND
+      +sum[5]   
+      -clock p3
+      -decimal correct bits 04-07
+    AND
+      -clock p3
+      +prod quot bits to sal 1+3+5+7
+      +gate product quotient 3
+    AND
+      +clock p2
+      +saddl[5]
+
+; PAGE AS061
+
++gate product quotient 4
+  NOT
+    -gate prod quot saddl 6 7(RE)
+
+-carry into bit[6]
+  NOR
+    AND
+      +hot carry into bit 07
+      +bit transmit[7]
+    AND
+      +bit carry[7]
+     
+-latched sum[6]
+  NOR
+    AND
+      +gt ones to sal
+      -clock p3
+    AND
+      +decimal correct bits 04-07
+      -clock p3
+      -temp
+        NOR
+          AND
+            +half sum[6]
+            -carry into bit[6]
+          AND
+            -half sum[6]
+            +carry into bit[6]
+    AND
+      +sum[6]       
+      -clock p3
+      -decimal correct bits 04-07
+    AND
+      -clock p3
+      +prod quot bits to sal 0+2+4+6
+      +gate product quotient 4
+    AND
+      +clock p2
+      +saddl[6]
+
+; PAGE AS071
++oe function
+  NOT
+    -exclusive or function(AR)
++or function
+  NOT
+    -or function(AR)
++and function
+  NOT
+    -and function(AR)
+-logical function
+  NOT
+    +logical function
++logical function
+  ORNOT
+    -and function(AR)
+    -or function(AR)
+    -exclusive or function(AR)
+
+-decimal correct bits 04-07
+  NOT
+    +decimal correct bits 04-07
++decimal correct bits 04-07
+  ANDNOT
+    -temp
+      NOT
+        +s car 07 stats ae dec cor 4-7(AR)
+    +carry out of group 1
+
+-carry into bit[7]
+  NOT
+    +hot carry into bit 07
+     
+-latched sum[7]
+  NOR
+    AND
+      +gt ones to sal
+      -clock p3
+    AND
+      +sum[7]   
+      -clock p3
+    AND
+      -clock p3
+      +prod quot bits to sal 1+3+5+7
+      +gate product quotient 4
+    AND
+      +clock p2
+      +saddl[7]
+
+; PAGE AS072
+
+-k1 bits 04-07
+  NOR
+    AND
+      -bit carry[6]
+      +bit carry[7]
+      -bit transmit[5]
+      +bit transmit[6]
+    AND
+      +bit carry[5]
+      -bit carry[6]
+      +bit carry[7]
+      +bit transmit[6]
+    AND
+      -bit carry[5]
+      +bit carry[6]
+      +bit transmit[5]
++k1 bits 04-07
+  NOT
+    -k1 bits 04-07
+
++k2 bits 04-07
+  NOT
+    -k2 bits 04-07
+-k2 bits 04-07
+  NOR
+    -invt predicted parity
+    AND
+      +hot carry into bit 07
+      +bit carry[5]
+      -bit carry[6]
+      +bit transmit[6]
+    AND
+      +hot carry into bit 07
+      -bit carry[6]
+      -bit transmit[5]
+      +bit transmit[6]
+    AND
+      +hot carry into bit 07
+      +bit carry[7]
+    AND
+      +hot carry into bit 07
+      -bit transmit[7]
+
+-k3 bits 04-07
+  NOT
+    +k3 bits 04-07
++k3 bits 04-07
+  ANDNOT
+    XOR
+      +half sum[6]
+      +temp
+        ANDNOT
+          AND
+            +hot carry into bit 07
+            +bit transmit[7]
+          +bit carry[7]
+    XOR               
+      +half sum[5]
+      +temp
+        ANDNOT
+          AND
+            +hot carry into bit 07
+            -bit transmit[6..7]
+          AND
+            +bit transmit[6]
+            +bit carry[7]
+          +bit carry[6]
+    +carry out of group 1
+    -temp
+      NOT
+        +s car 07 stats ae dec cor 4-7
+
+; PAGE AS074
+
+-oe transmits bits 00-07
+  NOT
+    XOR
+      +bit transmit[0..7]
++oe transmits bits 00-07
+  NOT
+    -oe transmits bits 00-07
+
+-oe transmits bits 05-07
+  NOT
+    XOR
+      +bit transmit[5..7]
++oe transmits bits 05-07
+  NOT
+    -oe transmits bits 05-07
+
++saddl even parity bits 04-07
+  NOT
+    -saddl even parity bits 04-07
+
+-saddl even parity bits 04-07
+  XOR
+    +half sum[4]
+    +k1 bits 04-07
+    +k2 bits 04-07
+    +oe transmits bits 05-07
+
+; PAGE AS075
+
+-force sal ones blk err
+  -force sal ones blk err(AR)
+
+-ind saddl parity
+  NOT
+    +saddl parity
++saddl parity
+  NOT
+    -saddl parity
++saddl parity 00-07
+  NOT
+    -saddl parity
+
+-saddl parity
+  NOR
+    AND
+      -force sal ones blk err
+      -clock p3
+    AND
+      XOR
+        +even parity bits 00-03
+        +saddl even parity bits 04-07
+        +k3 bits 00-03
+        -k3 bits 04-07
+      -temp p3 not logical
+    AND
+      +or function
+      -oe transmits bits 00-07
+      -clock p3
+    AND
+      +oe function
+      -oe par a-par b O par adj(AR)
+      -clock p3
+    AND
+      +and function   
+      +oe par a-par b O par adj(AR)
+      +oe transmits bits 00-07
+      -clock p3
+    AND
+      +clock p2
+      +saddl parity
+
+-temp p3 not logical
+  NOR
+    +logical function
+    +clock p2
+
+; PAGE AS081
+
++carry out of group 1
+  ANDNOT
+    -carry into group[2]
+    +temp hot carry sa 03
++temp hot carry sa 03
+  NOT
+    -hot carry to sa 03(AR)
+
++carry into group 2 + bit 3
+  NOT
+    -carry into group[2]
+
+-carry into group[2]
+  NOR
+    AND
+      +hot carry into bit 07
+      +bit transmit[4..7]
+    AND
+      +bit transmit[4..6]
+      +bit carry[7]
+    AND
+      +bit transmit[4..5]
+      +bit carry[6]
+    AND
+      +bit transmit[4]
+      +bit carry[5]
+    +bit carry[4]  
+    +temp hot carry sa 03
+
++saddl carry out of group 2 bf4
+  +serial carry
++serial carry
+  NOT
+    -temp serial carry
+-temp serial carry
+  NOT
+    +saddl carry out of group 2 aw4
++saddl carry out of group 2 aw4
+  NOR
+    AND
+      -carry into group[2] 
+      -bit carry[0..3]
+      -clock p3
+    AND
+      -bit carry[0..2]
+      -bit transmit[3]
+      -clock p3
+    AND
+      -bit carry[0..1]
+      -bit transmit[2]
+      -clock p3
+    AND
+      -bit carry[0]
+      -bit transmit[1]
+      -clock p3
+    AND
+      -bit transmit[0]
+      -clock p3
+    AND
+      -temp serial carry
+      +clock p2
+
+; PAGE AS093
+
+-exclusive ls 0-7 + p
+  NOT
+    XOR
+      +saddl[0..7]
+      +saddl parity
+
+; PAGE AS095
+
++temp hs error
+  NOT
+    -temp
+      NOR
+        AND
+          XOR
+            +half sum[0..7]
+            +oe par a-par b O par adj(AR)
+          -clock p3
+        AND
+          +clock p2
+          +temp hs error
+
+-sadder half sum error
+  NOR
+    AND
+      +temp hs error
+      +clock p2
+      +temp fs ena
+    AND
+      -temp error reset
+      +temp hse
++temp hse
+  ANDNOT
+    -sadder half sum error
+    AND
+      +clock p0
+      -ind half sum error
+-ind half sum error
+  NOT
+    +temp hse
++temp fs ena
+  AND
+    NOR
+      AND
+        +gt ones to sal
+        -scan invt sadd parity
+      +inh sadd p check(DR)
+    -err reset+logout
+-err reset+logout
+  NOT
+    +temp
+      ORNOT
+        -log out tgr(AP)
+        -temp error reset
+-temp error reset
+  NOT
+    +error reset gate b(KC)
+-ind full sum error
+  NOT
+    +temp fse
++temp fse
+  ANDNOT
+    -sadder full sum error
+    AND
+      +clock p0
+      -ind full sum error
+-sadder full sum error
+  NOR
+    AND
+      +temp fs ena
+      +clock p4
+      -exclusive ls 0-7 + p
+    AND
+      -exclusive ls 0-7 + p
+      +temp fse
+
++error reset gate b
+  +error reset gate b(KC)
+           
+; PAGE AS105
+
++master reset
+  +master reset(KZ)
+
++dec cor 00-03 set stats a e
+  +dec cor 00-03 set stats a e(AR)
+
++s car 07 stats ae dec cor 4-7
+  +s car 07 stats ae dec cor 4-7(AR)
+
++st bus[38]
+  +st bus[38](RS_RT)
+
++stah
+  NOT
+    -temp stah
+-temp stah
+  NOR
+    AND
+      +st bus[38](RS_RT)
+      +temp
+        NOT
+          -scan in word 3(KM)
+    AND
+      +set stah(DR)
+      +clock p2+140
+    AND
+      +clock p2 e
+      +saddl carry out of group 2 aw4
+      +temp as105 4e az not
+    AND
+      -temp
+        AND
+          NAND
+            +branch on atr select in(DS)
+            +clock p0
+          NOR
+            +master reset(KZ)
+            AND
+              +lth i-fetch reset(DR)
+              +clock p0
+      -temp
+        NOR
+          AND
+            +temp as105 4e az not
+            +clock p0
+          AND
+            +clock p2+140
+            +reset serial carry to stah(DR)
+      +stah
+              
++temp as105 4e az not
+  NOT
+    -temp
+      NOR
+        AND
+          -clock p3
+          +dec cor 00-03 set stats a e(AR)
+        AND
+          -clock p3
+          +temp
+            NOT
+              -save sa carry(AR)
+        AND
+          +temp as105 4e az not
+          +clock p2 e
+
+-ind stat tgr h
+  NOT
+    +stah
+
+-i fetch rst
+  NOT
+    +lth i-fetch reset(DR)
++i fetch reset
+  +lth i-fetch reset(DR)
+
++hot carry into bit 07
+  ANDNOT
+    AND
+      -temp stah
+      -temp 5n ap not
+    AND
+      -temp
+        NOT
+          +s car 07 stats ae dec cor 4-7(AR)
+      -temp 5n ap not
+-temp 5n ap not
+  NOT
+    +hot carry sa 07(AR)
+
+; PAGE AS111
+
+-scan invt sadd parity
+  NOT
+    +temp
+      NOT
+        -force saddr fs check(KU)
++prod quot bits to sal 0+2+4+6
+  NOT
+    -temp as111 4c af nor
+-temp as111 4c af nor
+  NOR
+    AND
+      +temp
+        NOT
+          -b 66-67 to sa 00-07(AR)
+      +temp
+        NOT
+          -ab bit[66](RA_RB)
+    AND
+      +temp
+        NOT
+          -temp
+            NOT
+              +floating point(DN)
+      -temp
+        NOT
+          +ab bit[4](RA_RB)
+      +rosr dvd mpl sel l1 ins(DR)
+    AND
+      -temp
+        NOT
+          +floating point(DN)
+      -temp
+        NOT
+          +ab bit[28](RA_RB)
+      +rosr dvd mpl sel l1 ins(DR)
+
++prod quot bits to sal 1+3+5+7
+  NOT
+    -temp as111 4g ag nor
+-temp as111 4g ag nor
+  NOR
+    AND
+      +temp
+        NOT
+          -b 66-67 to sa 00-07(AR)
+      +temp
+        NOT
+          -ab bit[67](RA_RB)
+    AND
+      +temp
+        NOT
+          -temp
+            NOT
+              +floating point(DN)
+      -temp
+        NOT
+          +ab bit[4](RA_RB)
+      +rosr dvd mpl sel l0 ins(DR)
+    AND
+      -temp
+        NOT
+          +floating point(DN)
+      -temp
+        NOT
+          +ab bit[28](RA_RB)
+      +rosr dvd mpl sel l0 ins(DR)
+-invt predicted parity
+  NOT
+    +invt predicted parity
++invt predicted parity
+  NOR
+    AND
+      -temp as111 4c af nor
+      -scan invt sadd parity
+      -temp as111 4g ag nor
+    AND
+      +prod quot bits to sal 0+2+4+6
+      +prod quot bits to sal 1+3+5+7
+
+; temp AS131
+
++sal 0-3 or 4-7 sum not zero
+  NOT
+    -temp
+      NOR
+        AND
+          +dec cor 00-03 set stats a e(AR)
+          -not latched sum 00 01 02 03
+          -clock p3
+        AND
+          +s car 07 stats ae dec cor 4-7(AR)
+          -temp
+            NOR
+              -latched sum[4..7]
+          -clock p3
+        AND
+          +clock p2
+          +sal 0-3 or 4-7 sum not zero
+-not latched sum 00 01 02 03
+  NOR
+    -latched sum[4..7]
+
++sal 0-7 eq zero
+  NOT
+    -temp
+      NAND
+        -latched sum[0..7]
+
++sal 01 eq 1
+  +saddl[1]
+
++sal 02 eq 1
+  +saddl[2]
+
+; PAGE AS 135
+
++sal 4-7 eq 1111
+  ANDNOT
+    -latched sum[4..7]
+
++sal 4-7 eq 5-9 or 10-15
+  NOR
+    AND
+      -latched sum[4..5]
+    AND
+      -latched sum[4]
+      -latched sum[6..7]
++sal 4-7 eq 0001
+  ANDNOT
+    +saddl[4..6]
+    -latched sum[7]
++sal 0 eq 1
+  NOT
+    -latched sum[0]
++within range 1-2
+  ANDNOT
+    -saddl carry out of group 2
+    -not latched sum 00 01 02 03
+    -temp
+      NOR
+        +saddl[4]
+        -temp
+          NOT
+            +e bit[3](RE)
++sal 4-7 eq 1-4 or 10-15
+  NOT
+    -temp
+      NOR
+        AND
+          +saddl[4..5]
+        AND
+          +saddl[5..6]
+          -latched sum[7]
+        AND
+          -latched sum[4..5]
+          +saddl[7]
+        AND
+          -latched sum[5] 
+          +saddl[6]
+
++within range 3-4
+  AND
+    ANDNOT
+      +e bit[3](RE)
+      -latched sum[0..3]
+      +saddl carry out of group 2 bf4
+    NAND
+      -latched sum[4]
+      +e bit[3](RE)
+
+; PAGE AS201
+
+-flt inhibit clock
+  -flt inhibit clock(KZ)
+
+CLOCK
+
++clock p4
+  NOT
+    -clock p3
+-clock p3
+  NOT
+    +clock p2
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -master clock delayed
+-master clock delayed
+  -clock p0-1 from gate(KC)
+;  NOT
+;    +temp
+;      TD
+;        +temp
+;          NOT
+;            -master clock gate b top(AP)
+
++clock p2 e
+  NOT
+    -temp
+      NAND
+        +clock p0
+        -flt inhibit clock(KZ)
+
+;-master clock b
+;  -master clock gate b top(AP)
+
++clock p2+140
+  ANDNOT
+    +clock p2
+    -temp
+      TD
+        -temp
+          TD
+            -temp
+              NOT
+                +clock p2

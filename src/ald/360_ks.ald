@@ -1,0 +1,733 @@
+SECTION KS
+
+; PAGE KS021
+
++pal 32-39 eq zero
+  +pal 32-39 eq zero(DS)
++sarnz
+  +rst staa pal 32-63 not eq 0(DR)
++saflz
+  +set staa if pal07-63 eq 0(DR)
+
++staa
+  NOT
+    -staa
++staa bus
+  +staa
+-stat a for ce satr sel
+  -staa
+-stat a for ioce satr sel
+  -staa
+-ind stat tgr a
+  -staa
+
+-staa
+  NOR
+    AND
+      +scan word 5
+      +st bit[54](RS_RT)
+    AND
+      +pal 40-63 eq zero(DS)
+      +sasz+sajo
+      +pal 32-39 eq zero(DS)
+      +stat clock p2
+    AND
+      +rst staa pal 32-63 not eq 0(DR)
+      +pal 40-63 eq zero(DS)
+      +pal 32-39 eq zero(DS)
+      +staa lth
+      +stat clock p2
+    AND
+      +pal 40-63 eq zero(DS)
+      +pal 32-39 eq zero(DS)
+      +pal 64-67 0(DS)
+      +pal 7-31 eq zero(DS)
+      +temp
+        NOT
+          -temp
+            NAND
+              +stat clock p0
+              +set staa if pal07-63 eq 0(DR)
+    AND
+      +sal 0-3 or 4-7 sum not zero(AS)
+      +stat clock p2
+    AND
+      +edit set staa(KZ)
+      +stat clock p2
+    AND
+      +set staa if sal00-07 not eq 0(DR)
+      +sal 0-7 not zero
+      +stat clock p2
+    AND
+      -stat tgr reset
+      -reset staa
+      +staa
+    AND
+      +temp
+        NOT
+          -ipl set stat a(KW)
+
+; PAGE KS031
+
++sbj31
+  +set stab if pal 31(DR)
++sbfov
+  +gate fxp ovflo to stab(DR)
++sbxov
+  +set stab on left shift ovflo(DR)
+
++stab tgr
+  NOT
+    -stab tgr
++stab bus
+  +stab tgr
+-ind stat tgr b
+  -stab tgr
+-stat b for ioce i-o inst sel
+  -stab tgr
+-stab tgr
+  NOR
+    AND
+      +st bit[55](RS_RT)
+      +scan word 5
+    AND
+      +set stab if sa 0-7 eq 0(DR)
+      +sal 0-7 equal zero
+      +stat clock p2
+    AND
+      +rosl decode sbdov
+      +dec overflow
+      +stat clock p2
+    AND
+      +set stab if pal 31(DR)
+      +paddl[31](AP)
+      +stat clock p2
+    AND
+      +sbcd
+      +ab bit[32](RA_RB)
+      +clock p2+140
+    AND
+      +gate fxp ovflo to stab(DR)
+      +fixed point overflow(KM)
+      +stat clock p2
+    AND
+      +set stab on left shift ovflo(DR)
+      +left shift overflow check(KM)
+      +stat clock p2
+    AND
+      -stat tgr reset
+      -reset stab
+      +stab tgr
+
+; PAGE KS041
+
++scso
+  +set signs(DR)
++cors
+  +sign cor sba 04-07(AR)
++sinsv
+  +save signs(DR)
+
++stac bus
+  +stac
++stac
+  NOT
+    -stac
+-ind stat tgr c
+  -stac
+-stac
+  NOR
+    AND
+      +st bit[56](RS_RT)
+      +scan word 5
+    AND
+      +sign cor sba 04-07(AR)
+      +neg sign sba
+      +clock p2+140
+    AND
+      +save signs(DR)
+      +flpt sign
+      +flpt
+      +clock p2+140
+    AND
+      +set signs(DR)
+      +vfl sign
+      +vfl dec ops
+      +clock p2+140
+    AND
+      +set signs(DR)
+      +st bus[0](RS_RT)
+      +not vfl dec
+      +clock p2+140
+    AND
+      -stat tgr reset
+      -temp
+        NAND
+          +set signs(DR)
+          +not vfl dec
+          +clock p0+140
+      +stac
+
+; PAGE KS051
+
++rosl decode sbdov
+  +rosl decode sbdov(DR)
++ros dec reset stad
+  +reset stad(DR)
++gate i fetch inv addr
+  +gt i fetch invalid addr(DR)
+
++stad bus
+  NOT
+    -temp stad
++stad
+  ORNOT
+    -temp stad
+    -temp
+      NAND
+        +set d on set or insert key(DR)
+        +stat clock p2
+-ind stat tgr d
+  NOT
+    +stad
+-temp stad
+  NOR
+    AND
+      +st bit[57](RS_RT)
+      +scan word 5
+    AND
+      +set stad(DR)
+      +clock p2+140
+    AND
+      +sinsv
+      +sal 0 eq 1(DS)
+      +flpt mult+dvd
+      +stat clock p2
+    AND
+      +temp
+        NOT
+          -gating q to lal 0000(RQ)
+      +clock p2+140
+    AND
+      -stat tgr reset
+      -temp
+        AND
+          NOR
+            AND
+              +reset stad(DR)
+              +clock p0+140
+            AND
+              +gt i fetch invalid addr(DR)
+              +clock p0+140
+          NAND
+            +stat clock p2
+            +rosl decode sbdov(DR)
+      +stad
+
+; PAGE KS061
+
++inv sign sba
+  +invalid sign sba 04-07(AR)
++inv sign sbb
+  +invalid sign sbb 04-07(AR)
+
+-ind stat tgr e
+  NOT
+    +stae bus
++stae bus
+  ORNOT
+    -temp
+      NAND
+        +clock p2+140
+        +temp
+          NOT
+            -set stat e i-o error(KX)
+    -temp
+      NOR
+        AND
+          +dig examine lth(KZ)
+          +temp
+            NOT
+              -invalid digit sba 00-03(AR)
+          +clock p2+140
+        AND
+          +st bit[58](RS_RT)
+          +scan word 5
+        AND
+          +scso
+          +vfl inv sign
+          +clock p2+140
+        AND
+          +sinsv
+          +not flpt
+          +invalid sign sbb 04-07(AR)
+          +clock p2+140
+        AND
+          +cors
+          +invalid sign sba 04-07(AR)
+          +clock p2+140
+        AND
+          +invalid digit sa 00-03(AR)
+          +clock p2+140
+        AND
+          +invalid digit sa 04-07(AR)
+          +clock p2+140
+        AND
+          -stat tgr reset
+          +stae bus
+
+; PAGE KS071
+
++staf
+  NOT
+    -staf
++staf bus
+  +staf
+-ind stat tgr f
+  -staf
+-staf
+  NOR
+    AND
+      +st bit[59](RS_RT)
+      +scan word 5
+    AND
+      +scso
+      +vfl dec ops
+      +neg sign sbb
+      +clock p2+140
+    AND
+      +stac to staf(DR)
+      +stac
+      +stat clock p2
+    AND
+      +sinsv
+      +neg sign sbb
+      +not flpt
+      +clock p2+140
+    AND
+      +sinsv
+      +flpt
+      +ab bit 0
+      +clock p2+140
+    AND
+      -stat tgr reset
+      -temp
+        NAND
+          +stac to staf(DR)
+          +stat clock p0
+      +staf
+
+; PAGE KS081
+
++sbcd
+  +b32 to stab and t32 to stag(DR)
+
++set stat g
+  +set stag(DR)
+
++stag bus
+  +stag
+-ind stat tgr g
+  NOT
+    +stag
+-stat g not test for scon sel
+  NAND
+    +stag
+    +set stag(DR)
++stag
+  NOT
+    -temp
+      NOR
+        AND
+          +st bus[60](RS_RT)
+          +scan word 5
+        AND
+          +set stag(DR)
+          +clock p2+140
+        AND
+          +b32 to stab and t32 to stag(DR)
+          +st bus[32](RS_RT)
+          +clock p2+140
+        AND
+          -stat tgr reset
+          -temp
+            NOR
+              AND
+                +b32 to stab and t32 to stag(DR)
+                +clock p0+140
+              AND
+                +clock p0+140
+                +reset stag(DR)
+          +stag
+
+; PAGE KS121
+
+CLOCK
+
++sasz+sajo
+  ORNOT
+    -temp
+      NOT
+        +set staa if pal 32-63 eq 0(DR)
+    -temp
+      NAND
+        +set staa pal eq 0 insrt sign(DR)
+        +temp
+          NOT
+            -e bit[6](RE)
+-reset staa
+  NOR
+    AND
+      +sasz+sajo
+      +stat clock p0
+    AND
+      +saflz
+      +stat clock p0
+    AND
+      +sarnz
+      +stat clock p0
+    AND
+      +edit reset staa(KZ)
+      +stat clock p0
+    AND
+      +stat clock p0
+      +set staa if sal00-07 not eq 0(DR)
+      -temp staa lth
+
+NOCLOCK
+
++staa lth
+  ANDNOT
+    -temp staa lth
+    AND
+      -staa
+      -stat clock p1
+-temp staa lth
+  NOR
+    AND
+      +staa
+      -stat clock p1
+    +staa lth
+
+; PAGE KS131
+
++dec compare
+  +decimal compare au4(RW)
+
++stah bus
+  +stah(AS)
+
++dec overflow
+  ANDNOT
+    -temp
+      NOR
+        AND
+          +sba[7](AR)
+          -temp
+            NAND
+              +stah(AS)
+              +stad
+              +staa
+          -stat clock p3
+        AND
+          +stah(AS)
+          -temp
+            NOR
+              AND
+                +stac
+                -staf
+              AND
+                -stac
+                +staf
+          -stat clock p3
+        AND
+          +temp
+            NOT
+              -sba 00-06 not zero(AR)
+          -stat clock p3
+        AND
+          +stat clock p2
+          +dec overflow
+    +decimal compare au4(RW)
+
+; PAGE KS141
+
++set stab if fxpt ovflow
+  +sbfov
++set stab if shft ovflow
+  +sbxov
+
+-temp stab lth
+  NOR
+    AND
+      +stab tgr
+      -stat clock p1
+    +temp
+      ANDNOT
+        -temp stab lth
+        AND
+          -stat clock p1
+          -stab tgr
+
+-reset stab
+  NOR
+    AND
+      +sbxov
+      -temp stab lth
+      +stat clock p0
+    AND
+      +sbfov
+      -temp stab lth
+      +stat clock p0
+    AND
+      +sbcd
+      +clock p0+140
+    AND
+      +sbj31
+      +stat clock p0
+
+; PAGE KS151
+
++sal 0-7 equal zero
+  NOT
+    +sal 0-7 not zero
++sal 0-7 not zero
+  NOT
+    +sal 0-7 eq zero(AS)
+
++vfl inv sign
+  NOT
+    -temp
+      NOR
+        AND
+          +inv sign sba
+          +vfl dec ops
+        AND
+          +inv sign sbb
+          +vfl dec ops
+
++machine reset
+  +machine reset(KM)
+
+-stat tgr reset
+  NOR
+    +machine reset(KM)
+    AND
+      +lth i fetch rst(DR)
+      +stat clock p0
+
++scan word 5
+  NOT
+    -scan in word 5(KM)
+
++lth i-fetch reset
+  +lth i fetch rst(DR)
+
++neg sign sba
+  NOT
+    -sba 04-07 negative(AR)
+
++neg sign sbb
+  NOT
+    -sbb 04-07 negative(AR)
+
++vfl sign
+  NOR
+    AND
+      +neg sign sba
+      +comp+sub
+    AND
+      -sba 04-07 negative(AR)
+      +not comp+sub
+
+; PAGE KS171
+
++vfl dec ops
+  NOT
+    +not vfl dec
++not vfl dec
+  NOT
+    +decimal bus(DS)
+
+-fl pt
+  NOT
+    +floating point bc4(KM)
++not flpt
+  -fl pt
++flpt
+  NOT
+    -fl pt
++flpt mult+dvd
+  ANDNOT
+    -fl pt
+    -multiply + divide(KM)
+
++comp+sub
+  NOT
+    -subtract or compare(DN)
++not comp+sub
+  NOT
+    +comp+sub
++flpt sign
+  NOR
+    AND
+      +comp+sub
+      +sbb[0](AR)
+    AND
+      +not comp+sub
+      -temp
+        NOT
+          +sbb[0](AR)
+
++ab bit 0
+  NOT
+    -ab bit[0](RA_RB)
+
+; PAGE KS201
+
+CLOCK
+
+-clock p3
+  NOT
+    +temp
+      NOT
+        -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -clock p0-1
+-clock p0-1
+  -clock p0-1 from gate(KC)
+;  NOT
+;    TD
+;      +temp
+;        NOT
+;          -clock gate c bottom(RY)
+
+-stat clock p3
+  NOT
+    +stat clock p2
++stat clock p2
+  NOT
+    -stat clock p1
+-stat clock p1
+  NOT
+    +stat clock p0
++stat clock p0
+  ANDNOT
+    +temp
+      NOT
+        -flt inhibit clock(KZ)
+    -clock p0-1
+
++clock p2+140
+  NOT
+    -temp
+      NOT
+        +clock p0+140
++clock p0+140
+  ANDNOT
+    +clock p0
+    +temp td50-70 out
+    +flt inh stat tgr clock(KU)
+SPECIAL
+  TD50_70NS
+    +temp td60 out
+    OUT
+    +temp td50-70 out
+
+SPECIAL
+  TD60NS
+    -clock p1
+    OUT
+    +temp td60 out
+
+NOCLOCK
+; PAGE KS321
+
+-machine reset
+  NOT
+    +machine reset
+-ind ic in lswr
+  NOR
+    AND
+      +temp ss
+      +temp 4b af
+      +write local store(DR)
+      +temp 4e bn
+    AND
+      -eop reset(DR)
+      -machine reset
+      +temp
+        NOT
+          -ind ic in lswr
+
+-ind no retry
+  NOR
+    AND
+      -temp 3b ae
+      +write local store(DR)
+      +temp 4e bn
+    AND
+      -temp
+        NOT
+          +temp ss
+      +temp
+        NOT
+          -rosl decode pal to ic(DR)
+      +temp 2e bt
+    +temp
+      NOT
+        -store per d register(MC)
+    AND
+      -temp 3m cd
+      +temp 4b af
+      +temp
+        NOT
+          -ind no retry
+
++temp ss
+  NOT
+    -ss format(DN)
+
++temp 4b af
+  NOT
+    -temp 3b ae
+-temp 3b ae
+  NOR
+    AND
+      +temp
+        NOT
+          -read + write lswr(DR)
+      -temp 3e bm
+    AND
+      +temp 2e bt
+      +temp 4b af
+
++temp 4e bn
+  NOT
+    -temp 3e bm
+-temp 3e bm
+  NOT
+    +temp 2e bt
++temp 2e bt
+  AND
+    NOT
+      -clock p0-1
+    NOT
+      +flt inhibit clock(KD)
+
+-temp 3m cd
+  NOR
+    AND
+      +temp 2e bt
+      +temp
+        NOT
+          -eop reset(DR)
+    AND
+      -clock p0-1
+      +temp
+        NOT
+          -temp 3m cd

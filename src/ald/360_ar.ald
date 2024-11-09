@@ -1,0 +1,994 @@
+; IBM 360 Model 65 Emulator
+; Copyright (C) 2024 Camiel Vanderhoeven
+;
+; This program is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation, either version 3 of the License, or
+; (at your option) any later version.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SECTION AR
+
+; PAGE AR001
+
+-sadda[0]
+  NOR
+    AND
+      +siba[4]
+      +sba 04-07 to sa 00-03
+    AND
+      ++1 to sa 00
+    AND
+      -+0 to sa 00
+      +sba 00-03 to sa 00-03t or t+6
+      -ascii code zone
+      +siba[0]
+    AND
+      +sba 00-03 to sa 00-03t+6
+      +siba[1]
+    AND
+      +sba 00-03 to sa 00-03t+6
+      +siba[2]
+    AND
+      -siba[0]
+      -ascii code zone
+      +sba 00-03 to sa 00-03c
+-sadda[1]
+  NOR
+    AND
+      +siba[5]
+      +sba 04-07 to sa 00-03
+    AND
+      +sba 00-03 to sa 00-03t
+      +siba[1]
+    AND
+      +sba 00-03 to sa 00-03t+6
+      +siba[1]
+      +siba[2]
+    AND
+      +sba 00-03 to sa 00-03t+6
+      -siba[1]
+      -siba[2]
+    AND
+      +sba 00-03 to sa 00-03c
+      -siba[1]
+
+-siba[0..7]
+  NOT
+    +siba[0..7]
++siba[0..7]
+  ORNOT
+    -f siba[0..7](RF)
+    -ab to siba a[0..7](RA_RB)
+    -ab to siba b[0..7](RA_RB)
+
+; PAGE AR021
+
+-sadda[2]
+  NOR
+    AND
+      +siba[6]
+      +sba 04-07 to sa 00-03
+    AND
+      +sba 00-03 to sa 00-03t
+      -ascii code zone
+      +siba[2]
+    AND
+      +sba 00-03 to sa 00-03t+6 or c
+      -ascii code zone
+      -siba[2]
+
+-sadda[3]
+  NOR
+    AND
+      +siba[7]
+      +sba 04-07 to sa 00-03
+    AND
+      +sba 00-03 to sa 00-03t
+      +siba[3]
+    AND
+      +sba 00-03 to sa 00-03c
+      -siba[3]
+      
+; PAGE AR041
+
+-sadda[4]
+  NOR
+    AND
+      +siba[0]
+      +sba 00-03 to sa 04-07
+    +sign cor sba 04-07
+    AND
+      -siba[4]
+      +sba 04-07 to sa 04-07c
+    AND
+      +siba[4]
+      +sba 04-07 to sa 04-07t or t+6
+    AND
+      +siba[5]
+      +sba 04-07 to sa 04-07t+6
+    AND
+      +siba[6]
+      +sba 04-07 to sa 04-07t+6
+
+-sadda[5]
+  NOR
+    AND
+      +siba[1]
+      +sba 00-03 to sa 04-07
+    AND
+      +sign cor sba 04-07
+      +not ascii code
+    AND
+      -siba[5]
+      +sba 04-07 to sa 04-07c
+    AND
+      +siba[5]
+      +sba 04-07 to sa 04-07t
+    AND
+      -siba[5]
+      -siba[6]
+      +sba 04-07 to sa 04-07t+6
+    AND
+      +siba[5]
+      +siba[6]
+      +sba 04-07 to sa 04-07t+6
+
+; AP061
+
+-sadda[6]
+  AND
+    NOR
+      +temp ar071 and[0..7]
+    NOR
+      AND
+        +siba[2]
+        +sba 00-03 to sa 04-07
+      AND
+        -siba[6]
+        +sba 04-07 to sa 04-07t+6 or c
+      AND
+        +siba[6]
+        +sba 04-07 to sa 04-07t
+      AND
+        +sign cor sba 04-07
+        +not ascii code
+
+-sadda[7]
+  NOR
+    AND
+      +siba[3]
+      +sba 00-03 to sa 04-07
+    AND
+      -siba[6]
+      +siba[7]
+      +sign cor sba 04-07
+    AND
+      -siba[7]         
+      +sba 04-07 to sa 04-07c
+    AND
+      +siba[7]
+      +sba 04-07 to sa 04-07t or t+6
+    AND
+      -siba[5]
+      +siba[7]
+      +sign cor sba 04-07
+
+; PAGE AR071
+
+-temp f bit[5..7]
+  NOT
+    +f bit[5..7](RF)
+
+DECODE
+  +temp f57[0..7]
+  +f bit[5..7](RF)
+  +temp ar401 m[4]
+  
++temp ar071 and[0..7]
+  AND
+    +siba[0..7]
+    +temp f57[0..7]
+
+; PAGE AR081
+
+-sadda parity
+  NOR
+    AND
+      +temp ar401 m[4]
+      -sadda[6]
+    AND
+      +temp
+        ORNOT
+          -ab to siba parity a(RA_RB)
+          -ab to siba parity b(RA_RB)
+          -f siba parity(RF)
+          -temp
+            NOR
+              AND
+                +reg not decode bit[73]
+                -temp
+                  NOT
+                    +temp ar401 m[12]
+                +reg not decode bit[69]
+              AND    
+                +reg not decode bit[69]
+                +reg not decode bit[71]
+              AND
+                +reg not decode bit[70]
+                +reg not decode bit[71]
+                +reg not decode bit[72]
+                +reg not decode bit[73]
+
+;9020
+-sadda parity adjust
+  1
+
+; PAGE AR082
+
++siba 00-03 odd
+  XOR
+    -siba[0..3]
+
++siba 04-07 odd
+  XOR
+    -siba[4..7]
+
+; PAGE AR101
+
++sba 00-03 not zero
+  ORNOT
+    -siba[0..3]
++sba 04-07 not zero
+  ORNOT
+    -siba[4..7]
+
++sba[7]
+  NOR
+    -siba[7]
+
+-sba 00-06 not zero
+  ORNOT
+    -siba[0..6]
+
+-sba 04-07 negative
+  NOR
+    AND
+      +siba[4..5]
+      -siba[6]
+      +siba[7]
+    AND
+      +siba[4]
+      -siba[5]
+      +siba[6..7]
+
++not ascii code
+  NOT
+    +ascii code
+
++ascii code
+  NOT
+    -psw bit 12
+
++pos sign sba 04-07
+  ANDNOT
+    -invalid digit sba 04-07
+    +temp
+      NOT
+        -sba 04-07 negative
+
++input sgn invd for cors
+  ANDNOT
+    +sign sba 04-07
+    -sign cor sba 04-07
+    
+-invalid digit sba 04-07
+  NOR
+    AND
+      +siba[5]
+      +siba[4]
+    AND
+      +siba[4]
+      +siba[6]
+
+-invalid digit sba 00-03
+  NOR
+    AND
+      +siba[1]
+      +siba[0]
+    AND
+      +siba[0]
+      +siba[2]
+
++sign sba 04-07
+  NOT
+    -invalid digit sba 04-07
+
+; TEMP AR301
+
++reg not decode bit[69..77]
+  NOT
+    +reg decode bit[69..77] 
+
+-ind rosdr bit[69..77]   
+  NOT
+    +reg decode bit[69..77] 
+
++reg decode bit[69]
+  NOR
+    AND
+      -cros bit[69](EF)
+      +edit sba 1
+      +clock p2 forced O not ros ck
+    AND
+      -clock p1 O not ros ck
+      +reg not decode bit[69]
+
++reg decode bit[70]
+  NOR
+    AND
+      -cros bit[70](EF)
+      +clock p2 forced O not ros ck
+    AND
+      -clock p1 O not ros ck
+      +reg not decode bit[70]
+
++reg decode bit[71]
+  NOR
+    AND
+      -cros bit[71](EF)
+      -temp
+        NOT
+          +temp
+            ORNOT
+              -edit sba0-3 to sa z4-7(KZ)
+              -edit sba4-7 to sa z4-7(KZ)
+      +clock p2 forced O not ros ck
+    AND
+      -clock p1 O not ros ck
+      +reg not decode bit[71]
+
++reg decode bit[74..77]
+  NOR
+    AND
+      -cros bit[74..77](EF)
+      +clock p2 forced O not ros ck
+    AND
+      -clock p1 O not ros ck
+      +reg not decode bit[74..77]
+
++edit sba 1
+  NOT
+    +temp
+      ORNOT
+        -edit sba0-3 to sa z4-7(KZ)
+        -edit sba4-7 to sa z4-7(KZ)
+        -edit sba0-7 to sa0-7(KZ)
++edit sba 2
+  NOT
+    +temp
+      ORNOT
+        -edit sba4-7 to sa z4-7(KZ)
+        -edit sba0-7 to sa0-7(KZ)
++edit parity adjust      
+  NOT
+    +temp
+      ORNOT
+        -edit sba0-3 to sa z4-7(KZ)
+        -edit sba0-7 to sa0-7(KZ)
+; PAGE AR311
+
++reg decode bit[72]
+  NOR
+    AND
+      -cros bit[72](EF)
+      +edit sba 2
+      +clock p2 forced O not ros ck
+    AND
+      -clock p1 O not ros ck
+      +reg not decode bit[72]
+
++reg decode bit[73]
+  NOR
+    AND
+      -cros bit[73](EF)
+      +edit sba 1
+      +clock p2 forced O not ros ck
+    AND
+      -clock p1 O not ros ck
+      +reg not decode bit[73]
+
++clock p2 forced O not ros ck
+  ORNOT
+    -clock p1 O not ros ck
+    -reset ros m field(KU)
+
++rosdr bits 69-73 odd
+  XOR
+    +reg decode bit[69..73]
+
++reset ascOexc on branch
+  ANDNOT
+    +temp ar401 m[6]
+    -rosr 87-90 eq 0110(RA_RB)
+
+-clock p1 O not ros ck
+  NAND
+    -inhibit local clock(RA_RB)
+    +clock p0(AS)
+
+-inhibit local clock
+  -inhibit local clock(RA_RB)
+
+; PAGE AR401
+
+DECODE
+  +temp ar401 m[0..31]
+  +reg decode bit[69..73]
+
++sba 04-07 to sa 00-03
+  OR
+    +temp ar401 m[13]
+    +temp ar401 m[15]
+
++sba 00-03 to sa 04-07
+  OR
+    +temp ar401 m[13]
+    +temp ar401 m[21]
+    +temp ar401 m[29]
+
++sba 04-07 to sa 04-07c
+  OR
+    +temp ar401 m[5]
+    +temp ar401 m[7]
+    +temp ar401 m[28]
+
++sba 00-03 to sa 00-03t
+  OR
+    +temp
+      NOT
+        -+0 to sa 00
+    +temp ar401 m[12]
+    +temp ar401 m[16]
+    +temp ar401 m[18]
+    +temp ar401 m[19]
+    +temp ar401 m[20]
+    +temp ar401 m[21]
+    +temp ar401 m[22]
+    +temp ar401 m[23]
+
+-ascii code zone
+  NAND
+    OR
+      +temp ar401 m[21]
+      +temp ar401 m[23]
+    +ascii code
+
++sba 04-07 to sa 04-07t
+  OR
+    +temp ar401 m[12]
+    +temp ar401 m[18]
+    +temp ar401 m[19]
+    +temp ar401 m[20]
+    +temp ar401 m[22]
+    +temp ar401 m[23]
+    +temp ar401 m[27]
+    +temp ar401 m[31]
+
++s car 07 stats ae dec cor 4-7
+  OR
+    +temp ar401 m[24]
+    +temp ar401 m[28]
+
++hot carry sa 07
+  OR
+    +temp ar401 m[5]
+    +temp ar401 m[7]
+
++sba 00-03 to sa 00-03c
+  OR
+    +temp ar401 m[5]
+    +temp ar401 m[7]
+    +temp ar401 m[21]
+    +temp ar401 m[23]
+    +temp ar401 m[28]
+    +temp ar401 m[30]
+
++dec cor 00-03 set stats a e
+  OR
+    +temp ar401 m[24]
+    +temp ar401 m[25]
+    +temp ar401 m[26]
+    +temp ar401 m[28]
+    +temp ar401 m[30]
+
++sba 00-03 to sa 00-03t+6
+  OR
+    +temp ar401 m[24]
+    +temp ar401 m[25]
+    +temp ar401 m[26]
+
++sba 00-03 to sa 00-03t or t+6
+  OR
+    +sba 00-03 to sa 00-03t
+    +sba 00-03 to sa 00-03t+6
+    
++sba 00-03 to sa 00-03t+6 or c
+  OR
+    +sba 00-03 to sa 00-03c
+    +sba 00-03 to sa 00-03t+6
+    
+; PAGE AR411
+
++par adj u1w1z u1w1 u1w0
+  OR
+    +temp ar401 m[15]
+    +temp ar401 m[23]
+    +temp ar401 m[27]
+
++par adj u0wp6
+  +temp ar401 m[25]
+
++par adj uwp65
+  +temp ar401 m[24]
+  
+-hot carry to sa 03
+  NOT
+    +temp ar401 m[30]
+
+-sign cor sba 04-07
+  NOT
+    +temp ar401 m[26]
+
++sign cor sba 04-07
+  NOT
+    -sign cor sba 04-07
+
++sba 04-07 to sa 04-07t+6
+  +temp ar401 m[24]
+
+-save sa carry
+  NOT
+    +temp ar401 m[5]
+
+-+0 to sa 00
+  NOT
+    +temp ar401 m[31]
+
+++1 to sa 00
+  +temp ar401 m[7];
+
++sba 04-07 to sa 04-07t or t+6
+  OR
+    +sba 04-07 to sa 04-07t
+    +sba 04-07 to sa 04-07t+6
+    
++sba 04-07 to sa 04-07t+6 or c
+  OR
+    +sba 04-07 to sa 04-07c
+    +sba 04-07 to sa 04-07t+6
+
+; PAGE AR421
+
+-and function
+  NOR
+    +temp ar401 m[18]
+    AND
+      +temp ar401 m[12]
+      NOT
+        +e bit[6](RE)
+      NOT
+        +e bit[7](RE)
+ 
+-or function
+  NOR
+    +temp ar401 m[22]
+    AND
+      +temp ar401 m[12]
+      +e bit[6](RE)
+      NOT
+        +e bit[7](RE)
+ 
+-exclusive or function
+  NOR
+    +temp ar401 m[20]
+    AND
+      +temp ar401 m[12]
+      +e bit[6](RE)
+      +e bit[7](RE)
+
+; PAGE AR501
+
+-sibb[0..7]
+  NOT
+    +sibb[0..7]
+
++sibb[0..3]      
+  ORNOT
+    -st sibb[0..3](RS_RT)
+    -n or emit bit to sibb[0..3]
+
++sibb[4..7]      
+  ORNOT
+    -st sibb[4..7](RS_RT)
+
+-saddb[0]
+  NOR
+    AND
+      +sibb[0]
+      -+0 to sb 00
+      +sbb 00-03 to sb 00-03
+    +sub1 lo dig or +64 or 9 00-03
+
+-saddb[1]
+  NOR
+    AND
+      +sibb[1]
+      +sbb 00-03 to sb 00-03
+    +sub1 lo dig or +64
+
+-saddb[2]
+  NOR
+    AND
+      +sibb[2]
+      +sbb 00-03 to sb 00-03
+    +sub1 lo dig
+
+-saddb[3]
+  NOR
+    AND
+      +sibb[3]
+      +sbb 00-03 to sb 00-03
+    +sub1 lo dig or 9 00-03
+
+; PAGE AR541
+
+-saddb[4]
+  NOR
+    AND
+      +sibb[0]
+      +sbb 00-03 to sb 04-07
+    AND
+      +sibb[4]
+      +sbb 04-07 to sb 04-07
+    +sub1 lo dig or+ or- to 04-07
+
+-saddb[5]
+  NOR
+    AND
+      -temp
+        NOT
+          +temp
+            NOT
+              -psw ascii bit 12(RW)
+      ++ or - to 04-07
+    AND
+      +sibb[1]
+      +sbb 00-03 to sb 04-07
+    AND
+      +sibb[5]
+      +sbb 04-07 to sb 04-07
+    +sub1 lo dig
+
+-saddb[6]
+  NOR
+    AND
+      +temp
+        NOT
+          -psw ascii bit 12(RW)
+      ++ or - to 04-07
+    AND
+      +sibb[2]
+      +sbb 00-03 to sb 04-07
+    AND
+      +sibb[6]
+      +sbb 04-07 to sb 04-07
+    +sub1 lo dig
+
+-saddb[7]
+  NOR
+    AND
+      +sibb[3]
+      +sbb 00-03 to sb 04-07
+    AND
+      +sibb[7]
+      +sbb 04-07 to sb 04-07
+    +sub1 or+1 lo dig or - to 04-07
+
+-psw bit 12
+  -psw ascii bit 12(RW)
+
+; PAGE AR581      
+
+-saddb parity
+  NOR
+    +temp
+      ORNOT
+        -sbb 00-03 to sb 04-07
+        -bits not75 not76 or not76 77
+        -sub1 lo dig
+    AND
+      -+1 lo dig
+      +temp
+        ORNOT
+          -st sibb parity(RS_RT)
+          -n or emit pty to sibb
+
+-saddb parity adjust
+  NOR
+    AND
+      +sibb[0]
+      ++0 to sb 00
+    AND
+      +sibb 00-03 odd
+      +reg decode bit[77]
+      +reg decode bit[76]
+      +reg not decode bit[74]
+    AND
+      +sbb 0-3 to 0-3 or + to 4-7
+      +sibb 04-07 odd
+    AND
+      -temp
+        NOT
+          +sibb 04-07 odd
+      +- to 04-07
+
+; PAGE AR582
+
++sibb 04-07 odd
+  XOR
+    +sibb[4..7]
+
++sibb 00-03 odd
+  XOR
+    +sibb[0..3]
+
+-oe par a-par b O par adj
+  XOR
+    -sadda parity adjust
+    -sadda parity
+    -saddb parity adjust
+    -saddb parity
++oe par a-par b O par adj
+  NOT
+    -oe par a-par b O par adj
+
+; PAGE AR601
+
+-sbb 04-07 negative
+  NOR
+    AND
+      +sibb[4..5]
+      -sibb[6]
+      +sibb[7]
+    AND
+      +sibb[4]
+      -sibb[5]
+      +sibb[6..7]
+
+-temp ar601 p3
+  NOT
+    +clock p2 O not ros ck
+
+-temp ar601 invalid digit sbb 00-03
+  NOR
+    AND
+      +sibb[1]
+      +sibb[0]
+    AND
+      +sibb[0]
+      +sibb[2]
+
+-temp ar601 invalid digit sbb 04-07
+  NOR
+    AND
+      +sibb[5]
+      +sibb[4]
+    AND
+      +sibb[4]
+      +sibb[6]
+
+-temp ar601 decimal zero and add
+  NOT
+    +decimal zero and add(DN)
+
++temp invalid digit sa 00-03
+  ORNOT
+    -invalid digit sba 00-03
+    -temp ar601 invalid digit sbb 00-03
+
+-force sal ones blk err
+  AND
+    NAND
+      +temp
+        NOT
+          -force sal ones blk err
+      +clock p2 O not ros ck
+    NOR
+      AND
+        +dec cor 00-03 set stats a e
+        -temp ar601 p3
+        +temp invalid digit sa 00-03
+      AND
+        +temp
+          ORNOT
+            -invalid digit sba 04-07
+            -temp ar601 invalid digit sbb 04-07
+        -temp ar601 p3
+        +s car 07 stats ae dec cor 4-7
+      AND
+        -temp ar601 p3
+        +input sgn invd for cors
+
++invalid sign sbb 04-07
+  NOT
+    -temp
+      NAND
+        -temp ar601 decimal zero and add        
+        -temp ar601 invalid digit sbb 04-07
+        
++invalid sign sba 00-03
+  -invalid digit sba 00-03
++invalid sign sba 04-07
+  -invalid digit sba 04-07
+
++invalid digit sa 00-03
+  NOT
+    -temp
+      NOR
+        AND
+          +temp invalid digit sa 00-03
+          +dec cor 00-03 set stats a e
+
++invalid digit sa 04-07
+  NOT
+    -temp
+      NAND        
+        +s car 07 stats ae dec cor 4-7
+        +temp
+          ORNOT
+            -invalid digit sba 04-07
+            -temp ar601 invalid digit sbb 04-07
+
++sbb[0]
+  NOT
+    -sibb[0]
+       
+; PAGE AR801
+
++clock p2 O not ros ck
+  NOT
+    -clock p1 O not ros ck
+
+; PAGE AR901
+
+DECODE
+  +temp ar901 n[0..15]
+  +reg decode bit[74..77]
+
+-bits not75 not76 or not76 77
+  NOR
+    AND
+      +reg not decode bit[75]
+      +reg not decode bit[76]
+    AND
+      +reg not decode bit[76]
+      +reg decode bit[77]
+
+; N2, N4, N6, N10, N12, N14
++sbb 00-03 to sb 00-03
+  ORNOT
+    -edit sbb to sadd(KZ)
+    NOR
+      AND
+        +reg decode bit[76]
+        +reg not decode bit[77]
+      AND
+        +reg decode bit[75]
+        +reg not decode bit[77]
+; N2, N3, N6, N7
++sbb 04-07 to sb 04-07
+  ORNOT
+    -edit sbb to sadd(KZ)
+    NAND
+      +reg not decode bit[74]
+      +reg decode bit[76]
+; N5
+-b 66-67 to sa 00-07
+  NOT
+    +temp ar901 n[5]
+; N6
+++0 to sb 00
+  NOT
+    -+0 to sb 00
+-+0 to sb 00
+  NOT
+    +temp ar901 n[6]
+; N7, N11
++sub1 lo dig or 9 00-03
+  OR
+    +temp ar901 n[7]  
+    +temp ar901 n[11]  
+; N7, N8, N11
++sub1 lo dig or +64 or 9 00-03
+  OR
+    +temp ar901 n[7]
+    +temp ar901 n[8]
+    +temp ar901 n[11]
+; N4, N10
++sbb 0-3 to 0-3 or + to 4-7
+  OR
+    +temp ar901 n[4]
+    +temp ar901 n[10]
+; N8, N11
++sub1 lo dig or +64
+  OR
+    +temp ar901 n[8]
+    +temp ar901 n[11]
+; N8, N12
+++ or - to 04-07
+  OR
+    +temp ar901 n[4]
+    +temp ar901 n[12]
+; N8, N11, N12
++sub1 lo dig or+ or- to 04-07
+  OR
+    +temp ar901 n[4]
+    +temp ar901 n[11]
+    +temp ar901 n[12]
+; N11
++sub1 lo dig
+  NOT
+    -sub1 lo dig
+-sub1 lo dig
+  NOT
+    +temp ar901 n[11]
+
+; N11, N12, N15
++sub1 or+1 lo dig or - to 04-07
+  OR
+    +temp ar901 n[11]  
+    +temp ar901 n[12]  
+    +temp ar901 n[15]  
+;N12
++- to 04-07
+  +temp ar901 n[12] 
+; N14
++sbb 00-03 to sb 04-07
+  NOT
+    -sbb 00-03 to sb 04-07
+-sbb 00-03 to sb 04-07
+  NOT
+    +temp ar901 n[14]
+; N15
+-+1 lo dig
+  NOT
+    +temp ar901 n[15]
+
+;  FROM XN 
+
+-n or emit bit to sibb[0..3]
+  NOR
+    AND
+      +emit[0..3](RY)
+      +gate emit to sibb 00-03
+
+-n or emit pty to sibb
+  NOT
+    AND
+      +emit pty bit(RY)
+      +gate emit to sibb 00-03
+
++gate emit to sibb 00-03
+  NOT
+    -temp
+      NAND
+        +rosdr bit[81](RY)
+        +gt emit to sibb(DR)

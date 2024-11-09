@@ -1,0 +1,29 @@
+SECTION EF
+
+; PAGE EF001
+
+SPECIAL
+  ROSMEM
+    +rosar[0..11](RX)
+    OUT
+    +temp sense amp bit[0..99]
+
+-cros bit[0..99]
+  NOR
+    AND
+      +strobe word(EE)
+      +temp sense amp bit[0..99]
+    AND
+      +temp[0..99]
+        NOT
+          -cros bit[0..99]
+      -reset sense latches(EE)
+
+-ros sense lth bit[0..99]
+  -cros bit[0..99]
+-roslth bit[0..99]
+  -cros bit[0..99]
+-roslth eq 1[0..99]
+  -cros bit[0..99]
+-ros[0..99]
+  -cros bit[0..99]

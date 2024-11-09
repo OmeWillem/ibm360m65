@@ -1,0 +1,449 @@
+SECTION KC
+;Page KC011
+
+CLOCK
+
++sample manual lines
+  ANDNOT
+    -osc a sample latched lines
+    +temp kc011 5g av not
++temp kc011 5g av not
+  NOT
+    -temp td40 out
++osc sample
+  NOT
+    -osc sample
+-osc sample
+  NAND
+    -temp td40 out
+    -temp kc011 3g al not
+
+SPECIAL
+  TD40NS
+    -temp kc011 3g al not
+    OUT
+    -temp td40 out
+
+-temp kc011 3g al not
+  NOT
+    +gated oscillator
++sample ss
+  NOT
+    -temp kc011 6c bv nand
+-temp kc011 6c bv nand
+  NAND
+    -osc a sample latched lines
+    -bcu osc
+-scan clock
+  NAND
+    -temp kc011 1c cd nand
+    +osc d
+    -stop clock tgr aw4(MC)
+    +pass pulse tgr(KW)
+-temp kc011 1c cd nand
+  NAND
+    -repeat ros address(RX)
+    +stop clock ros
+    -single cycle storage inhibit(KW)
+    -maint mode stop clock(KU)
+-ind bcu + flt clock inhibit
+  NOT
+    +temp
+      ORNOT
+        -stop clock tgr aw4(MC)
+        +pass pulse tgr(KW)
+
+-temp kc011 5n ck not
+  NOT
+    +temp
+      NOT
+        -temp dly110 out
+SPECIAL
+  TD110NS
+    -temp dly110 in
+    OUT
+    -temp dly110 out
+-temp dly110 in
+  NOT
+    +gated oscillator
+-temp kc011 2e c5 not
+  NOT
+    +temp kc011 1e cr ornot
++temp kc011 1e cr ornot
+  ORNOT
+    -temp kc011 1c cd nand
+    -maint mode stop clock(KU)
+    -inhibit clock ce check(KW)    
+
+-clock p5 to bcu
+  NOT
+    +clock p4 to bcu
++clock p4 to bcu
+  NOT
+    -clock p3 to bcu
+-clock p3 to bcu
+  NOT
+    +clock p2 to bcu
++clock p2 to bcu
+  NOT
+    -clock p1 to bcu
+-clock p1 to bcu
+  NOT
+    +clock p0 to bcu
++clock p0 to bcu
+  NOT
+    -clock p0-1 to bcu
+-clock p0-1 to bcu
+  NOT
+    +clock p0-2 to bcu
++clock p0-2 to bcu
+  NOT
+    -clock p0-3 to bcu
+-clock p0-3 to bcu
+  -cpu clock to bcu
+-cpu clock to bcu
+  NAND
+    -temp kc011 5n ck not
+    -temp inhibited clock
+    +temp
+      1
+
+-clock p0-3 from gate
+  -clock gate
++clock p0-2 from gate
+  NOT
+    -clock p0-3 from gate
+-clock p0-1 from gate
+  NOT
+    +clock p0-2 from gate
++clock p0 from gate
+  NOT
+    -clock p0-1 from gate
+
+-clock gate
+  NAND
+    -temp kc011 5n ck not
+    -temp kc011 2e c5 not
+    -temp inhibited clock
+    +temp
+      1
+
+; CAVA HACK - the inhibited clock sometimes wants to start too late when coming out of inhibition; this leads to a shortened gate and bcu clock. Prevent this by waiting until next cycle. (AND clause).
+
+-temp inhibited clock
+  NOR
+    -osc e
+    -pass pulse tgr(KW)
+    +temp
+      NOT
+        -stop clock tgr aw4(MC)
+    AND
+      NOT
+        -temp inhibited clock
+      +temp
+        NOT
+          -osc e
+
+-clock b1
+  NOT
+    +clock b0
++clock b0
+  NOT
+    -clock b0-1
+-clock b0-1
+  NOT
+    +temp
+      NOT
+        -clock b0-3
+-clock b0-3
+  NOT
+    +temp
+      NOT
+        -osc e
+-osc e
+  NOT
+    +osc d
++osc d
+  NOT
+    -bcu osc
+-bcu osc
+  NOT
+    +osc b
++osc b
+  NOT
+    -osc a sample latched lines
+-osc a sample latched lines
+  NOT
+    +gated oscillator
+
+NOCLOCK
+
+;PAGE KC021
+
++stop clock ros
+  ORNOT
+    -temp stop 2 cycles
+    -temp stop 1 cycle
+
++temp stop 2 cycles
+  NOT
+    -temp stop 2 cycles
+-temp stop 2 cycles
+  NOR
+    AND
+      +roslth bit[45](DR)
+      -roslth bit[46](DR)
+      -temp stop 1 cycle
+      -flt block stop clock triggers(KU)
+      -temp stop 1 cycle 2
+      -ros test(DR)
+      +sample stop clock triggers(DR)
+    AND
+      -clock p1 to bcu
+      +temp stop 2 cycles
+
++temp stop 1 cycle
+  NOT
+    -temp stop 1 cycle
+-temp stop 1 cycle
+  NOR
+    AND
+      +sample stop clock triggers(DR)
+      -ros test(DR)
+      -temp stop 1 cycle 2
+      -flt block stop clock triggers(KU)
+      +sample stop clock triggers(DR)
+      -roslth bit[45](DR)
+      +roslth bit[46](DR)
+    AND
+      +temp stop 2 cycles 2
+      +clock p2 to bcu
+    AND
+      -clock p1 to bcu
+      -machine reset(KS)
+      +temp stop 1 cycle
+
++temp stop 1 cycle 2
+  NOT
+    -temp stop 1 cycle 2
+-temp stop 1 cycle 2
+  NOR
+    AND
+      +temp stop 1 cycle
+      -clock p1 to bcu
+    AND
+      -clock p1(RX)
+      +temp stop 1 cycle 2
+    AND
+      +temp stop 1 cycle
+      -clock p1 to bcu
+
+; CAVA -- in -temp stop 2 cycles 2, p2 replaced with p0 for stability
+
++temp stop 2 cycles 2
+  NOT
+    -temp stop 2 cycles 2
+-temp stop 2 cycles 2
+  NOR
+    AND
+      +temp stop 2 cycles
+      -clock p1 to bcu
+    AND
+      +clock p0 to bcu
+      -machine reset(KS)
+      +temp stop 2 cycles 2
+
+
+
+;PAGE KC031
+
+CLOCK
+
++reset manual controls
+  ORNOT
+    -temp kc031 4a an not
+    -temp kc031 3c c5 nor
+-temp kc031 4a an not
+  NOT
+    +scan machine reset to mc(KU)
++force cros address bit[10]
+  NOT
+    -temp kc031 3c c5 nor
+-temp kc031 3c c5 nor
+  NOR
+    AND
+      +begin reset(KW)
+      +switch ss 2(KW)
+    AND
+      +power on reset(KW)
+    AND
+      -temp kc031 1d cu nand
+      +force cros address bit[10]
+-temp kc031 1d cu nand
+  NAND
+    -switch single shot(KW)
+    +sample manual lines
+-reset manual controls
+  NOT
+    +reset manual controls
++machine reset gate a O b
+  ORNOT
+    -temp kc031 3c c5 nor
+    -temp kc031 3e ac nand
+    -temp kc031 4a an not
+-temp kc031 3e ac nand
+  NAND
+    +pulse mode tgr(KW)
+    +pm initilization tgr(KW)
+    +pulse mode ss(KW)
+-temp kc031 2f ad nand
+  NAND
+    +check reset pb(KW)
+    -delayed switch single shot(KW)
+    +switch ss 2(KW)
++machine reset gate d O e
+  NOT
+    -machine reset
+-machine reset
+  NOT
+    +temp
+      ORNOT
+        -temp kc031 3c c5 nor
+        -temp kc031 3e ac nand
+        -temp kc031 4a an not
++mach reset O not log reset bcu
+  +mach reset O not log reset
++mach reset O not log reset
+  ORNOT
+    -temp kc031 3c c5 nor
+    -temp kc031 4a an not
+-mach reset O not log reset
+  NOT
+    +mach reset O not log reset
++error reset gate b
+  +error reset
++error reset
+  NOT
+    -temp 
+      NOT
+        +error reset gate
++error reset gate e
+  +error reset gate
++error reset gate a O c
+  +error reset gate
++error reset gate
+  ORNOT
+    -temp kc031 3c c5 nor
+    -temp kc031 3e ac nand
+    -temp kc031 4a an not
+    -check reset
+
+-check reset
+  NOT
+    +temp kc031 3f ae ornot
++temp kc031 3f ae ornot
+  ORNOT
+    -reset checks(KU)
+    -temp kc031 2f ad nand
+-sample manual lines
+  NOT
+    +sample manual lines
++force cros address bit[9]
+  NOT
+    -pulse mode(KW)
+-ind force addrs tgr
+  NOT
+    +temp kc031 5m ca andnot
++temp kc031 5m ca andnot
+  ANDNOT
+    AND
+      -switch single shot(KW)
+      +sample manual lines
+      -pulse mode ss(KW)
+    AND
+      -temp kc031 2k af nand
+      -force addrs tgr
+-temp kc031 2k af nand
+  NAND
+    +pulse mode ss(KW)
+    +sample manual lines
+-force addrs tgr
+  NOR
+    AND
+      +force cros address bit[10]
+      +sample manual lines
+      +switch ss 2(KW)
+    AND
+      +temp kc031 5m ca andnot 
+-man cntls force cros address
+  NOR
+    +temp kc031 5m ca andnot
+    +power on reset(KW) 
+
+; PAGE KC101
+
++gated oscillator
+  NOT
+    +temp osc
+
+SPECIAL
+  OSC5MC
+    -temp en osc
+    OUT
+    +temp osc
+
+NOCLOCK
+
+-temp en osc
+  NAND
+    -temp inh osc select outstanding
+    -temp inh osc on wrap + logout
+    -temp
+      NOR
+        AND            
+          +temp
+            NOT
+              -temp kc101 aj as ss
+        AND
+          +hard stop inhibit osc(KW)
+
+-temp inh osc select outstanding
+  NAND
+    +inh osc select outstanding(MC)
+
+-temp inh osc on wrap + logout
+  NAND
+    +inhibit osc on wrap + logout(KU)
+
+CLOCK
+
+SPECIAL
+  NSSN1200NS
+    -temp kc101 aj as ss in
+    OUT
+    -temp kc101 aj as ss
+
+-temp kc101 aj as ss in
+  NOT
+    AND
+      +mach reset O not log reset
+      +sample manual lines 
+
+NOCLOCK
+
+;-temp kc101 3j aj not
+;  NOT
+;    AND
+;      +mach reset O not log reset
+;      +sample manual lines 
+
++inhibit oscillator
+  ORNOT
+    -temp inh osc on wrap + logout
+    -temp inh osc select outstanding
+    -hard stop condition kw081(KW)
+-ind bcu inhibit oscillator
+  NOT
+    +temp
+      NOT
+        -temp inh osc select outstanding

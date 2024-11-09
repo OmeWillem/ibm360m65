@@ -1,0 +1,5001 @@
+SECTION KT
+
+; PAGE KT001
+
++sol[0..31]
+  AND
+    +scan out left
+    +addr seq eq[0..31](KU)
++sor[0..31]
+  AND
+    +scan out right
+    +addr seq eq[0..31](KU)
++rol1[1..6]
+  AND
+    +roller switch 1 pos[1..6](PK_PL)
+    -block ind switches
+
++roller 1 pos[1]
+  OR
+    +sol[2]
+    +rol1[1]
++roller 1 pos[2]
+  OR
+    +sor[10]
+    +rol1[2]
++roller 1 pos[3]
+  OR
+    +sol[23]
+    +rol1[3]
++roller 1 pos[4]
+  OR
+    +sor[18]
+    +rol1[4]
++roller 1 pos[5]
+  OR
+    +sor[0]
+    +rol1[5]
++roller 1 pos[6]
+  OR
+    +sol[18]
+    +sol[19]
+    +rol1[6]
+
+; PAGE KT101
+
++rol2[1..6]
+  AND
+    +roller switch 2 pos[1..6](PK_PL)
+    -block ind switches
+
+
++roller 2 pos[1]
+  OR
+    +sol[3]
+    +rol2[1]
++roller 2 pos[2]
+  OR
+    +sor[12]
+    +rol2[2]
++roller 2 pos[3]
+  OR
+    +sor[23]
+    +rol2[3]
++roller 2 pos[4]
+  OR
+    +sor[17]
+    +rol2[4]
++roller 2 pos[5]
+  OR
+    +sol[22]
+    +rol2[5]
++roller 2 pos[6]
+  OR
+    +sol[20]
+    +rol2[6]
+
+; PAGE KT201
+
++rol3[1..6]
+  AND
+    +roller switch 3 pos[1..6](PK_PL)
+    -block ind switches
+
++roller 3 pos[1]
+  OR
+    +sor[4]
+    +rol3[1]
++roller 3 pos[2]
+  OR
+    +sol[11]
+    +rol3[2]
++roller 3 pos[3]
+  OR
+    +sol[7]
+    +rol3[3]
++roller 3 pos[4]
+  OR
+    +sor[16]
+    +rol3[4]
++roller 3 pos[5]
+  OR
+    +sor[1]
+    +sol[19]
+    +rol3[5]
++roller 3 pos[6]
+  OR
+    +sor[22]
+    +rol3[6]
+
+; PAGE KT301
+
++rol4[1..6]
+  AND
+    +roller switch 4 pos[1..6](PK_PL)
+    -block ind switches
+
++roller 4 pos[1]
+  OR
+    +sol[4]
+    +rol4[1]
++roller 4 pos[2]
+  OR
+    +sor[11]
+    +rol4[2]
++roller 4 pos[3]
+  OR
+    +sor[7]
+    +rol4[3]
++roller 4 pos[4]
+  OR
+    +sor[15]
+    +rol4[4]
++roller 4 pos[5]
+  OR
+    +sor[3]
+    +rol4[5]
++roller 4 pos[6]
+  OR
+    +sol[2]
+    +sol[6]
+    +rol4[6]
+
+; PAGE KT381
+
+-not bit lar[0..4]
+  NAND
+    -ind lar bit[0..4](LS)
+    +sor[19]
+
+-not write lstinh ls write
+  NOR
+    AND
+      -ind write ls(LS)
+      +sor[19]
+    AND
+      -ind inh ls write(RX)
+      +sor[16]
+
+; PAGE KT401
+
++rol5[1..6]
+  AND
+    +roller switch 5 pos[1..6](PK_PL)
+    -block ind switches
+
++roller 5 pos[1]
+  OR
+    +sol[8]
+    +rol5[1]
++roller 5 pos[2]
+  OR
+    +sor[5]
+    +rol5[2]
++roller 5 pos[3]
+  OR
+    +sol[10]
+    +rol5[3]
++roller 5 pos[4]
+  OR
+    +sor[14]
+    +rol5[4]
++roller 5 pos[5]
+  OR
+    +sor[8]
+    +rol5[5]
++roller 5 pos[6]
+  OR
+    +sol[9]
+    +rol5[6]
+
+; PAGE KT501
+
++rol6[1..6]
+  AND
+    +roller switch 6 pos[1..6](PK_PL)
+    -block ind switches
+
++roller 6 pos[1]
+  OR
+    +rol6[1]
++roller 6 pos[2]
+  OR
+    +sor[6]
+    +rol6[2]
++roller 6 pos[3]
+  OR
+    +sor[9]
+    +rol6[3]
++roller 6 pos[4]
+  OR
+    +sol[12]
+    +rol6[4]
++roller 6 pos[5]
+  OR
+    +sol[5]
+    +rol6[5]
++roller 6 pos[6]
+  OR
+    +sor[20]
+    +rol6[6]
+
+; PAGE KT751
+
++scan out right
+  ORNOT
+    -scan out right(KU)
+    -scan out right word ros(DR)
++scan out left
+  ANDNOT
+    AND
+      -scan out left(KU)
+      -scan out left word ros(DR)
+    AND
+      -scan out left(KU)
+      +clock p0
+      -temp
+        NOT
+          +temp
+            NOT
+              -temp
+                NOT
+                  +clock p0
+
++scan out s
+  ORNOT
+    -scan out s reg ros(DR)
+    -scan out sOt(KU)
++scan out t
+  ORNOT
+    -scan out sOt(KU)
+    -scan out t reg ros(DR)
+-scan out sOt
+  NAND
+    +scan out s
+    +scan out t
+
+; PAGE KT761
+
+-block ind switches
+  NOT
+    +temp
+      AND
+        ORNOT
+          -enable scan bypass bl4(AP)
+          -flt scan block(KU)
+          -log out+scan bypass(KU)
+        NOT
+          +temp allow ind
+-allow indicators pb
+  NOT
+    +temp allow ind
++temp allow ind
+  NOT
+    -temp
+      NAND
+        +lamp test and allow ind pb(KW)
+
++log out tgr
+  NOT
+    -log out+scan bypass(KU)
+
+; PAGE KT771
+
+CLOCK
+
++clock p0
+  NOT
+    -clock p0-1(KU)
+
+NOCLOCK
+
++scan out
+  ORNOT
+    +scan out left
+    +scan out right
+    AND
+      +scan out s
+      -temp
+        NOT
+          +temp scan in ros
++temp scan in ros
+  NOT
+    -scan in ros(KU)
+
++gt st 32-35
+  NOT
+    -temp
+      NAND
+        -temp gt st
+        +temp scan in ros
++gt st 28-31
+  NOT
+    -temp gt st
+-temp gt st
+  NAND
+    +temp scan in ros
+    -scc tgr(KU)
+    OR
+      +addr seq eq[5](KU)
+      +addr seq eq[13](KU)
+      +addr seq eq[21](KU)
+      +addr seq eq[26](KU)
+
++enable bus
+  NOT
+    +scan out sOt
++scan out sOt
+  NOT
+    -scan out sOt
+
+
+; PAGE KT801
+
+-temp not bit spare[32]
+  -not bit roller 1[0]
+-temp not bit spare[33]
+  -not bit roller 1[9]
+-temp not bit spare[34]
+  -not bit roller 1[18]
+-temp not bit spare[35]
+  -not bit roller 1[27]
+-temp not bit spare[36]
+  -not bit roller 2[0]
+-temp not bit spare[37]
+  -not bit roller 2[9]
+-temp not bit spare[38]
+  -not bit roller 2[18]
+-temp not bit spare[39]
+  -not bit roller 2[27]
+-temp not bit spare[40]
+  -not bit roller 3[0]
+-temp not bit spare[41]
+  -not bit roller 3[9]
+-temp not bit spare[42]
+  -not bit roller 3[18]
+-temp not bit spare[43]
+  -not bit roller 3[27]
+-temp not bit spare[44]
+  -not bit roller 4[0]
+-temp not bit spare[45]
+  -not bit roller 4[9]
+-temp not bit spare[46]
+  -not bit roller 4[18]
+-temp not bit spare[47]
+  -not bit roller 4[27]
+-temp not bit spare[48]
+  -not bit roller 5[0]
+-temp not bit spare[49]
+  -not bit roller 5[9]
+-temp not bit spare[50]
+  -not bit roller 5[18]
+-temp not bit spare[51]
+  -not bit roller 5[27]
+-temp not bit spare[52]
+  -not bit roller 6[0]
+-temp not bit spare[53]
+  -not bit roller 6[9]
+-temp not bit spare[54]
+  -not bit roller 6[18]
+-temp not bit spare[55]
+  -not bit roller 6[27]
+
+; PAGE KT881
+
+-temp not bit spare[56..60]
+  -not bit lar[0..4]
+
+; PAGE KT891
+
+-temp not bit spare[61]
+  -not write lstinh ls write
+
+; PAGE KT901
+
+-temp not bit spare[62..63]
+  1
+
++scan out bus bit[32..39]
+  NOR
+    AND
+      +scan out sOt
+      -not bit roller 1[1..8]
+    AND
+      +scan out sOt
+      -not bit roller 2[1..8]
+    AND
+      +enable bus
+      +not bit[32..39]
++not bit[32]
+  NAND
+    -not bit roller 1[1]
+    -not bit roller 2[1]
+    -not bit roller 3[1]
+    -not bit roller 4[1]
+    -not bit roller 5[1]
+    -not bit roller 6[1]
+    -temp not bit spare[32]
++not bit[33]
+  AND
+    NAND
+      -not bit roller 1[2]
+      -not bit roller 2[2]
+      -not bit roller 3[2]
+      -not bit roller 4[2]
+      -not bit roller 5[2]
+      -not bit roller 6[2]
+      -temp not bit spare[33]
+    NOT
+      +sor[4]
++not bit[34..35]
+  NAND
+    -not bit roller 1[3..4]
+    -not bit roller 2[3..4]
+    -not bit roller 3[3..4]
+    -not bit roller 4[3..4]
+    -not bit roller 5[3..4]
+    -not bit roller 6[3..4]
+    -temp not bit spare[34..35]
++not bit[36]
+  AND
+    NAND
+      -not bit roller 1[5]
+      -not bit roller 2[5]
+      -not bit roller 3[5]
+      -not bit roller 4[5]
+      -not bit roller 5[5]
+      -not bit roller 6[5]
+      -temp not bit spare[36]
+    NOT
+      +sor[4]
++not bit[37..39]
+  NAND
+    -not bit roller 1[6..8]
+    -not bit roller 2[6..8]
+    -not bit roller 3[6..8]
+    -not bit roller 4[6..8]
+    -not bit roller 5[6..8]
+    -not bit roller 6[6..8]
+    -temp not bit spare[37..39]
+
++scan out bus bit[40..47]
+  NOR
+    AND
+      +scan out sOt
+      -not bit roller 1[10..17]
+    AND
+      +scan out sOt
+      -not bit roller 2[10..17]
+    AND
+      +enable bus
+      +not bit[40..47]
++not bit[40..43]
+  NAND
+    -not bit roller 1[10..13]
+    -not bit roller 2[10..13]
+    -not bit roller 3[10..13]
+    -not bit roller 4[10..13]
+    -not bit roller 5[10..13]
+    -not bit roller 6[10..13]
+    -temp not bit spare[40..43]
++not bit[44..45]
+  AND
+    NAND
+      -not bit roller 1[14..15]
+      -not bit roller 2[14..15]
+      -not bit roller 3[14..15]
+      -not bit roller 4[14..15]
+      -not bit roller 5[14..15]
+      -not bit roller 6[14..15]
+      -temp not bit spare[44..45]
+    NOT
+      +sor[4]
++not bit[46..47]
+  NAND
+    -not bit roller 1[16..17]
+    -not bit roller 2[16..17]
+    -not bit roller 3[16..17]
+    -not bit roller 4[16..17]
+    -not bit roller 5[16..17]
+    -not bit roller 6[16..17]
+    -temp not bit spare[46..47]
+
++scan out bus bit[48..55]
+  NOR
+    AND
+      +scan out sOt
+      -not bit roller 1[19..26]
+    AND
+      +scan out sOt
+      -not bit roller 2[19..26]
+    AND
+      +enable bus
+      +not bit[48..55]
++not bit[48..55]
+  NAND
+    -not bit roller 1[19..26]
+    -not bit roller 2[19..26]
+    -not bit roller 3[19..26]
+    -not bit roller 4[19..26]
+    -not bit roller 5[19..26]
+    -not bit roller 6[19..26]
+    -temp not bit spare[48..55]
++scan out bus bit[56..63]
+  NOR
+    AND
+      +scan out sOt
+      -not bit roller 1[28..35]
+    AND
+      +scan out sOt
+      -not bit roller 2[28..35]
+    AND
+      +enable bus
+      +not bit[56..63]
++not bit[56..63]
+  NAND
+    -not bit roller 1[28..35]
+    -not bit roller 2[28..35]
+    -not bit roller 3[28..35]
+    -not bit roller 4[28..35]
+    -not bit roller 5[28..35]
+    -not bit roller 6[28..35]
+    -temp not bit spare[56..63]
+
+; PAGE KT991
+
++scan out bus p32-39 to paddl
+  NOR
+    AND
+      +temp
+        XOR
+          +not bit[32..39]
+      +scan out
+    AND
+      +gt st 28-31
+      -st bus[28](RS_RT)
+    AND
+      +gt st 32-35
+      -st bus[32](RS_RT)
+
++scan out bus p40-47 to paddl
+  NOR
+    AND
+      +temp
+        XOR
+          +not bit[40..47]
+      +scan out
+    AND
+      +gt st 28-31
+      -st bus[29](RS_RT)
+    AND
+      +gt st 32-35
+      -st bus[33](RS_RT)
+
++scan out bus p48-55 to paddl
+  NOR
+    AND
+      +temp
+        XOR
+          +not bit[48..55]
+      +scan out
+    AND
+      +gt st 28-31
+      -st bus[30](RS_RT)
+    AND
+      +gt st 32-35
+      -st bus[34](RS_RT)
+
++scan out bus p56-63 to paddl
+  NOR
+    AND
+      +temp
+        XOR
+          +not bit[56..63]
+      +scan out
+    AND
+      +gt st 28-31
+      -st bus[31](RS_RT)
+    AND
+      +gt st 32-35
+      -st bus[35](RS_RT)
+
+; REMAINDER IS AUTO-GENERATED FROM CSV FILE
+
+-ind roller 1 bit[0]
+  NOT
+    -not bit roller 1[0]
+-not bit roller 1[0]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d p00-07(RD)
+    AND
+      +roller 1 pos[3]
+      -ind st parity 00-07(RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[0](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[1]
+  NOT
+    -not bit roller 1[1]
+-not bit roller 1[1]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[0](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[0](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[1](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[2]
+  NOT
+    -not bit roller 1[2]
+-not bit roller 1[2]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[1](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[1](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[2](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[3]
+  NOT
+    -not bit roller 1[3]
+-not bit roller 1[3]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[2](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[2](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[3](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[4]
+  NOT
+    -not bit roller 1[4]
+-not bit roller 1[4]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[3](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[3](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[4](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[5]
+  NOT
+    -not bit roller 1[5]
+-not bit roller 1[5]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind bcu inhibit oscillator(KC)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[4](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[4](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[5](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[6]
+  NOT
+    -not bit roller 1[6]
+-not bit roller 1[6]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[5](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[5](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[6](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[7]
+  NOT
+    -not bit roller 1[7]
+-not bit roller 1[7]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[6](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[6](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[7](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[8]
+  NOT
+    -not bit roller 1[8]
+-not bit roller 1[8]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[7](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[7](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[8](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[9]
+  NOT
+    -not bit roller 1[9]
+-not bit roller 1[9]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d p08-15(RD)
+    AND
+      +roller 1 pos[3]
+      -ind st parity 08-15(RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[9](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[10]
+  NOT
+    -not bit roller 1[10]
+-not bit roller 1[10]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[8](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[8](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[10](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[11]
+  NOT
+    -not bit roller 1[11]
+-not bit roller 1[11]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[9](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[9](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind rosar[11](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[12]
+  NOT
+    -not bit roller 1[12]
+-not bit roller 1[12]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[10](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[10](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[0](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[13]
+  NOT
+    -not bit roller 1[13]
+-not bit roller 1[13]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[11](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[11](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[1](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[14]
+  NOT
+    -not bit roller 1[14]
+-not bit roller 1[14]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[12](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[12](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[2](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[15]
+  NOT
+    -not bit roller 1[15]
+-not bit roller 1[15]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[13](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[13](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[3](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[16]
+  NOT
+    -not bit roller 1[16]
+-not bit roller 1[16]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[14](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[14](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[4](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[17]
+  NOT
+    -not bit roller 1[17]
+-not bit roller 1[17]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d bit[15](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[15](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[5](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[18]
+  NOT
+    -not bit roller 1[18]
+-not bit roller 1[18]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind d p16-23(RD)
+    AND
+      +roller 1 pos[3]
+      -ind st parity 16-23(RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[6](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[19]
+  NOT
+    -not bit roller 1[19]
+-not bit roller 1[19]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind g reg[0](RG)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[16](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[16](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[7](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[20]
+  NOT
+    -not bit roller 1[20]
+-not bit roller 1[20]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind g reg[1](RG)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[17](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[17](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[8](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[21]
+  NOT
+    -not bit roller 1[21]
+-not bit roller 1[21]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind g reg[2](RG)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[18](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[18](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[9](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[22]
+  NOT
+    -not bit roller 1[22]
+-not bit roller 1[22]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind g reg[3](RG)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[19](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[19](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[10](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[23]
+  NOT
+    -not bit roller 1[23]
+-not bit roller 1[23]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind g reg[4](RG)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[20](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[20](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa a[11](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[24]
+  NOT
+    -not bit roller 1[24]
+-not bit roller 1[24]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind g reg[5](RG)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[21](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[21](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[0](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[25]
+  NOT
+    -not bit roller 1[25]
+-not bit roller 1[25]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind g reg[6](RG)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[22](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[22](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[1](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[26]
+  NOT
+    -not bit roller 1[26]
+-not bit roller 1[26]
+  NOR
+    AND
+      +roller 1 pos[1]
+      -ind g reg[7](RG)
+    AND
+      +roller 1 pos[2]
+      -ind d bit[23](RD)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[23](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[2](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[27]
+  NOT
+    -not bit roller 1[27]
+-not bit roller 1[27]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg parity(RF)
+    AND
+      +roller 1 pos[3]
+      -ind st parity 24-31(RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[3](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[28]
+  NOT
+    -not bit roller 1[28]
+-not bit roller 1[28]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg[0](RF)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[24](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[4](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[29]
+  NOT
+    -not bit roller 1[29]
+-not bit roller 1[29]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg[1](RF)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[25](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[5](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[30]
+  NOT
+    -not bit roller 1[30]
+-not bit roller 1[30]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg[2](RF)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[26](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[6](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[31]
+  NOT
+    -not bit roller 1[31]
+-not bit roller 1[31]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg[3](RF)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[27](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[7](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[32]
+  NOT
+    -not bit roller 1[32]
+-not bit roller 1[32]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg[4](RF)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[28](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[8](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[33]
+  NOT
+    -not bit roller 1[33]
+-not bit roller 1[33]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg[5](RF)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[29](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[9](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[34]
+  NOT
+    -not bit roller 1[34]
+-not bit roller 1[34]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg[6](RF)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[30](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[10](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 1 bit[35]
+  NOT
+    -not bit roller 1[35]
+-not bit roller 1[35]
+  NOR
+    AND
+      +roller 1 pos[1]
+    AND
+      +roller 1 pos[2]
+      -ind f reg[7](RF)
+    AND
+      +roller 1 pos[3]
+      -ind st bit[31](RS_RT)
+    AND
+      +roller 1 pos[4]
+      -ind prosa b[11](RX)
+    AND
+      +roller 1 pos[5]
+    AND
+      +roller 1 pos[6]
+-ind roller 2 bit[0]
+  NOT
+    -not bit roller 2[0]
+-not bit roller 2[0]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind parity error e 00-15(RE)
+    AND
+      +roller 2 pos[3]
+      -ind st parity 32-39(RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[0](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[1]
+  NOT
+    -not bit roller 2[1]
+-not bit roller 2[1]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 04-07(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[32](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[1](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[2]
+  NOT
+    -not bit roller 2[2]
+-not bit roller 2[2]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 08-15(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[33](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[2](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[3]
+  NOT
+    -not bit roller 2[3]
+-not bit roller 2[3]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 16-23(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[34](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[3](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[4]
+  NOT
+    -not bit roller 2[4]
+-not bit roller 2[4]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 24-31(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[35](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[4](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[5]
+  NOT
+    -not bit roller 2[5]
+-not bit roller 2[5]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 32-39(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[36](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[5](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[6]
+  NOT
+    -not bit roller 2[6]
+-not bit roller 2[6]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 40-47(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[37](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[6](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[7]
+  NOT
+    -not bit roller 2[7]
+-not bit roller 2[7]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 48-55(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[38](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[7](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[8]
+  NOT
+    -not bit roller 2[8]
+-not bit roller 2[8]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 56-63(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[39](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[8](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[9]
+  NOT
+    -not bit roller 2[9]
+-not bit roller 2[9]
+  NOR
+    AND
+      +roller 2 pos[1]
+      -ind time clock step(KD)
+    AND
+      +roller 2 pos[2]
+      -ind full sum error 64-67(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st parity 40-47(RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[9](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[10]
+  NOT
+    -not bit roller 2[10]
+-not bit roller 2[10]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[40](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[10](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[11]
+  NOT
+    -not bit roller 2[11]
+-not bit roller 2[11]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[41](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[11](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[12]
+  NOT
+    -not bit roller 2[12]
+-not bit roller 2[12]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[42](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[12](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[13]
+  NOT
+    -not bit roller 2[13]
+-not bit roller 2[13]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[43](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[13](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[14]
+  NOT
+    -not bit roller 2[14]
+-not bit roller 2[14]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[44](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[14](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[15]
+  NOT
+    -not bit roller 2[15]
+-not bit roller 2[15]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[45](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[15](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[16]
+  NOT
+    -not bit roller 2[16]
+-not bit roller 2[16]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[46](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[16](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[17]
+  NOT
+    -not bit roller 2[17]
+-not bit roller 2[17]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[47](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[17](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[18]
+  NOT
+    -not bit roller 2[18]
+-not bit roller 2[18]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind s reg mpr parity check(DP)
+    AND
+      +roller 2 pos[3]
+      -ind st parity 48-55(RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[18](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[19]
+  NOT
+    -not bit roller 2[19]
+-not bit roller 2[19]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 04-07(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[48](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[19](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[20]
+  NOT
+    -not bit roller 2[20]
+-not bit roller 2[20]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 08-15(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[49](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[20](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[21]
+  NOT
+    -not bit roller 2[21]
+-not bit roller 2[21]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 16-23(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[50](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[21](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[22]
+  NOT
+    -not bit roller 2[22]
+-not bit roller 2[22]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 24-31(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[51](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[22](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[23]
+  NOT
+    -not bit roller 2[23]
+-not bit roller 2[23]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 32-39(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[52](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[23](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[24]
+  NOT
+    -not bit roller 2[24]
+-not bit roller 2[24]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 40-47(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[53](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[24](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[25]
+  NOT
+    -not bit roller 2[25]
+-not bit roller 2[25]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 48-55(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[54](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[25](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[26]
+  NOT
+    -not bit roller 2[26]
+-not bit roller 2[26]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 56-63(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[55](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[26](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[27]
+  NOT
+    -not bit roller 2[27]
+-not bit roller 2[27]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error 64-67(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st parity 56-63(RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[27](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[28]
+  NOT
+    -not bit roller 2[28]
+-not bit roller 2[28]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error trig(AP)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[56](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[28](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[29]
+  NOT
+    -not bit roller 2[29]
+-not bit roller 2[29]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[57](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[29](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[30]
+  NOT
+    -not bit roller 2[30]
+-not bit roller 2[30]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+    AND
+      +roller 2 pos[3]
+      -ind st bit[58](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[30](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[31]
+  NOT
+    -not bit roller 2[31]
+-not bit roller 2[31]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind ros 2-42 parity error(DS)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[59](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[31](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[32]
+  NOT
+    -not bit roller 2[32]
+-not bit roller 2[32]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind ros 43-68 parity error(DS)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[60](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[32](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[33]
+  NOT
+    -not bit roller 2[33]
+-not bit roller 2[33]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind ros 69-99 parity error(DS)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[61](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[33](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[34]
+  NOT
+    -not bit roller 2[34]
+-not bit roller 2[34]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind half sum error(AS)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[62](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[34](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 2 bit[35]
+  NOT
+    -not bit roller 2[35]
+-not bit roller 2[35]
+  NOR
+    AND
+      +roller 2 pos[1]
+    AND
+      +roller 2 pos[2]
+      -ind full sum error(AS)
+    AND
+      +roller 2 pos[3]
+      -ind st bit[63](RS_RT)
+    AND
+      +roller 2 pos[4]
+      -ind rosdr bit[35](RY)
+    AND
+      +roller 2 pos[5]
+    AND
+      +roller 2 pos[6]
+-ind roller 3 bit[0]
+  NOT
+    -not bit roller 3[0]
+-not bit roller 3[0]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind ic request(MC)
+    AND
+      +roller 3 pos[2]
+      -ind q parity 00-07(RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab parity 00-07(RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind rosdr bit[36](RY)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[1]
+  NOT
+    -not bit roller 3[1]
+-not bit roller 3[1]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind d request(MC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[0](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[0](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind rosdr bit[37](RY)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[2]
+  NOT
+    -not bit roller 3[2]
+-not bit roller 3[2]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind scan request(MC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[1](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[1](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind rosdr bit[38](RY)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[3]
+  NOT
+    -not bit roller 3[3]
+-not bit roller 3[3]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind set key(MC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[2](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[2](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind rosdr bit[39](RY)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[4]
+  NOT
+    -not bit roller 3[4]
+-not bit roller 3[4]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind insert key(MC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[3](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[3](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind rosdr bit[40](RY)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[5]
+  NOT
+    -not bit roller 3[5]
+-not bit roller 3[5]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind 3 cycle request(MC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[4](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[4](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind rosdr bit[41](RY)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[6]
+  NOT
+    -not bit roller 3[6]
+-not bit roller 3[6]
+  NOR
+    AND
+      +roller 3 pos[1]
+    AND
+      +roller 3 pos[2]
+      -ind q bit[5](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[5](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind rosdr bit[42](RY)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[7]
+  NOT
+    -not bit roller 3[7]
+-not bit roller 3[7]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind cpu storage addr check(MC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[6](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[6](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[43](DR)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[8]
+  NOT
+    -not bit roller 3[8]
+-not bit roller 3[8]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind cpu storage data check(MC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[7](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[7](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[44](DR)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[9]
+  NOT
+    -not bit roller 3[9]
+-not bit roller 3[9]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind repeat instruction adjust(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q parity 08-15(RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab parity 08-15(RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[45](DR)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[10]
+  NOT
+    -not bit roller 3[10]
+-not bit roller 3[10]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind repeat inst initilization(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[8](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[8](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[46](DR)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[11]
+  NOT
+    -not bit roller 3[11]
+-not bit roller 3[11]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind pulse mode adjust tgr(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[9](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[9](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[47](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[12]
+  NOT
+    -not bit roller 3[12]
+-not bit roller 3[12]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind pulse mode initilization(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[10](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[10](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[48](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[13]
+  NOT
+    -not bit roller 3[13]
+-not bit roller 3[13]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind stop tgr(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[11](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[11](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[49](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[14]
+  NOT
+    -not bit roller 3[14]
+-not bit roller 3[14]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind block tgr(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[12](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[12](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[50](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[15]
+  NOT
+    -not bit roller 3[15]
+-not bit roller 3[15]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind pass pulse tgr(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[13](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[13](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[51](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[16]
+  NOT
+    -not bit roller 3[16]
+-not bit roller 3[16]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind block interrupts(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[14](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[14](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[52](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[17]
+  NOT
+    -not bit roller 3[17]
+-not bit roller 3[17]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind force addrs tgr(KC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[15](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[15](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[53](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[18]
+  NOT
+    -not bit roller 3[18]
+-not bit roller 3[18]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind instruction step tgr(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q parity 16-23(RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab parity 16-23(RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[54](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[19]
+  NOT
+    -not bit roller 3[19]
+-not bit roller 3[19]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind single cycle tgr(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[16](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[16](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[55](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[20]
+  NOT
+    -not bit roller 3[20]
+-not bit roller 3[20]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind check summary(KW)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[17](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[17](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[56](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[21]
+  NOT
+    -not bit roller 3[21]
+-not bit roller 3[21]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind bcu + flt clock inhibit(KC)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[18](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[18](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[57](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[22]
+  NOT
+    -not bit roller 3[22]
+-not bit roller 3[22]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind repeat latch(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[19](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[19](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[58](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[23]
+  NOT
+    -not bit roller 3[23]
+-not bit roller 3[23]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind flt test(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[20](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[20](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[59](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[24]
+  NOT
+    -not bit roller 3[24]
+-not bit roller 3[24]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind ros test lth(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[21](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[21](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[60](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[25]
+  NOT
+    -not bit roller 3[25]
+-not bit roller 3[25]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind scc tgr(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[22](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[22](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[61](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[26]
+  NOT
+    -not bit roller 3[26]
+-not bit roller 3[26]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind sync tgr(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[23](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[23](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[62](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[27]
+  NOT
+    -not bit roller 3[27]
+-not bit roller 3[27]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind defeat interleaving(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q parity 24-31(RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab parity 24-31(RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[63](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[28]
+  NOT
+    -not bit roller 3[28]
+-not bit roller 3[28]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind dis intlv O reverse stor(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[24](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[24](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[64](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[29]
+  NOT
+    -not bit roller 3[29]
+-not bit roller 3[29]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind flt backspace tgr(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[25](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[25](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[65](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[30]
+  NOT
+    -not bit roller 3[30]
+-not bit roller 3[30]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind console log out tgr(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[26](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[26](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[66](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[31]
+  NOT
+    -not bit roller 3[31]
+-not bit roller 3[31]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind soros(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[27](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[27](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[67](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[32]
+  NOT
+    -not bit roller 3[32]
+-not bit roller 3[32]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -indicate diagnose tgr(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[28](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[28](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind roslth[68](DS)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[33]
+  NOT
+    -not bit roller 3[33]
+-not bit roller 3[33]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind release(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[29](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[29](RA_RB)
+    AND
+      +roller 3 pos[4]
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[34]
+  NOT
+    -not bit roller 3[34]
+-not bit roller 3[34]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind tic latch(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[30](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[30](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -prosaa is last(RX)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 3 bit[35]
+  NOT
+    -not bit roller 3[35]
+-not bit roller 3[35]
+  NOR
+    AND
+      +roller 3 pos[1]
+      -ind gap latch(KU)
+    AND
+      +roller 3 pos[2]
+      -ind q bit[31](RQ)
+    AND
+      +roller 3 pos[3]
+      -ind ab bit[31](RA_RB)
+    AND
+      +roller 3 pos[4]
+      -ind scan mode tgr(KU)
+    AND
+      +roller 3 pos[5]
+    AND
+      +roller 3 pos[6]
+-ind roller 4 bit[0]
+  NOT
+    -not bit roller 4[0]
+-not bit roller 4[0]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind psw parity 0 to 7(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q parity 32-39(RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab parity 32-39(RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[69](AR)
+    AND
+      +roller 4 pos[5]
+      -ind stat tgr a(KS)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[1]
+  NOT
+    -not bit roller 4[1]
+-not bit roller 4[1]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind chan mask a(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[32](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[32](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[70](AR)
+    AND
+      +roller 4 pos[5]
+      -ind stat tgr b(KS)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[2]
+  NOT
+    -not bit roller 4[2]
+-not bit roller 4[2]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind chan mask 1a(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[33](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[33](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[71](AR)
+    AND
+      +roller 4 pos[5]
+      -ind stat tgr c(KS)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[3]
+  NOT
+    -not bit roller 4[3]
+-not bit roller 4[3]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind chan mask 2a(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[34](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[34](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[72](AR)
+    AND
+      +roller 4 pos[5]
+      -ind stat tgr d(KS)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[4]
+  NOT
+    -not bit roller 4[4]
+-not bit roller 4[4]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind chan mask 3a(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[35](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[35](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[73](AR)
+    AND
+      +roller 4 pos[5]
+      -ind stat tgr e(KS)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[5]
+  NOT
+    -not bit roller 4[5]
+-not bit roller 4[5]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind mask b(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[36](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[36](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[74](AR)
+    AND
+      +roller 4 pos[5]
+      -ind stat tgr f(KS)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[6]
+  NOT
+    -not bit roller 4[6]
+-not bit roller 4[6]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind mask 1b(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[37](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[37](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[75](AR)
+    AND
+      +roller 4 pos[5]
+      -ind stat tgr g(KS)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[7]
+  NOT
+    -not bit roller 4[7]
+-not bit roller 4[7]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind mask 2b(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[38](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[38](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[76](AR)
+    AND
+      +roller 4 pos[5]
+      -ind stat tgr h(AS)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[8]
+  NOT
+    -not bit roller 4[8]
+-not bit roller 4[8]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind external mask(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[39](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[39](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rosdr bit[77](AR)
+    AND
+      +roller 4 pos[5]
+      -ind block i fetch tgr(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[9]
+  NOT
+    -not bit roller 4[9]
+-not bit roller 4[9]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind psw parity 8 to 15(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q parity 40-47(RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab parity 40-47(RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[78](AP)
+    AND
+      +roller 4 pos[5]
+      -ind i fetch 1 tgr(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[10]
+  NOT
+    -not bit roller 4[10]
+-not bit roller 4[10]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind storage protect key bit[8](RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[40](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[40](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[79](AP)
+    AND
+      +roller 4 pos[5]
+      -ind i fetch 2 tgr(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[11]
+  NOT
+    -not bit roller 4[11]
+-not bit roller 4[11]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind storage protect key bit[9](RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[41](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[41](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[80](AP)
+    AND
+      +roller 4 pos[5]
+      -ind i fetch 3 tgr(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[12]
+  NOT
+    -not bit roller 4[12]
+-not bit roller 4[12]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind storage protect key bit[10](RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[42](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[42](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[81](AP)
+    AND
+      +roller 4 pos[5]
+      -ind execute in progress(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[13]
+  NOT
+    -not bit roller 4[13]
+-not bit roller 4[13]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind storage protect key bit[11](RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[43](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[43](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[82](AP)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[14]
+  NOT
+    -not bit roller 4[14]
+-not bit roller 4[14]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind ascii(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[44](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[44](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[83](AP)
+    AND
+      +roller 4 pos[5]
+      -ind program store compare(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[15]
+  NOT
+    -not bit roller 4[15]
+-not bit roller 4[15]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind machine check mask(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[45](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[45](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[84](AP)
+    AND
+      +roller 4 pos[5]
+      -ind i fetch req tgr(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[16]
+  NOT
+    -not bit roller 4[16]
+-not bit roller 4[16]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind wait state(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[46](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[46](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind roslth[85](DS)
+    AND
+      +roller 4 pos[5]
+      -ind branch invalid adr tgr(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[17]
+  NOT
+    -not bit roller 4[17]
+-not bit roller 4[17]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind problem state(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[47](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[47](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros[86](RA_RB)
+    AND
+      +roller 4 pos[5]
+      -ind i fetch invalid adr tgr(KD)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[18]
+  NOT
+    -not bit roller 4[18]
+-not bit roller 4[18]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind no retry(KS)
+    AND
+      +roller 4 pos[2]
+      -ind q parity 48-55(RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab parity 48-55(RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros[87](RA_RB)
+    AND
+      +roller 4 pos[5]
+      -ind inst length not avail(KM)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[19]
+  NOT
+    -not bit roller 4[19]
+-not bit roller 4[19]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind ic in lswr(KS)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[48](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[48](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros[88](RA_RB)
+    AND
+      +roller 4 pos[5]
+      -ind time clock at limit(JA)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[20]
+  NOT
+    -not bit roller 4[20]
+-not bit roller 4[20]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind condition register[0](RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[49](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[49](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros[89](RA_RB)
+    AND
+      +roller 4 pos[5]
+      -ind console signal(JA)
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[21]
+  NOT
+    -not bit roller 4[21]
+-not bit roller 4[21]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind condition register[1](RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[50](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[50](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros[90](RA_RB)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[22]
+  NOT
+    -not bit roller 4[22]
+-not bit roller 4[22]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind fixed point overflow mask(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[51](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[51](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -cros bit[91](EF)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[23]
+  NOT
+    -not bit roller 4[23]
+-not bit roller 4[23]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind decimal overflow mask(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[52](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[52](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[92](RS_RT)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[24]
+  NOT
+    -not bit roller 4[24]
+-not bit roller 4[24]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind exponent underflow mask(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[53](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[53](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[93](RS_RT)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[25]
+  NOT
+    -not bit roller 4[25]
+-not bit roller 4[25]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind significance mask(RW)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[54](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[54](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[94](RS_RT)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[26]
+  NOT
+    -not bit roller 4[26]
+-not bit roller 4[26]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind machine check intr(KM)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[55](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[55](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[95](RS_RT)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[27]
+  NOT
+    -not bit roller 4[27]
+-not bit roller 4[27]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind supervisor call intr(KM)
+    AND
+      +roller 4 pos[2]
+      -ind q parity 56-63(RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab parity 56-63(RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[96](RS_RT)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[28]
+  NOT
+    -not bit roller 4[28]
+-not bit roller 4[28]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind pir int(JA)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[56](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[56](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[97](RQ)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[29]
+  NOT
+    -not bit roller 4[29]
+-not bit roller 4[29]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind dar int(JA)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[57](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[57](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[98](RQ)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[30]
+  NOT
+    -not bit roller 4[30]
+-not bit roller 4[30]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind program intr tgr code 8(KM)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[58](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[58](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind ros bit[99](RQ)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[31]
+  NOT
+    -not bit roller 4[31]
+-not bit roller 4[31]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind program intr tgr code 4(KM)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[59](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[59](RA_RB)
+    AND
+      +roller 4 pos[4]
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[32]
+  NOT
+    -not bit roller 4[32]
+-not bit roller 4[32]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind program intr tgr code 2(KM)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[60](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[60](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind rt dig trigger(KZ)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[33]
+  NOT
+    -not bit roller 4[33]
+-not bit roller 4[33]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind program intr tgr code 1(KM)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[61](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[61](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind s trigger(KZ)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[34]
+  NOT
+    -not bit roller 4[34]
+-not bit roller 4[34]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind interrupt priority tgr 1(KN)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[62](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[62](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind leave trigger(KZ)
+    AND
+      +roller 4 pos[5]
+    AND
+      +roller 4 pos[6]
+-ind roller 4 bit[35]
+  NOT
+    -not bit roller 4[35]
+-not bit roller 4[35]
+  NOR
+    AND
+      +roller 4 pos[1]
+      -ind interrupt priority tgr 2(KN)
+    AND
+      +roller 4 pos[2]
+      -ind q bit[63](RQ)
+    AND
+      +roller 4 pos[3]
+      -ind ab bit[63](RA_RB)
+    AND
+      +roller 4 pos[4]
+      -ind step abc trigger(KZ)
+    AND
+      +roller 4 pos[5]
+      -ind timing gate tgr(KX)
+    AND
+      +roller 4 pos[6]
+-ind roller 5 bit[0]
+  NOT
+    -not bit roller 5[0]
+-not bit roller 5[0]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[0](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r parity 00-07(RR)
+    AND
+      +roller 5 pos[4]
+      -ind s 00-31--padda 32-63(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[1]
+  NOT
+    -not bit roller 5[1]
+-not bit roller 5[1]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[1](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[0](RR)
+    AND
+      +roller 5 pos[4]
+      -ind t 32-63--padda 32-63 t-l0(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[2]
+  NOT
+    -not bit roller 5[2]
+-not bit roller 5[2]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[2](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[1](RR)
+    AND
+      +roller 5 pos[4]
+      -ind t 32-63--padda 32-63 c-l0(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[3]
+  NOT
+    -not bit roller 5[3]
+-not bit roller 5[3]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[3](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[2](RR)
+    AND
+      +roller 5 pos[4]
+      -ind t 32-63--padda 31-62 t-l1(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[4]
+  NOT
+    -not bit roller 5[4]
+-not bit roller 5[4]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[4](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[3](RR)
+    AND
+      +roller 5 pos[4]
+      -ind t 32-63--padda 31-62 c-l1(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[5]
+  NOT
+    -not bit roller 5[5]
+-not bit roller 5[5]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[5](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[4](RR)
+    AND
+      +roller 5 pos[4]
+      -ind t 32-47--padda 48-63(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[6]
+  NOT
+    -not bit roller 5[6]
+-not bit roller 5[6]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[6](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[5](RR)
+    AND
+      +roller 5 pos[4]
+      -ind t 48-63--padda 48-63(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[7]
+  NOT
+    -not bit roller 5[7]
+-not bit roller 5[7]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[7](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[6](RR)
+    AND
+      +roller 5 pos[4]
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[8]
+  NOT
+    -not bit roller 5[8]
+-not bit roller 5[8]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mcw[20](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[7](RR)
+    AND
+      +roller 5 pos[4]
+      -ind d00-23-padda 08-31 t-l0(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[9]
+  NOT
+    -not bit roller 5[9]
+-not bit roller 5[9]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind address sequence[0](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r parity 08-15(RR)
+    AND
+      +roller 5 pos[4]
+      -ind d00-23-padda 08-31 c-l0(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[10]
+  NOT
+    -not bit roller 5[10]
+-not bit roller 5[10]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind address sequence[1](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[8](RR)
+    AND
+      +roller 5 pos[4]
+      -ind d00-23-padda 07-30 t-l1(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[11]
+  NOT
+    -not bit roller 5[11]
+-not bit roller 5[11]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind address sequence[2](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[9](RR)
+    AND
+      +roller 5 pos[4]
+      -ind d00-23-padda 07-30 c-l1(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[12]
+  NOT
+    -not bit roller 5[12]
+-not bit roller 5[12]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind address sequence[3](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[10](RR)
+    AND
+      +roller 5 pos[4]
+      -ind d00-23-padda 40-63 t(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[13]
+  NOT
+    -not bit roller 5[13]
+-not bit roller 5[13]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind address sequence[4](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[11](RR)
+    AND
+      +roller 5 pos[4]
+      -ind d00-23-padda 40-63 c(RS_RT)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[14]
+  NOT
+    -not bit roller 5[14]
+-not bit roller 5[14]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind flt counter[0](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[12](RR)
+    AND
+      +roller 5 pos[4]
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[15]
+  NOT
+    -not bit roller 5[15]
+-not bit roller 5[15]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind flt counter[1](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[13](RR)
+    AND
+      +roller 5 pos[4]
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[16]
+  NOT
+    -not bit roller 5[16]
+-not bit roller 5[16]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind flt counter[2](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[14](RR)
+    AND
+      +roller 5 pos[4]
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[17]
+  NOT
+    -not bit roller 5[17]
+-not bit roller 5[17]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind flt counter[3](KU)
+    AND
+      +roller 5 pos[3]
+      -ind r bit[15](RR)
+    AND
+      +roller 5 pos[4]
+      -ind gct ic-paddb40-63(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[18]
+  NOT
+    -not bit roller 5[18]
+-not bit roller 5[18]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind flt clock[0](KU)
+    AND
+      +roller 5 pos[3]
+      -ind parity e 00-07(RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ab00-31-paddb32-63(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[19]
+  NOT
+    -not bit roller 5[19]
+-not bit roller 5[19]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind flt clock[1](KU)
+    AND
+      +roller 5 pos[3]
+      -ind e bit[0](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ab04-07-paddb04-07(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[20]
+  NOT
+    -not bit roller 5[20]
+-not bit roller 5[20]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind e bit[1](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ab08-31-paddb08-31(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[21]
+  NOT
+    -not bit roller 5[21]
+-not bit roller 5[21]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind ros test sequencer[0](KU)
+    AND
+      +roller 5 pos[3]
+      -ind e bit[2](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ab32-63-paddb32-63(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[22]
+  NOT
+    -not bit roller 5[22]
+-not bit roller 5[22]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind ros test sequencer[1](KU)
+    AND
+      +roller 5 pos[3]
+      -ind e bit[3](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ab64-67-paddb64-67(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[23]
+  NOT
+    -not bit roller 5[23]
+-not bit roller 5[23]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind ros test sequencer[2](KU)
+    AND
+      +roller 5 pos[3]
+      -ind e bit[4](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ab06-31-paddb04-29 l2(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[24]
+  NOT
+    -not bit roller 5[24]
+-not bit roller 5[24]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind e bit[5](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ab32-67-paddb30-65 l2(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[25]
+  NOT
+    -not bit roller 5[25]
+-not bit roller 5[25]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind e bit[6](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ab64-67-paddb28-31(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[26]
+  NOT
+    -not bit roller 5[26]
+-not bit roller 5[26]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind e bit[7](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct ex6-paddb 28-63(AP)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[27]
+  NOT
+    -not bit roller 5[27]
+-not bit roller 5[27]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind parity e 08-15(RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct f04-07-paddb60-63(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[28]
+  NOT
+    -not bit roller 5[28]
+-not bit roller 5[28]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind e bit[8](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct hot one-paddb 60(RA_RB)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[29]
+  NOT
+    -not bit roller 5[29]
+-not bit roller 5[29]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind pass(KU)
+    AND
+      +roller 5 pos[3]
+      -ind e bit[9](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct e 08-11+p to pb 56-59(RQ)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[30]
+  NOT
+    -not bit roller 5[30]
+-not bit roller 5[30]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind fail(KU)
+    AND
+      +roller 5 pos[3]
+      -ind e bit[10](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct e 12-15+p to pb 60-63(RQ)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[31]
+  NOT
+    -not bit roller 5[31]
+-not bit roller 5[31]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind e bit[11](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct e 8-11+p to pb 60-63(RQ)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[32]
+  NOT
+    -not bit roller 5[32]
+-not bit roller 5[32]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind e bit[12](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct q 04-15+p to pb 52-63(RQ)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[33]
+  NOT
+    -not bit roller 5[33]
+-not bit roller 5[33]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+    AND
+      +roller 5 pos[3]
+      -ind e bit[13](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct q 20-31+p to pb 52-63(RQ)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[34]
+  NOT
+    -not bit roller 5[34]
+-not bit roller 5[34]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind mmsc(KU)
+    AND
+      +roller 5 pos[3]
+      -ind e bit[14](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct q 36-47+p to pb 52-63(RQ)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 5 bit[35]
+  NOT
+    -not bit roller 5[35]
+-not bit roller 5[35]
+  NOR
+    AND
+      +roller 5 pos[1]
+    AND
+      +roller 5 pos[2]
+      -ind buffer 1(KU)
+    AND
+      +roller 5 pos[3]
+      -ind e bit[15](RE)
+    AND
+      +roller 5 pos[4]
+      -ind gct q 52-63+p to pb 52-63(RQ)
+    AND
+      +roller 5 pos[5]
+    AND
+      +roller 5 pos[6]
+-ind roller 6 bit[0]
+  NOT
+    -not bit roller 6[0]
+-not bit roller 6[0]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl parity 32-39(AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark parity(CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic p00-07(CA)
+    AND
+      +roller 6 pos[4]
+      -ind sab pty err(MA)
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[1]
+  NOT
+    -not bit roller 6[1]
+-not bit roller 6[1]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[32](AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark tgr[0](CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[0](CA)
+    AND
+      +roller 6 pos[4]
+      -ind sdbo pty check(MB)
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[2]
+  NOT
+    -not bit roller 6[2]
+-not bit roller 6[2]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[33](AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark tgr[1](CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[1](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[3]
+  NOT
+    -not bit roller 6[3]
+-not bit roller 6[3]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[34](AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark tgr[2](CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[2](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[4]
+  NOT
+    -not bit roller 6[4]
+-not bit roller 6[4]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[35](AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark tgr[3](CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[3](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[5]
+  NOT
+    -not bit roller 6[5]
+-not bit roller 6[5]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[36](AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark tgr[4](CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[4](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[6]
+  NOT
+    -not bit roller 6[6]
+-not bit roller 6[6]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[37](AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark tgr[5](CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[5](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[7]
+  NOT
+    -not bit roller 6[7]
+-not bit roller 6[7]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[38](AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark tgr[6](CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[6](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[8]
+  NOT
+    -not bit roller 6[8]
+-not bit roller 6[8]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[39](AP)
+    AND
+      +roller 6 pos[2]
+      -ind mark tgr[7](CT)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[7](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[9]
+  NOT
+    -not bit roller 6[9]
+-not bit roller 6[9]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl parity 40-47(AP)
+    AND
+      +roller 6 pos[2]
+      -ind st parity 32-39(LS)
+    AND
+      +roller 6 pos[3]
+      -ind ic p08-15(CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[10]
+  NOT
+    -not bit roller 6[10]
+-not bit roller 6[10]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[40](AP)
+    AND
+      +roller 6 pos[2]
+      -ind lar bit[0](LS)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[8](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[11]
+  NOT
+    -not bit roller 6[11]
+-not bit roller 6[11]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[41](AP)
+    AND
+      +roller 6 pos[2]
+      -ind lar bit[1](LS)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[9](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[12]
+  NOT
+    -not bit roller 6[12]
+-not bit roller 6[12]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[42](AP)
+    AND
+      +roller 6 pos[2]
+      -ind lar bit[2](LS)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[10](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[13]
+  NOT
+    -not bit roller 6[13]
+-not bit roller 6[13]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[43](AP)
+    AND
+      +roller 6 pos[2]
+      -ind lar bit[3](LS)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[11](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[14]
+  NOT
+    -not bit roller 6[14]
+-not bit roller 6[14]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[44](AP)
+    AND
+      +roller 6 pos[2]
+      -ind lar bit[4](LS)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[12](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[15]
+  NOT
+    -not bit roller 6[15]
+-not bit roller 6[15]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[45](AP)
+    AND
+      +roller 6 pos[2]
+      -ind write ls(LS)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[13](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[16]
+  NOT
+    -not bit roller 6[16]
+-not bit roller 6[16]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[46](AP)
+    AND
+      +roller 6 pos[2]
+      -ind inh ls write(RX)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[14](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[17]
+  NOT
+    -not bit roller 6[17]
+-not bit roller 6[17]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[47](AP)
+    AND
+      +roller 6 pos[2]
+      -ind tx tgr(DP)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[15](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[18]
+  NOT
+    -not bit roller 6[18]
+-not bit roller 6[18]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl parity 48-55(AP)
+    AND
+      +roller 6 pos[2]
+      -ind ab parity 64-67(RA_RB)
+    AND
+      +roller 6 pos[3]
+      -ind ic p16-23(CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[19]
+  NOT
+    -not bit roller 6[19]
+-not bit roller 6[19]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[48](AP)
+    AND
+      +roller 6 pos[2]
+      -ind ab bit[64](RA_RB)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[16](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[20]
+  NOT
+    -not bit roller 6[20]
+-not bit roller 6[20]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[49](AP)
+    AND
+      +roller 6 pos[2]
+      -ind ab bit[65](RA_RB)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[17](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[21]
+  NOT
+    -not bit roller 6[21]
+-not bit roller 6[21]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[50](AP)
+    AND
+      +roller 6 pos[2]
+      -ind ab bit[66](RA_RB)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[18](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[22]
+  NOT
+    -not bit roller 6[22]
+-not bit roller 6[22]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[51](AP)
+    AND
+      +roller 6 pos[2]
+      -ind ab bit[67](RA_RB)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[19](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[23]
+  NOT
+    -not bit roller 6[23]
+-not bit roller 6[23]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[52](AP)
+    AND
+      +roller 6 pos[2]
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[20](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[24]
+  NOT
+    -not bit roller 6[24]
+-not bit roller 6[24]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[53](AP)
+    AND
+      +roller 6 pos[2]
+      -ind abc[0](CW)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[21](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[25]
+  NOT
+    -not bit roller 6[25]
+-not bit roller 6[25]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[54](AP)
+    AND
+      +roller 6 pos[2]
+      -ind abc[1](CW)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[22](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[26]
+  NOT
+    -not bit roller 6[26]
+-not bit roller 6[26]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[55](AP)
+    AND
+      +roller 6 pos[2]
+      -ind abc[2](CW)
+    AND
+      +roller 6 pos[3]
+      -ind ic bit[23](CA)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[27]
+  NOT
+    -not bit roller 6[27]
+-not bit roller 6[27]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl parity 56-63(AP)
+    AND
+      +roller 6 pos[2]
+      -ind paddl parity 64-67(AP)
+    AND
+      +roller 6 pos[3]
+      -ind saddl parity(AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[28]
+  NOT
+    -not bit roller 6[28]
+-not bit roller 6[28]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[56](AP)
+    AND
+      +roller 6 pos[2]
+      -ind paddl[64](AP)
+    AND
+      +roller 6 pos[3]
+      -ind saddl[0](AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[29]
+  NOT
+    -not bit roller 6[29]
+-not bit roller 6[29]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[57](AP)
+    AND
+      +roller 6 pos[2]
+      -ind paddl[65](AP)
+    AND
+      +roller 6 pos[3]
+      -ind saddl[1](AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[30]
+  NOT
+    -not bit roller 6[30]
+-not bit roller 6[30]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[58](AP)
+    AND
+      +roller 6 pos[2]
+      -ind paddl[66](AP)
+    AND
+      +roller 6 pos[3]
+      -ind saddl[2](AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[31]
+  NOT
+    -not bit roller 6[31]
+-not bit roller 6[31]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[59](AP)
+    AND
+      +roller 6 pos[2]
+      -ind paddl[67](AP)
+    AND
+      +roller 6 pos[3]
+      -ind saddl[3](AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[32]
+  NOT
+    -not bit roller 6[32]
+-not bit roller 6[32]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[60](AP)
+    AND
+      +roller 6 pos[2]
+      -ind insert ls sign(RS_RT)
+    AND
+      +roller 6 pos[3]
+      -ind saddl[4](AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[33]
+  NOT
+    -not bit roller 6[33]
+-not bit roller 6[33]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[61](AP)
+    AND
+      +roller 6 pos[2]
+      -ind stc[0](CS)
+    AND
+      +roller 6 pos[3]
+      -ind saddl[5](AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[34]
+  NOT
+    -not bit roller 6[34]
+-not bit roller 6[34]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[62](AP)
+    AND
+      +roller 6 pos[2]
+      -ind stc[1](CS)
+    AND
+      +roller 6 pos[3]
+      -ind saddl[6](AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]
+-ind roller 6 bit[35]
+  NOT
+    -not bit roller 6[35]
+-not bit roller 6[35]
+  NOR
+    AND
+      +roller 6 pos[1]
+      -ind paddl[63](AP)
+    AND
+      +roller 6 pos[2]
+      -ind stc[2](CS)
+    AND
+      +roller 6 pos[3]
+      -ind saddl[7](AS)
+    AND
+      +roller 6 pos[4]
+    AND
+      +roller 6 pos[5]
+    AND
+      +roller 6 pos[6]

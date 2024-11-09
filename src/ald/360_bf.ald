@@ -1,0 +1,270 @@
+SECTION BF
+
+; PAGE BF001
+
+-+9020 out bus bit[0..23]
+  NOT
+    +temp[0..23]
+      NOT
+        -temp[0..23]
+          NOR
+            AND
+              +ext reg[0..23]
+              +gate ext reg to ls bus 00-31
+
+; PAGE BF075
+
+-+9020 out bus bit p00-07
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            AND
+              +ext reg p 00-07
+              +gate ext reg to ls bus 00-31
+
+; PAGE BF155
+
+-+9020 out bus bit p08-15
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            AND
+              +ext reg p 08-15
+              +gate ext reg to ls bus 00-31
+
+; PAGE BF235
+
+-+9020 out bus bit p16-23
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            AND
+              +ext reg p 16-23
+              +gate ext reg to ls bus 00-31
+
+; PAGE BF241
+
+-+9020 out bus bit[24..31]
+  NOT
+    +temp[24..31]
+      NOT
+        -temp[24..31]
+          NOR
+            AND
+              +ext reg[24..31]
+              +gate ext reg to ls bus 00-31
+            AND
+              +g reg bit[0..7]
+              +gate g reg to ls bus 24-31
+
+; PAGE BF315
+
+-+9020 out bus bit p24-31
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            AND
+              +ext reg p 24-31
+              +gate ext reg to ls bus 00-31
+            AND
+              +g reg p 00-07
+              +gate g reg to ls bus 24-31
+
+; PAGE BF401
+
+-local store bus[0..31]
+  NOT
+    +local store bus[0..31](LS)
+
+-error on ls bus 00-07
+  XOR
+    +local store bus[0..7](LS)
+    +local store bus p00-07(LS)
+
+-local store bus p00-07
+  NOR
+    AND
+      +local store bus p00-07(LS)
+      -temp gen p
+    AND
+      NOT
+        XOR
+          +local store bus[0..7](LS)
+      +temp gen p
+
+-temp gen p
+  NOT
+    +temp gen p
++temp gen p
+  NOT
+    -gen l s buss parity(DR)
+-generate ls bus parity
+  -gen l s buss parity(DR)
+
+; PAGE BF411
+
+-error on ls bus 08-15
+  XOR
+    +local store bus[8..15](LS)
+    +local store bus p08-15(LS)
+
+-local store bus p08-15
+  NOR
+    AND
+      +local store bus p08-15(LS)
+      -temp gen p
+    AND
+      NOT
+        XOR
+          +local store bus[8..15](LS)
+      +temp gen p
+
+; PAGE BF421
+
+-error on ls bus 16-23
+  XOR
+    +local store bus[16..23](LS)
+    +local store bus p16-23(LS)
+
+-local store bus p16-23
+  NOR
+    AND
+      +local store bus p16-23(LS)
+      -temp gen p
+    AND
+      NOT
+        XOR
+          +local store bus[16..23](LS)
+      +temp gen p
+
+; PAGE BF431
+
+-error on ls bus 24-31
+  XOR
+    +local store bus[24..31](LS)
+    +local store bus p24-31(LS)
+
+-local store bus p24-31
+  NOR
+    AND
+      +local store bus p24-31(LS)
+      -temp gen p
+    AND
+      NOT
+        XOR
+          +local store bus[24..31](LS)
+      +temp gen p
+
++not generating ls bus parity
+  -temp gen p
+
+; PAGE BF441
+
+-ind local store bus pty chk
+  NOT
+    +local store bus parity check
++local store bus parity check
+  NOT
+    -local store bus parity check
+-local store bus parity check
+  NOR
+    AND
+      +st bit[61](RS_RT)
+      +scan in word[7](KU)
+    AND
+      +sample two(ZA)
+      +temp par err
+      +temp ck par
+    AND
+      -temp
+        NOT
+          +error reset(MB)
+      +local store bus parity check
+
++temp par err
+  ORNOT
+    -error on ls bus 00-07
+    -error on ls bus 08-15
+    -error on ls bus 16-23
+    -error on ls bus 24-31
+
++temp ck par
+  NOT
+    -temp
+      NOR
+        AND
+          +temp par err
+          +sample one(ZA)
+          +temp
+            NOT
+              -temp
+                NAND
+                  +not generating ls bus parity
+                  -temp
+                    NOT
+                      +block i fetch tgr(KD)
+                  -temp
+                    NOT
+                      -ros data lth 10 or 11(RY)
+        AND
+          -reset(ZA)
+          +temp ck par
+
+; PAGE BF501
+
++ext reg[0..31]
+  +external register[0..31](FE)
+
++ext reg p 00-07
+  +external register p00-07(FE)
++ext reg p 08-15
+  +external register p08-15(FE)
++ext reg p 16-23
+  +external register p16-23(FE)
++ext reg p 24-31
+  +external register p24-31(FE)
+
+; PAGE BF601
+
++g reg bit[0..7]
+  NOT
+    -g reg bit[0..7](RG)
++g reg p 00-07
+  NOT
+    -g reg bit p0-7(RG)
+
+; PAGE BF701
+
++gate ext reg to ls bus 00-31
+  NOT
+    -gate external reg to ls bus
+-gate external reg to ls bus
+  NAND
+    +temp
+      NOT
+        -+9020 regs to ls bus out(RY)
+    +temp
+      NOT
+        -select ext reg(DR)
+
+; PAGE BF711
+
++gate g reg to ls bus 24-31
+  NOT
+    -gate g reg to ls bus
+-gate g reg to ls bus
+  NAND
+    +temp
+      NOT
+        -+9020 regs to ls bus out(RY)
+    +temp
+      NOT
+        -select g reg(DR)

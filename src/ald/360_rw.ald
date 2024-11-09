@@ -1,0 +1,828 @@
+SECTION RW
+
+; PAGE RW011
+
++psw to st reg bit[0..12]
+  NOT
+    -psw bit[0..12]
++psw bit[0..39]
+  NOT
+    -psw bit[0..39]
+-psw bit[0..7]
+  NOR
+    AND
+      +st bus[0..7](RS_RT)
+      +gate st to psw 0 to 7
+    AND
+      -gate st to psw 0 to 7
+      +psw bit[0..7]
+
++mask a
+  +psw bit[0]
+-ind chan mask a
+  NOT
+    +mask a
+
++mask 1a
+  +psw bit[1]
+-ind chan mask 1a
+  NOT
+    +mask 1a
+
++mask 2a
+  +psw bit[2]
+-ind chan mask 2a
+  NOT
+    +mask 2a
+
+; PAGE RW031
+
++mask 3a
+  +psw bit[3]
+-ind chan mask 3a
+  NOT
+    +mask 3a
+
++mask b
+  +psw bit[4]
+-ind mask b
+  NOT
+    +mask b
+
++mask 1b
+  +psw bit[5]
+-ind mask 1b
+  NOT
+    +mask 1b
+
+; PAGE RW061
+
++mask 2b
+  +psw bit[6]
+-ind mask 2b
+  NOT
+    +mask 2b
+
+-psw ext mask bit
+  -psw bit[7]
+-ind external mask
+  NOT
+    +psw bit[7]
+
++psw to st reg parity 0-7
+  NOT
+    -temp
+      NOR
+        AND
+          +st bus parity 00-07(RS_RT)
+          +gate st to psw 0 to 7
+        AND
+          -gate st to psw 0 to 7
+          +psw to st reg parity 0-7
+-ind psw parity 0 to 7
+  NOT
+    +psw to st reg parity 0-7
+
++gate st to psw 0 to 7
+  NOT
+    -gate st to psw 0 to 7
+-gate st to psw 0 to 7
+  NAND
+    +temp
+      ORNOT
+        -gt s 00-07 to psw sys mask(DR)
+        -gt st 00-39 to psw(DR)
+    +clock p2
+
++gate st to psw 16 to 19
+  NOT
+    -gate st to psw 16 to 19
+-gate st to psw 16 to 19
+  NAND
+    +temp
+      ORNOT
+        -gt s 00-07 to psw sys mask(DR)
+        -gt st 00-39 to psw(DR)
+    +clock p2
+
+; PAGE RW081
+
+-psw bit[8..15]
+  NOR
+    AND
+      +st bus[8..15](RS_RT)
+      +gate st to psw 8 to 15
+    AND
+      -gate st to psw 8 to 15
+      +psw bit[8..15]
+
++gate st to psw 8 to 15
+  NOT
+    -gate st to psw 8 to 15
+-gate st to psw 8 to 15
+  NAND
+    +temp
+      NOT
+        -early decode st08-15 to psw(DR)
+    +temp
+      NOT
+        -temp rw081 td out
+SPECIAL
+  TD50NS
+    -temp rw081 td in
+    OUT
+    -temp rw081 td out
+
+-temp rw081 td in
+  NOT
+    +clock p2
+
++storage key bit[8..11]
+  +psw bit[8..11]
+-ind storage protect key bit[8..11]
+  NOT
+    +psw bit[8..11]
+
+; PAGE RW101
+
++storage key parity
+  NOT
+    XOR
+      +psw parity 8-15
+      +psw bit[12..15]
+
+; PAGE RW121
+
+-ind ascii
+  NOT
+    -psw ascii bit 12
+-psw ascii bit 12
+  NOT
+    +psw ascii bit 12
++psw ascii bit 12
+  +psw bit[12]
+
+-ind machine check mask
+  -psw bit 13 mck mask
+-psw bit 13 mck mask
+  NOT
+    +psw bit[13]
+
++psw to st reg bit[13]
+  NOT
+    -machine check mask trigger
+-machine check mask trigger
+  NOR
+    AND
+      +psw bit[13]
+      +clock p0(KM)
+    AND
+      -temp
+        NAND
+          +clock p0(KM)
+          -psw bit[13]
+      +temp
+        NOT
+          -machine check mask trigger
+
++psw to st reg bit[14..19]
+  NOT
+    -psw bit[14..19]
++psw to st reg bit[20..31]
+  NOT
+    -psw to st reg bit[20..31](KN)
++psw to st reg bit[32..39]
+  NOT
+    -psw bit[32..39]
+
+-ind wait state
+  -wait state
+-wait state
+  NOT
+    +wait state
++psw wait state mask bit
+  +wait state
++wait state
+  +psw bit[14]
+
+; PAGE RW151
+
+-ind problem state
+  NOT
+    -supervisor mode
+-supervisor mode
+  +psw bit[15]
+
++psw to st reg parity 8-15
+  +psw parity 8-15
+-ind psw parity 8 to 15
+  NOT
+    +psw parity 8-15
++psw parity 8-15
+  NOT
+    -psw parity 8-15
+-psw parity 8-15
+  NOR
+    AND
+      +st bus parity 08-15(RS_RT)
+      +gate st to psw 8 to 15
+    AND
+      -gate st to psw 8 to 15
+      +psw parity 8-15
+
+; PAGE RW161
+
+-psw bit[16..19]
+  NOR
+    AND
+      +st bus[16..19](RS_RT)
+      +gate st to psw 16 to 19
+;    AND
+;      -gate st to psw 16 to 19
+;      +psw bit[16..19]
+;      -+360 mode
+
+-ind mask 3b
+  -mask 3b
+-mask 3b
+  NOT
+    +mask 3b
++mask 3b
+  +psw bit[16]
+
+-ind mask c
+  -mask c
+-mask c
+  NOT
+    +mask c
++mask c
+  +psw bit[17]
+
+-ind mask 1c
+  -mask 1c
+-mask 1c
+  NOT
+    +mask 1c
++mask 1c
+  +psw bit[18]
+
+-ind mask 2c
+  -mask 2c
+-mask 2c
+  NOT
+    +mask 2c
++mask 2c
+  +psw bit[19]
+
+; PAGE RW321
+
++clock p2
+  NOT
+    +not clock p1
++not clock p1
+  NOT
+    +clock p0(KM)
+
++execute in progress tgrs
+  +execute in progress tgr(KM)
+
+-psw bit[32]
+  OR
+    +temp
+      NOT
+        -block ilc on late stor prot(KM)
+    AND
+      -temp exec in prog
+      -temp e0
+      -temp e1
+-psw bit[33]
+  OR
+    AND
+      -temp e1
+      +temp e0
+    AND
+      -temp e0
+      +temp e1
+    +temp
+      ORNOT
+        -block ilc on late stor prot(KM)
+        -temp exec in prog
+
+-temp exec in prog
+  NOT
+    +execute in progress tgr(KM)
++temp e0
+  NOT
+    -temp e0
+-temp e0
+  NOT
+    +e bit[0](RE)
++temp e1
+  NOT
+    -temp e1
+-temp e1
+  NOT
+    +e bit[1](RE)
+
+; PAGE RW341
+
++condition code bit 10
+  ORNOT
+    -temp
+      NOR
+        AND
+          +stat h
+          +stat a
+          +test under mask(DN)
+        AND
+          -stat a
+          +temp rw341 3c as
+          +result positive
+        AND
+          +stat a
+          +translate + edit(KM)
+          +temp
+            ORNOT
+              -set code 10 edit or editOmrk
+              -set code 10 translateOtest
+        AND
+          +floating point be4(KM)
+          -stat a
+          -temp rw341 2f ab
+    -i-o condition code 10(KX)
+    -set cc 10 dec comp+add type
+    -code 10 compare log si + ss
+    -code 10 comp+comp log+add log
+    -temp rw341 6m af
++temp rw341 3c as
+  ORNOT
+    -temp
+      NAND
+        +fixed point(DN)
+        -block normal fxp cc setting
+    -temp
+      NAND
+        +e bit[6](RE)
+        +shift instruction
+        -block normal fxp cc setting
+-temp rw341 2f ab
+  NOT
+    +result sign minus(DN)
+-temp rw341 6m af
+  NOT
+    +temp
+      ORNOT
+        -temp
+          NAND
+            +stat b
+            +temp rw341 3c as
+        -decimal add type overflow
+        -set fxp add log rr+rx ovflow
+
++shift instruction
+  NOT
+    -shift instruction(KM)
+
++s trigger
+  NOT
+    -s trigger
+-s trigger
+  NOT
+    +s trigger(KZ)
+
++condition code bit 01
+  ORNOT
+    -temp
+      NOR
+        AND
+          +test under mask(DN)
+          +stat a
+        AND
+          +result negative
+          +temp rw341 3c as
+          -stat a
+        AND
+          +translate + edit(KM)
+          +stat a
+          +temp
+            ORNOT
+              -set code 01 edit or editOmrk
+              -set code 01 translateOtest
+        AND
+          -stat a
+          +floating point be4(KM)
+          +temp
+            NOT
+              -temp rw341 2f ab
+    -temp rw341 6m af
+    -i-o condition code 01(KX)
+    -set cc 01 dec comp+add type
+    -set 01 on and+or+exclusive or
+    -cd01+tstOset + comp log si+ss
+    -code 01 comp+comp log+add log
+
+; PAGE RW342
+
++decimal compare au4
+  +decimal compare(DN)
++decimal compare bd4
+  NOT
+    -temp
+      NOT
+        +decimal compare(DN)
+
+-set cc 01 dec comp+add type
+  NOR
+    AND
+      +stat a
+      +stat f
+      +stat h
+      +decimal compare bd4
+    AND
+      +stat c
+      +stat f
+      +stat h
+      +decimal compare bd4
+    AND
+      +stat a
+      +stat c
+      -stat h
+      +decimal compare bd4
+    AND
+      +stat a
+      +stat f
+      +dec add + sub +zeroOadd(DN)
+
+-set cc 10 dec comp+add type
+  NOR
+    AND
+      +stat a
+      -stat f
+      +stat h
+      +decimal compare bd4
+    AND
+      +stat a
+      -stat c
+      -stat h
+      +decimal compare bd4
+    AND
+      -stat c
+      -stat f
+      +stat h
+      +decimal compare bd4
+    AND
+      +stat a
+      -stat f
+      +dec add + sub +zeroOadd(DN)
+      
+-and+or+exclusive or insts
+  NOT
+    +and+or+exclusive or insts(DN)
+
+-block set cr on log shifts
+  NAND
+    -e bit[6](RE)
+    +shift instruction
+
+-set code 10 edit or editOmrk
+  NAND
+    -s trigger
+    +e bit[6](RE)
+
+-set code 01 edit or editOmrk
+  NAND
+    +s trigger
+    +e bit[6](RE)
+
+-decimal add type overflow
+  NAND
+    +dec add + sub +zeroOadd(DN)
+    +stat b
+
+-set 01 on and+or+exclusive or
+  NAND
+    +stat a
+    +and+or+exclusive or insts(DN)
+
+-set code 10 translateOtest
+  NAND
+    +stat g
+    -e bit[6](RE)
+-set code 01 translateOtest
+  NAND
+    -stat g
+    -e bit[6](RE)
+
+; PAGE RW343
+
++fixed point compare
+  NOT
+    -fixed point compare(DN)
+
+-block normal fxp cc setting
+  NOT
+    +temp
+      ORNOT
+        -fixed point compare(DN)
+        -logical compare si + ss(DN)
+        -and+or+exclusive or insts
+        -add + sub logical(DN)
+        -logical compare rr+rx(DN)
+
+-set fxp add log rr+rx ovflow
+  NAND
+    +temp add + sub logical
+    +temp ab bit 31
+    -stat a
++temp add + sub logical
+  NOT
+    -add + sub logical(DN)
+-temp ab bit 31
+  NOT
+    +temp ab bit 31
++temp ab bit 31
+  NOT
+    -ab bit[31](RA_RB)
+
+-code 01 comp+comp log+add log
+  NOR
+    AND
+      -temp ab bit 31
+      +temp add + sub logical
+      -stat a
+    AND
+      +temp logical compare rr+rx
+      -temp ab bit 31
+      -stat a
+    AND
+      -stat a
+      +temp
+        NOT
+          +temp rw343 1g ah
+      +fixed point compare
+-code 10 comp+comp log+add log
+  NOR
+    AND
+      +temp add + sub logical
+      +stat a
+      +temp ab bit 31      
+    AND
+      +temp ab bit 31      
+      -stat a
+      +temp logical compare rr+rx
+    AND
+      -stat a
+      +temp rw343 1g ah
+      +fixed point compare
++temp logical compare rr+rx
+  NOT
+    -logical compare rr+rx(DN)
++temp rw343 1g ah
+  XOR
+    +st bus[32](RS_RT)
+    -stat b
+
++result positive
+  NOT
+    +result negative
++result negative
+  NOR
+    AND
+      -ab bit 00 to cond code(RA_RB)
+      +temp
+        NOT
+          -temp rw343 3l bs
+    AND
+      -temp rw343 3l bs
+      -st bit[32](RS_RT)
+-temp rw343 3l bs
+  NAND
+    +shift instruction
+    +e bit[5](RE)
+
+-code 10 compare log si + ss
+  NAND
+    +stat a
+    +temp rw343 2k bm
+    +stat h
++temp rw343 2k bm
+  NOT
+    -logical compare si + ss(DN)
+
+-cd01+tstOset + comp log si+ss
+  NOR
+    AND
+      +stat a
+      +temp rw343 2k bm
+      -stat h
+    AND
+      +temp
+        NOT
+          -op decode test and set instr(DN)
+      +st bus[32](RS_RT)
+
+; PAGE RW344
+
++stat a
+  NOT
+    -stat a
+-stat a
+  NOT
+    +staa bus(DS)
+
++stat b
+  NOT
+    -stat b
+-stat b
+  NOT
+    +stab bus(DS)
+
++stat c
+  NOT
+    -stat c
+-stat c
+  NOT
+    +stac bus(DS)
++stat c bus
+  +stac bus(DS)
+
++stat d
+  +stad bus(DS)
+
++stat f
+  NOT
+    -stat f
+-stat f
+  NOT
+    +staf bus(DS)
++stat f bus
+  +staf bus(DS)
+
++stat g
+  NOT
+    -stat g
+-stat g
+  NOT
+    +stag bus(DS)
++stat g bus
+  +stag bus(DS)
+
++stat h
+  NOT
+    -stat h
+-stat h
+  NOT
+    +stah bus(DS)
++stat h bus
+  +stah bus(DS)
+
+; PAGE RW351
+
+DECODE
+  +temp cond eq[0..3]
+  +condition register[0..1]
+
+-condition met for br on cond
+  NOR
+    +temp[0..3]
+      AND
+        +temp cond eq[0..3]
+        +e bit[8..11](RE)
+
+; PAGE RW352
+
+-ind condition register[0..1]
+  NOT
+    +condition register[0..1]
+-condition register[0..1]
+  -psw bit[34..35]
++condition register[0..1]
+  +psw bit[34..35]
+
+-psw bit[34]
+  NOR
+    AND
+      +set condition code 10(DR)
+      +temp rw352 3g ap
+    AND
+      +temp rw352 3f an
+      -wrd ioce logout
+      +condition code bit 10
+    AND
+      +st bus[34](RS_RT)
+      +gate st to psw 34 to 39
+    AND
+      -temp rw352 2f aj
+      -temp rw352 2g am
+      -gate st to psw 34 to 39
+      +psw bit[34]
+
+-psw bit[35]
+  NOR
+    NOT
+      -timeout wrap or l o stor(KU)
+    AND
+      +set condition code 01(DR)
+      +temp rw352 3g ap
+    AND
+      +temp rw352 3f an
+      -wrd ioce logout
+      +condition code bit 01
+    AND
+      +st bus[35](RS_RT)
+      +gate st to psw 34 to 39
+    AND
+      -temp rw352 2f aj
+      -temp rw352 2g am
+      -gate st to psw 34 to 39
+      +psw bit[35]
+
+-wrd ioce logout
+  -wrd ioce logout(KX)
+
++temp rw352 3f an
+  NOT
+    -temp rw352 2f aj
+-temp rw352 2f aj
+  NAND
+    +rosr set condition reg(DR)
+    -block set cr on log shifts
+    -block cond code 4 O not 8(KM)
+    +not clock p1
++temp rw352 3g ap
+  NOT
+    -temp rw352 2g am
+-temp rw352 2g am
+  NAND
+    +not clock p1
+    +set condition code(DR)
+
+; PAGE RW361
+
+-psw bit[36..39]
+  NOR
+    AND
+      +st bus[36..39](RS_RT)
+      +gate st to psw 34 to 39
+    AND
+      -gate st to psw 34 to 39
+      +psw bit[36..39]
+
++gate st to psw 34 to 39
+  NOT
+    -gate st to psw 34 to 39
+-gate st to psw 34 to 39
+  NAND
+    +clock p2
+    +temp
+      ORNOT
+        -gt st 00-39 to psw(DR)
+        -gt t 32-39 to psw prog mask(DR)
+
+-ind fixed point overflow mask
+  NOT
+    +psw bit[36]
++fixed point overflow mask
+  +psw bit[36]
+-fixed point overflow mask
+  -psw bit[36]
+
+-ind decimal overflow mask
+  NOT
+    +psw bit[37]
++decimal overflow mask
+  +psw bit[37]
+-decimal overflow mask
+  -psw bit[37]
+
+; PAGE RW 381
+
+-ind exponent underflow mask
+  NOT
+    +psw bit[38]
++exponent underflow mask
+  +psw bit[38]
+-exponent underflow mask
+  -psw bit[38]
+
+-ind significance mask
+  NOT
+    +psw bit[39]
+
++psw to st reg parity 32-39
+  NOT
+    XOR
+      +psw bit[32..39]
+
+
+; LOOSE
+
++psw to st reg parity 16-23
+  +parity 16-23 to st reg(KN)
+;  NOT
+;    XOR
+;      +psw bit[16..19]
+
++psw to st reg parity 24-31
+  +psw to st reg parity 24-31(KN)
+;  1

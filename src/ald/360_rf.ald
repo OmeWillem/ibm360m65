@@ -1,0 +1,320 @@
+SECTION RF
+
+; PAGE RF001
+
+-ind f reg[0..7]
+  +f bit[0..7]
+
++f bit[0..3]
+  NOT
+    -f bit[0..3]
+-f bit[0..3]
+  NOR
+    AND
+      +saddl[0..3](AS)
+      +sal 00-03 to f 00-03
+    AND
+      +st bus[36..39](RS_RT)
+      +scan in word 5
+    AND
+      +insert key to f00-f04
+      +out key[0..3](WA)
+    AND
+      -reset f00-03
+      +f bit[0..3]
+       
+-f siba[0..7]
+  NAND
+    +f bit[0..7]
+    +f to sba 00-07
+
+; PAGE RF041
+
++f bit[4]
+  NOT
+    -f bit[4]
+-f bit[4]
+  NOR
+    AND
+      +saddl[4](AS)
+      +sal 04-07 to f 04-07
+    AND
+      +st bus[36](RS_RT)
+      +scan in word 4
+    AND
+      +insert key to f00-f04
+      +out key[4](WA)
+    AND
+      +pir[1](KM)
+      +gate proc int reg to f
+    AND
+      -reset f04-07
+      +f bit[4]
+
+; PAGE RF051
+
++f bit[5..6]
+  NOT
+    -f bit[5..6]
+-f bit[5..6]
+  NOR
+    AND
+      +saddl[5..6](AS)
+      +sal 04-07 to f 04-07
+    AND
+      +st bus[37..38](RS_RT)
+      +scan in word 4
+    AND
+      +pir[2..3](KM)
+      +gate proc int reg to f
+    AND
+      -reset f04-07
+      +f bit[5..6]
+
+; PAGE RF071
+
++f bit[7]
+  NOT
+    -f bit[7]
+-f bit[7]
+  NOR
+    AND
+      +saddl[7](AS)
+      +sal 04-07 to f 04-07
+    AND
+      +st bus[39](RS_RT)
+      +scan in word 4
+    AND
+      -reset f04-07
+      +f bit[7]
+ 
++parity f00-f04
+  XOR
+    -f bit[5..7]
+    -temp f parity
+-temp f parity
+  NOR
+    AND
+      +sal 00-03 to f 00-03
+      +sal 04-07 to f 04-07
+      +saddl parity(AS)
+    AND
+      +sal 00-03 to f 00-03
+      +set p if gating sal 00-03
+      -block set sal to f parity
+    AND
+      +sal 04-07 to f 04-07
+      +set p if gating sal 04-07
+      -block set sal to f parity
+    AND
+      +out key parity(WA)
+      +insert key to f00-f04
+    AND
+      +st bus[40](RS_RT)
+      +scan in word 4
+    AND
+      -reset f00-03
+      -reset f04-07
+      +temp f parity
++temp f parity
+  ORNOT
+    -temp f parity
+    -temp
+      NAND
+        +pir parity(KM)
+        +gate proc int reg to f
+
+-ind f reg parity
+  NOT
+    +temp f parity
+
+-f siba parity
+  NAND
+    +temp f parity
+    +f to sba 00-07
+
++f parity 04-07
+  XOR
+    +temp f parity
+    +f bit[0..3]
+
+; PAGE RF101
+
++f4-7 neq 1101or1011
+  NOR
+    AND
+      +f bit[4..5]
+      -f bit[6]
+      +f bit[7]
+    AND
+      +f bit[4]
+      -f bit[5]
+      +f bit[6..7]
++f4-7 neq 0001
+  NAND
+    -f bit[4..6]
+    +f bit[7]
++f4-7 neq 1001
+  NAND
+    +f bit[4]
+    -f bit[5..6]
+    +f bit[7]
+
++scan in word 4
+  NOT
+    -scan in word[4](KU)
++scan in word 5
+  NOT
+    -scan in word[5](KU)
+
+; PAGE RF701
+
+-gt proc intr reg to f
+  NOT
+    +pir to f reg bits 04-06(DR)
++gate proc int reg to f
+  NOT
+    -temp
+      NAND
+        +pir to f reg bits 04-06(DR)
+        +clock p0(AS)
+-gt se definition to f
+  NOT
+    +se def to f reg(DR)
++gate se definition to f
+  NOT
+    -temp
+      NAND
+        +se def to f reg(DR)
+        +clock p0(AS)
+
+-gate pir to f
+  -gt proc intr reg to f
+
+; PAGE RF801
+
++f to sba 00-07
+  NOT
+    -temp
+      NOR
+        AND
+          +gt f to siba(RA_RB)
+          +clock p2(AS)
+        AND
+          -clock p1(AS)
+          +f to sba 00-07
+
++temp log func
+  NOT
+    -temp
+      NOR
+        AND
+          -temp
+            +clock p2(AS)
+          +logical function(AS)
+        AND
+          +clock p2(AS)
+          +temp log func
+
++temp s4-7 pty
+  NOT
+    -temp
+      NOR
+        AND
+          +temp log func
+          -temp
+            NOT
+              XOR
+                +saddl[4..7](AS)
+        AND
+          -temp
+            NOT
+              +temp log func
+          +temp
+            NOT
+              -saddl even parity bits 04-07(AS)
+
++set p if gating sal 04-07
+  NOT
+    XOR
+      +f bit[0..3]
+      +temp s4-7 pty
+
++set p if gating sal 00-03
+  NOT
+    XOR
+      +f bit[4..7]
+      +saddl parity(AS)
+      +temp s4-7 pty
+
+; PAGE RF901
+
+-block set sal to f parity
+  NAND
+    +sal 00-03 to f 00-03
+    +sal 04-07 to f 04-07
+
++sal 00-03 to f 00-03
+  NOT
+    -temp
+      NAND
+        +temp
+          NOT
+            -gt sal 00-03 to f 00-03(DR)
+        +clock p0(AS)
+
++sal 04-07 to f 04-07
+  NOT
+    -temp
+      NAND
+        +temp
+          NOT
+            -gt sal 04-07 to f 04-07(DR)
+        +clock p0(AS)
+
++insert key to f00-f04
+  NOT
+    -temp
+      NAND
+        +temp ins ky
+        +temp gate ky
++temp ins ky
+  NOT
+    -insert key(MC)
++temp gate ky
+  NOT
+    -gate keys to f00-04(MC)
+
+-reset f00-03
+  NOR
+    AND
+      +scan in word 5
+      +clock p4(AS)
+    AND
+      +temp ins ky
+      +temp gate ky
+    AND
+      +temp
+        ORNOT
+          -gt se definition to f
+          -gt sal 00-03 to f 00-03(DR)
+          -gt proc intr reg to f
+      +clock p0(AS)
+
+-reset f04-07
+  NOR
+    AND
+      +scan in word 4
+      +clock p4(AS)
+    AND
+      +temp ins ky
+      +temp gate ky
+    AND
+      +temp
+        ORNOT
+          -gt se definition to f
+          -gt sal 04-07 to f 04-07(DR)
+          -gt proc intr reg to f
+      +clock p0(AS)
+      
+      

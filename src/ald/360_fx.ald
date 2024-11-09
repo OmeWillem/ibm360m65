@@ -1,0 +1,82 @@
+SECTION FX
+
+; PAGE FX401
+
++ioce 1 ext int
+  NOT
+    -wrd ext intrpt ioce 1(WA)
+
++i-o int req ioce 1
+  NOT
+    -i-o intrpt req ioce 1(WA)
+
++mck int req ioce 1
+  NOT
+    -mck int req ioce 1(WA)
+
+; PAGE FX421
+
++cond code pos 0 ioce 1
+  +cond code pos 0 ioce 1(WA)
+-cond code pos 0 ioce 1
+  NOT
+    +cond code pos 0 ioce 1(WA)
+
++cond code pos 1 ioce 1
+  +cond code pos 1 ioce 1(WA)
+-cond code pos 1 ioce 1
+  NOT
+    +cond code pos 1 ioce 1(WA)
+
++psa lock out ioce 1
+  +psa lockout ioce 1(WA)
+-psa lock out ioce 1
+  NOT
+    +psa lockout ioce 1(WA)
+
++response ioce 1
+  +response ioce 1(WA)
+-response ioce 1
+  NOT
+    +response ioce 1(WA)
+
++reset ros timer ioce 1
+  +reset ros timer ioce 1(WA)
+-reset ros timer ioce 1
+  NOT
+    +reset ros timer ioce 1(WA)
+
+-elc ioce 1
+  -elc ioce 1(WA)
++elc ioce 1
+  NOT
+    -elc ioce 1(WA)
+
++check response ioce 1
+  +check response ioce 1(WA)
+-check response ioce 1
+  NOT
+    +check response ioce 1(WA)
+
++flt complete ioce 1
+  +flt complete ioce 1(WA)
+-flt complete ioce 1
+  NOT
+    +flt complete ioce 1(WA)
+
++tic ioce 1
+  +tic ioce 1(WA)
+-tic ioce 1
+  NOT
+    +tic ioce 1(WA)
+
++gap ioce 1
+  +gap ioce 1(WA)
+-gap ioce 1
+  NOT
+    +gap ioce 1(WA)
+
++subsystem reset
+  NOT
+    -subsystem reset(KW)
+

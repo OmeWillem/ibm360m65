@@ -1,0 +1,707 @@
+SECTION RQ
+
+; PAGE RQ001
+
+-ind q bit[0..63]
+  NOT
+    +q[0..63]
++q[0..63]
+  NOT
+    -q[0..63]
+-q[0..63]
+  NOR
+    AND
+      +sdbo[0..63](WA)
+      +gt q
+    AND
+      -reset q
+      +q[0..63]
+
+CLOCK
+
+-q 00-03 eq zero
+  NAND
+    -q[0..3]
+
+; PAGE RQ161
+
+-q 16-19 eq zero
+  NAND
+    -q[16..19]
+
+; PAGE RQ321
+
+-q 32-35 eq zero
+  NAND
+    -q[32..35]
+
+; PAGE RQ481
+
+-q 48-51 eq zero
+  NAND
+    -q[48..51]
+
+; PAGE RQ641
+
+NOCLOCK
+
+-ind q parity 00-07
+  NOT
+    +q parity 00-07
++q parity 00-07
+  NOT
+    -temp
+      NOR
+        AND
+          +sdbo parity[0](WA)
+          +gt q
+        AND
+          -reset q
+          +q parity 00-07
+
+-ind q parity 08-15
+  NOT
+    +q parity 08-15
++q parity 08-15
+  NOT
+    -temp
+      NOR
+        AND
+          +sdbo parity[1](WA)
+          +gt q
+        AND
+          -reset q
+          +q parity 08-15
+
+-ind q parity 16-23
+  NOT
+    +q parity 16-23
++q parity 16-23
+  NOT
+    -temp
+      NOR
+        AND
+          +sdbo parity[2](WA)
+          +gt q
+        AND
+          -reset q
+          +q parity 16-23
+
+-ind q parity 24-31
+  NOT
+    +q parity 24-31
++q parity 24-31
+  NOT
+    -temp
+      NOR
+        AND
+          +sdbo parity[3](WA)
+          +gt q
+        AND
+          -reset q
+          +q parity 24-31
+
+-ind q parity 32-39
+  NOT
+    +q parity 32-39
++q parity 32-39
+  NOT
+    -temp
+      NOR
+        AND
+          +sdbo parity[4](WA)
+          +gt q
+        AND
+          -reset q
+          +q parity 32-39
+
+-ind q parity 40-47
+  NOT
+    +q parity 40-47
++q parity 40-47
+  NOT
+    -temp
+      NOR
+        AND
+          +sdbo parity[5](WA)
+          +gt q
+        AND
+          -reset q
+          +q parity 40-47
+
+-ind q parity 48-55
+  NOT
+    +q parity 48-55
++q parity 48-55
+  NOT
+    -temp
+      NOR
+        AND
+          +sdbo parity[6](WA)
+          +gt q
+        AND
+          -reset q
+          +q parity 48-55
+
+-ind q parity 56-63
+  NOT
+    +q parity 56-63
++q parity 56-63
+  NOT
+    -temp
+      NOR
+        AND
+          +sdbo parity[7](WA)
+          +gt q
+        AND
+          -reset q
+          +q parity 56-63
+
+; PAGE RQ683
+
+CLOCK
+
+-gating q to lal 0000
+  NOR
+    AND
+      -q[0..3]
+      +gt q 00-03 to lal
+    AND
+      -q[16..19]
+      +gt q 16-19 to lal
+    AND
+      -q[32..35]
+      +gt q 32-35 to lal
+    AND
+      -q[48..51]
+      +gt q 48-51 to lal
+
+-r 12-15 eq 0 O not q-r
+  NAND
+    +r 12-15 equals zero(RR)
+    -gate q 00-15 to r(RR)
+    -gate q 16-31 to r(RR)
+    -gate q 32-47 to r(RR)
+
+-pseudo r 12-15 eq 0000
+  NOR
+    AND
+      -q[12..15]
+      +gate q 00-15 to r(RR)
+    AND
+      -q[28..31]
+      +gate q 16-31 to r(RR)
+    AND
+      -q[44..47]
+      +gate q 32-47 to r(RR)
+
+; PAGE RQ701
+
+-q ic paddb bus[52..55]
+  NOR
+    AND
+      +q[4..7]
+      +gt q 04-15+p to pb 52-63
+    AND
+      +q[20..23]
+      +gt q 20-31+p to pb 52-63
+    AND
+      +q[36..39]
+      +gt q 36-47+p to pb 52-63
+    AND
+      +q[52..55]
+      +gt q 52-63+p to pb 52-63
+    AND
+      +ic[12..15](CA)
+      +gt ic 08-15+p to pb 48-55+p(CA)
+
+; PAGE RQ711
+
+-q ic paddb bus[56..59]
+  NOR
+    AND
+      +q[8..11]
+      +gt q 04-15+p to pb 52-63
+    AND
+      +q[24..27]
+      +gt q 20-31+p to pb 52-63
+    AND
+      +q[40..43]
+      +gt q 36-47+p to pb 52-63
+    AND
+      +q[56..59]
+      +gt q 52-63+p to pb 52-63
+    AND
+      +ic[16..19](CA)
+      +gt ic 08-15+p to pb 48-55+p(CA)
+    AND
+      +e bit[8..11](RE)
+      +gt e 08-11+p to pb 56-59
+
+; PAGE RQ721
+
+-q ic paddb bus[60..63]
+  NOR
+    AND
+      +q[12..15]
+      +gt q 04-15+p to pb 52-63
+    AND
+      +q[28..31]
+      +gt q 20-31+p to pb 52-63
+    AND
+      +q[44..47]
+      +gt q 36-47+p to pb 52-63
+    AND
+      +q[60..63]
+      +gt q 52-63+p to pb 52-63
+    AND
+      +ic[20..23](CA)
+      +gt ic 08-15+p to pb 48-55+p(CA)
+    AND
+      +e bit[8..11](RE)
+      +gt e 08-11+p to pb 60-63
+    AND
+      +e bit[12..15](RE)
+      +gt e 12-15+p to pb 60-63
+
+
+; PAGE RQ731
+
+-q ic paddb bus p56-63 O 60-63
+  NOR
+    AND
+      +q parity 08-15
+      +gt q 04-15+p to pb 52-63
+    AND
+      +q parity 24-31
+      +gt q 20-31+p to pb 52-63
+    AND
+      +q parity 40-47
+      +gt q 36-47+p to pb 52-63
+    AND
+      +q parity 56-63
+      +gt q 52-63+p to pb 52-63
+    AND
+      +ic parity 16-23(CA)
+      +gt ic 08-15+p to pb 48-55+p(CA)
+    AND
+      +e reg bits 8-15 even(RE)
+      +gt e 08-11+p to pb 56-59
+    AND
+      +e reg bits 8-11 even(RE)
+      +gt e 08-11+p to pb 60-63
+    AND
+      +parity of e12-15(RE)
+      +gt e 12-15+p to pb 60-63
+      -gct e 08-11+p to pb 56-59
+
+-q ic paddb bus p48-55 O 52-55
+  NOR
+    AND
+      +temp
+        NOT
+          XOR
+            +q[4..7]
+      +gt q 04-15+p to pb 52-63
+    AND
+        NOT
+          XOR
+            +q[20..23]
+      +gt q 20-31+p to pb 52-63
+    AND
+        NOT
+          XOR
+            +q[36..39]
+      +gt q 36-47+p to pb 52-63
+    AND
+        NOT
+          XOR
+            +q[52..55]
+      +gt q 52-63+p to pb 52-63
+    AND
+      +ic parity 08-15(CA)
+      +gt ic 08-15+p to pb 48-55+p(CA)
+
+; PAGE RQ751
+
+-q or r to lal[1..4]
+  NOR
+    AND
+      +q[0..3]
+      +gt q 00-03 to lal
+    AND
+      +q[16..19]
+      +gt q 16-19 to lal
+    AND
+      +q[32..35]
+      +gt q 32-35 to lal
+    AND
+      +q[48..51]
+      +gt q 48-51 to lal
+    AND
+      +r[8..11](RR)
+      +gt r 08-11 to lal
+    AND
+      +r[12..15](RR)
+      +gt r 12-15 to lal
+
+; PAGE RQ771
+
++gt q 00-03 to lal
+  ORNOT
+    -gt q 00-03 to lal 01-04
+    -ros field 38-42 eq[4](DR)
+
++gt q 16-19 to lal
+  ORNOT
+    -gt q 16-19 to lal 01-04
+    -ros field 38-42 eq[5](DR)
+
++gt q 32-35 to lal
+  ORNOT
+    -gt q 32-35 to lal 01-04
+    -ros field 38-42 eq[6](DR)
+
++gt q 48-51 to lal
+  ORNOT
+    -gt q 48-51 to lal 01-04
+    -ros field 38-42 eq[7](DR)
+
++gt r 08-11 to lal
+  ORNOT
+    -gt r 08-11 to lal 01-04
+    -ros field 38-42 eq 1100x(DR)
+
++gt r 12-15 to lal
+  NOT
+    -gt r 12-15 to lal 01-04
+
+; PAGE RQ781
+
+-gt q 00-03 to lal 01-04
+  NOR
+    AND
+      +temp neop
+      +ic[21..22](CA)
+      -temp rr
+    AND
+      +temp beop
+      +temp d[21..22]
+      -temp rr
+
+-gt q 16-19 to lal 01-04
+  NOR
+    AND
+      +temp neop
+      -ic[21..22](CA)
+      -temp rr
+    AND
+      +temp beop
+      -temp d[21..22]
+      -temp rr
+      
+-gt q 32-35 to lal 01-04
+  NOR
+    AND
+      +temp neop
+      -ic[21](CA)
+      +ic[22](CA)
+      -temp rr
+    AND
+      +temp beop
+      -temp d[21]
+      +temp d[22]
+      -temp rr
+
+-gt q 48-51 to lal 01-04
+  NOR
+    AND
+      +temp neop
+      +ic[21](CA)
+      -ic[22](CA)
+      -temp rr
+    AND
+      +temp beop
+      +temp d[21]
+      -temp d[22]
+      -temp rr
+
++temp d[21..22]
+  NOT
+    -temp d[21..22]
+-temp d[21..22]
+  NOT
+    +d bit[21..22](RD)
+
+-gt r 08-11 to lal 01-04
+  NAND
+    +temp rr
+    +temp nbeop
+    -temp br
+
+-gt r 12-15 to lal 01-04
+  NAND
+    +temp rr
+    +temp nbeop
+    +temp br
+
++temp neop
+  NOT
+    -rosr decode norm eop ah4(DR)
++temp beop
+  NOT
+    -rosr decode branch eop ak4(DR)
+
+-temp rr
+  NOT
+    +temp rr
++temp rr
+  NOT
+    -predecode rr format(RR)
+-predecode rr format
+  -predecode rr format(RR)
+
++temp nbeop
+  NOT
+    -rosr norm or branch eop(DR)
+-neop or beop
+  -rosr norm or branch eop(DR)
+
+-temp br
+  NOT
+    +temp br
++temp br
+  NOT
+    -pre decode branch instns(RR)
+-predecode branch instructns
+  -pre decode branch instns(RR)
+
+
+
+
+
+
+
+; PAGE RQ801
+
+-ros bit[97..99]
+  NOT
+    +ros bit[97..99]
++ros bit[97..99]
+  NOT
+    -cros bit[97..99](EF)
+
+DECODE
+  +temp v[0..7]
+  +ros bit[97..99]
+
+-ind gct e 12-15+p to pb 60-63
+  NOT
+    +gt e 12-15+p to pb 60-63
++gt e 12-15+p to pb 60-63
+  NOT
+    -gct e 12-15+p to pb 60-63
+-gct e 12-15+p to pb 60-63
+  NOR
+    AND
+      OR
+        +temp v[1]
+        +temp v[3]
+      +clock p2
+    AND
+      -clock p1
+      +gt e 12-15+p to pb 60-63
+
+-ind gct e 8-11+p to pb 60-63
+  NOT
+    +gt e 08-11+p to pb 60-63
++gt e 08-11+p to pb 60-63
+  NOT
+    -gct e 08-11+p to pb 60-63
+-gct e 08-11+p to pb 60-63
+  NOR
+    AND
+      +temp v[2]
+      +clock p2
+    AND
+      -clock p1
+      +gt e 08-11+p to pb 60-63
+
+-ind gct e 08-11+p to pb 56-59
+  NOT
+    +gt e 08-11+p to pb 56-59
++gt e 08-11+p to pb 56-59
+  NOT
+    -gct e 08-11+p to pb 56-59
+-gct e 08-11+p to pb 56-59
+  NOR
+    AND
+      +temp v[3]
+      +clock p2
+    AND
+      -clock p1
+      +gt e 08-11+p to pb 56-59
+
++not gating e to paddb 56-63
+  NOT
+    +temp
+      ORNOT
+        -gct e 08-11+p to pb 56-59
+        -gct e 08-11+p to pb 60-63
+        -gct e 12-15+p to pb 60-63
+
+; PAGE RQ811
+
++not gating q 04-15 etc to pb
+  NOT
+    +temp
+      ORNOT
+        -gct q 04-15+p to pb 52-63
+        -gct q 20-31+p to pb 52-63
+        -gct q 36-47+p to pb 52-63
+        -gct q 52-63+p to pb 52-63
+
+-gct q 04-15+p to pb 52-63
+  NOR
+    AND
+      +temp v[7]
+      +clock p2
+    AND
+      -clock p1
+      +gt q 04-15+p to pb 52-63
+
+-gct q 20-31+p to pb 52-63
+  NOR
+    AND
+      +temp v[6]
+      +clock p2
+    AND
+      -clock p1
+      +gt q 20-31+p to pb 52-63
+
+-gct q 36-47+p to pb 52-63
+  NOR
+    AND
+      +temp v[5]
+      +clock p2
+    AND
+      -clock p1
+      +gt q 36-47+p to pb 52-63
+
+-gct q 52-63+p to pb 52-63
+  NOR
+    AND
+      +temp v[4]
+      +clock p2
+    AND
+      -clock p1
+      +gt q 52-63+p to pb 52-63
+
+; PAGE RQ815
+
+-ind gct q 04-15+p to pb 52-63
+  NOT
+    +gt q 04-15+p to pb 52-63
++gt q 04-15+p to pb 52-63
+  NOT
+    -gct q 04-15+p to pb 52-63
+
+-ind gct q 20-31+p to pb 52-63
+  NOT
+    +gt q 20-31+p to pb 52-63
++gt q 20-31+p to pb 52-63
+  NOT
+    -gct q 20-31+p to pb 52-63
+
+-ind gct q 36-47+p to pb 52-63
+  NOT
+    +gt q 36-47+p to pb 52-63
++gt q 36-47+p to pb 52-63
+  NOT
+    -gct q 36-47+p to pb 52-63
+
+-ind gct q 52-63+p to pb 52-63
+  NOT
+    +gt q 52-63+p to pb 52-63
++gt q 52-63+p to pb 52-63
+  NOT
+    -gct q 52-63+p to pb 52-63
+
+; PAGE RQ821
+
+NOCLOCK
+
++roslth 97-99 odd
+  NOT
+    -temp
+      NOR
+        AND
+          XOR
+            +ros bit[97..99]
+          +clock p2
+        AND
+          -clock p1
+          +roslth 97-99 odd
+
+; PAGE RQ822
+
+-ind ros bit[97..99]
+  NOT
+    -temp
+      NOR
+        AND
+          -cros bit[97..99](EF)
+          +clock p4
+        AND
+          -clock p3
+          -ind ros bit[97..99]
+
+; PAGE RQ831
+
+CLOCK
+
++clock p4
+  NOT
+    -clock p3
+-clock p3
+  NOT
+    +clock p2
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NAND
+    -inhibit local clock(RS_RT)
+    +clock p0
++clock p0
+  NOT
+    -temp
+      NOT
+        +clock p0 minus 2
++clock p0 minus 2
+  NOT
+    -clock p0 minus 3
+-clock p0 minus 3
+  -clock p0-3 from gate(KC)
+;  NOT
+;    +temp
+;      TD
+;        NOT
+;          -clock b gate bottom(RE)
+;-master clock
+;  -clock b gate bottom(RE)
+
+; PAGE RQ921
+
++gt q
+  NOT
+    -reset q
+-reset q
+  NOT
+    +temp
+      ANDNOT
+        AND
+          -gt sdbo to q 00-63(DR)
+          -if 1 lthOif 3 lth not flt(KD)
+        -clock p0 minus 3
+        +repeat instruction(RR)

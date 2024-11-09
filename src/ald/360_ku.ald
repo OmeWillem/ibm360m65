@@ -1,0 +1,2425 @@
+SECTION KU
+
+; PAGE KU001
+
+-ind mcw[0..7]
+  NOT
+    +mcw bit[0..7]
+
++mcw bit[0..7]
+  NOT
+    -mcw bit[0..7]
+-mcw bit[0..7]
+  NOR
+    AND
+      +st bus[32..39](RS_RT)
+      +gt st bus to mcw 0-7
+    AND
+      -gt st bus to mcw 0-7
+      -machine reset to mcw
+      +mcw bit[0..7]
+
++reverse sab tag parity
+  NOT
+    -reverse sab tag parity
+-reverse sab tag parity
+  NAND
+    +mcw bit[0]
+    -ros test + flt lth
+
++start count on addr comp
+  NOT
+    -temp
+      NAND
+        +mcw bit[1]
+        -ros test + flt lth
+
+-force saddr fs check
+  NAND
+    +mcw bit[2]
+    -ros test + flt lth
+
+-reverse mark parity
+  NAND
+    +mcw bit[3]
+    -ros test + flt lth
+
+-flt ton test light
+  NOT
+    -temp
+      NOT
+        AND
+          -disable interleaving
+          -disable intlv and rev stor
+
+-reverse storage adr par byte 1
+  NAND
+    +mcw bit[4]
+    -ros test + flt lth
+-reverse storage adr par byte 2
+  NAND
+    +mcw bit[5]
+    -ros test + flt lth
+
+; PAGE KU011
+
++right half
+  -mcw bit[4]
++left half
+  +mcw bit[4]
++unconditional termination
+  +mcw bit[5]
+
+; PAGE KU021
+
+-conditional termination
+  -mcw bit[6]
+
++defeat interleave
+  ORNOT
+    -disable interleaving
+    -defeat interleave(KW)
+
+-cond term or wrap
+  NOT
+    +temp
+      ORNOT
+        -mcw bit[6]
+
++expected response
+  +mcw bit[7]
+-expected response
+  -mcw bit[7]
+
+-cpu select
+  NAND
+    -ros test + flt lth
+
+-ind mcw[20]
+  NOT
+    +mcw bit[20]
++mcw bit[20]
+  NOT
+    -mcw bit[20]
+-mcw bit[20]
+  NOR
+    AND
+      +st bus[52](RS_RT)
+      +gt st bus to mcw 0-7
+    AND
+      -gt st bus to mcw 0-7
+      -machine reset to mcw
+      +mcw bit[20]
+
+-scan disable timer
+  NOT
+    +temp
+      ORNOT
+        -ros test + flt lth
+        -mcw bit[20]
+
++defeat intlv and rev stor add
+  ORNOT
+    -disable intlv and rev stor
+    -defeat intlv O rev stor add(KW)
+
+; PAGE KU031
+
++mcw bit[8..10]
+  NOT
+    -mcw bit[8..10]
+-mcw bit[8..10]
+  NOR
+    AND
+      +e reg bit[8..10](KN)
+      -temp
+        NOT
+          +pulse mode adjust tgr(KW)
+      +gt i2 field to mcw
+    AND
+      -machine reset diag i2 field
+      -reset diag i2 field tgrs
+      +mcw bit[8..10]
+
+-ind defeat interleaving
+  AND
+    NOT
+      +temp
+        NOT
+          -defeat interleave(KW)
+    NOT
+      +mcw bit[8]
+-disable interleaving
+  -mcw bit[8]
+
+-ind dis intlv O reverse stor
+  AND
+    NOT
+      +temp
+        NOT
+          -defeat intlv O rev stor add(KW)
+    NOT
+      +mcw bit[9]
+-disable intlv and rev stor
+  -mcw bit[9]
+
++diagnose flt tests
+  +mcw bit[10]
+-diagnose flt tests
+  -mcw bit[10]
+
+; PAGE KU101
+
++set addr seq[0]
+  NOT
+    -set addr seq[0]
+
+SPECIAL
+  PH
+    -address sequence[0]
+    +not split logout
+    INOUT
+    -ind address sequence[0]
+SPECIAL
+  PH
+    -address sequence[1]
+    +not split logout
+    INOUT
+    -ind address sequence[1]
+SPECIAL
+  PH
+    -address sequence[2]
+    +not split logout
+    INOUT
+    -ind address sequence[2]
+SPECIAL
+  PH
+    -address sequence[3]
+    +not split logout
+    INOUT
+    -ind address sequence[3]
+SPECIAL
+  PH
+    -address sequence[4]
+    +not split logout
+    INOUT
+    -ind address sequence[4]
+
+-address sequence a[0..4]
+  NOT
+    +address sequence[0..4]
++address sequence[0..4]
+  NOT
+    -address sequence[0..4]
+-address sequence[0..4]
+  NOR
+    AND
+      +set addr seq[0..4]
+      +clock p0
+    AND
+      +st bus[53..57](RS_RT)
+      +clock p0
+      +gt st to mcw
+    AND
+      +gt sctr latch to addr seq
+      -temp gt sctr[0..4]
+    AND
+      -reset address sequence
+      -reset addr seq
+      +address sequence[0..4]
+
+-temp gt sctr[0]
+  NOR
+    AND
+      -sctr latch[0]
+      +sctr 2 + 3 + 4 latch
+    AND
+      -sctr latch[0]
+      +sctr latch[1]
+    AND
+      +sctr latch[0]
+      -sctr latch[1]
+      -sctr 2 + 3 + 4 latch
+-sctr 2 + 3 + 4 latch
+  NOT
+    +sctr 2 + 3 + 4 latch
++sctr 2 + 3 + 4 latch
+  ORNOT
+    -sctr latch[2..4]
+
++sctr latch[0..4]
+  NOT
+    -sctr latch[0..4]
+-sctr latch[0]
+  NOR
+    AND
+      +address sequence[0]
+      +gt addr seq to sctr lth
+      -clock p1
+    AND
+      +sctr latch[0]
+      +clock p0
+
+; PAGE KU081
+
++diag reverse normal op
+  0
+
+; PAGE KU091
+
++se1 lth
+  0
+
+-reset checks
+  1
+
+; PAGE KU111
+
+-sctr latch[1]
+  NOR
+    AND
+      +address sequence[1]
+      +gt addr seq to sctr lth
+      -clock p1
+    AND
+      +flt counter[0]
+      +gt scan ctr to sctr lth
+      -clock p1
+    AND
+      +sctr latch[1]
+      +clock p0
+
+-temp gt sctr[1]
+  NOR
+    AND
+      -sctr latch[1]
+      +sctr 2 + 3 + 4 latch
+    AND
+      +sctr latch[1]
+      -sctr 2 + 3 + 4 latch
+
+-ind flt counter[0..3]
+  NOT
+    +flt counter[0..3]
++flt counter[0..3]
+  ORNOT
+    -flt counter[0..3]
+    -set scan ctr to max
+-flt counter[0..3]
+  NOR
+    AND
+      +gt st bus to scan ctr
+      +st bus[58..61](RS_RT)
+    AND
+      -temp gt sctr[1..4]
+      +gt sctr lth to scan ctr
+    AND
+      -reset scan ctr ku411
+      -reset scan ctr ku451
+      +flt counter[0..3]
+
+; PAGE KU121
+
+-sctr latch[2..4]
+  NOR
+    AND
+      +address sequence[2..4]
+      +gt addr seq to sctr lth
+      -clock p1
+    AND
+      +flt counter[1..3]
+      +gt scan ctr to sctr lth
+      -clock p1
+    AND
+      +gct ros test seq to sctr lth
+      +ros test seq[0..2]
+      -clock p1
+    AND
+      +sctr latch[2..4]
+      +clock p0 + p2
+
+-temp gt sctr[2]
+  NOR
+    AND
+      -sctr latch[2]
+      +sctr latch[4]
+    AND
+      -sctr latch[2]
+      +sctr latch[3]
+    AND
+      +sctr latch[2]
+      -sctr latch[3..4]
+
+-ind ros test sequencer[0..2]
+  NOT
+    +ros test seq[0..2]
+
+
+SPECIAL
+  PH
+    +temp rts[0]
+    +gt sctr lth to ros test seq
+    INOUT
+    +ros test seq[0]
+SPECIAL
+  PH
+    +temp rts[1]
+    +gt sctr lth to ros test seq
+    INOUT
+    +ros test seq[1]
+SPECIAL
+  PH
+    +temp rts[2]
+    +gt sctr lth to ros test seq
+    INOUT
+    +ros test seq[2]
++temp rts[0..2]
+  NOT
+    +temp[0..2]
+      NOR
+        AND
+          -temp gt sctr[2..4]
+          -set ros test seq to zero
+        AND
+          -set ros test seq to zero
+          +set ros seq to max
+
+; PAGE KU131
+
+-temp gt sctr[3]
+  NOR
+    AND
+      -sctr latch[3]
+      +sctr latch[4]
+    AND
+      +sctr latch[3]
+      -sctr latch[4]
+
+; PAGE KU141
+
+-temp gt sctr[4]
+  -sctr latch[4]
+
+DECODE
+  +addr seq eq[0..31]
+  +address sequence[0..4]
+  -allow indicators pb(KT)
+
+-addr seq eq[0..31]
+  NOT
+    +addr seq eq[0..31]
+
++scan in ros
+  NOT
+    -scan in ros(DR)
+-scan in ros
+  -scan in ros(DR)
+
++st bus[0..63]
+  +st bus[0..63](RS_RT)
+
+; PAGE KU181
+
++addr seq eq lth[0]
+  NOT
+    -addr seq eq lth[0]
+-addr seq eq lth[0]
+  NOR
+    AND
+      +addr seq eq[0]
+      -clock p1
+    AND
+      +addr seq eq lth[0]
+      +clock p0
+
++addr seq eq lth[13..14]
+  NOT
+    -addr seq eq lth[13..14]
+-addr seq eq lth[13..14]
+  NOR
+    AND
+      +addr seq eq[13..14]
+      -clock p1
+    AND
+      +addr seq eq lth[13..14]
+      +clock p0
+
+-addr seq eq 14 to 22
+  NAND
+    -addr seq eq[23]
+    +addr seq greater than 13
++addr seq greater than 13
+  NOT
+    +addr seq less than 14
++addr seq less than 14
+  NOR
+    +address sequence[0]
+    AND
+      +address sequence[1..3]
+
+; PAGE KU191
+
+-scan in word[3..12]
+  NAND
+    +scan in ros
+    +addr seq eq[2..11]
++scan in word[3..12]
+  NOT
+    -scan in word[3..12]
+
+; PAGE KU201
+
+DECODE
+  +ros test x lth[0..7]
+  +sctr latch[2..4]
+  +temp ku201 5d ae
++temp ku201 5d ae
+  AND
+    -scan cntr cntl lth a
+    +start ros test lth
+-ros test x lth[0..7]
+  NOT
+    +ros test x lth[0..7]
++ros test 0 or 1 lth
+  OR
+    +ros test x lth[0..1]
++ros test 0 or 2 lth
+  OR
+    +ros test x lth[0]
+    +ros test x lth[2]
++ros test 1+4 lth
+  OR
+    +ros test x lth[1]
+    +ros test x lth[4]
++ros test 1+3+5 lth
+  OR
+    +ros test x lth[1]
+    +ros test x lth[3]
+    +ros test x lth[5]
+
++ros test 2 delayed
+  ORNOT
+    -ros test x lth[2]
+    -temp
+      NAND
+        -clock p0-1 gated
+        +ros test 2 delayed
+
+; PAGE KU211
+
++tic + gap O not repeat
+  NOT
+    +repeat ros test
++repeat ros test
+  NAND
+    -repeat latch
+    +temp
+      ORNOT
+        -unconditional termination
+        -tic latch
+        -gap latch
+
++not split logout
+  NOT
+    +retain address seq(MC)
+
++pulsed split log
+  NOT
+    -pulsed split log to soros set
+-pulsed split log to soros set
+  NAND
+    +retain address seq(MC)
+    -temp
+      NOT
+        +temp
+          NOT
+            -temp
+              NOT
+                +temp split
++temp split
+  NOT
+    -temp
+      NOT
+        +retain address seq(MC)
+-ind soros
+  NOT
+    +temp isor
++temp isor
+  ORNOT
+    -soros tgr
+    -temp
+      NAND
+        +temp isor
+        +temp split
+
+; PAGE KU231
+
+-flt counter eq 0 lth
+  NOR
+    AND
+      -clock p0-1
+      +temp ku231 2a ab
+      -flt clock bit[0..1]
+    AND
+      +clock p0-2
+      +flt counter eq 0 lth
++flt counter eq 0 lth
+  NOT
+    -flt counter eq 0 lth
++temp ku231 2a ab
+  NOT
+    -temp
+      NAND
+        -flt counter[0..3]
+-flt counter eq 0
+  NAND
+    +temp ku231 2a ab
+    -flt clock bit[0..1]
+
++cycle ctr eq 0 lth ap4
+  NOT
+    -temp ku231 4e ae
++cycle ctr eq 0 lth aq4
+  ANDNOT
+    -temp ku231 4e ae
+    AND
+      -cpu select
+      +diagnose tgr
+-temp ku231 4e ae
+  NOR
+    AND
+      +flt counter eq 0 lth
+      +scan ctr ctrl lth
+      +addr seq eq lth[0]
+    AND
+      +flt counter eq 0 lth
+      +scan ctr ctrl lth
+      +ros test + flt lth
+
++log out
+  NOT
+    -log out tgr
+-log out tgr
+  NAND
+    -mach reset O not log reset
+    -scan machine reset
+    -hard stop reset logout tgr(KW)
+    +log out tgr
++log out tgr
+  ORNOT
+    -log out tgr
+    -soros and not ros test O not flt
+-logout tgr
+  NOT
+    +log out tgr
+-log out
+  -logout tgr
+
++hard stop reset
+  +hard stop reset(KW)
+
++logout ros ck to ck reg 2
+  NOT
+    -log ros check
+-log ros check
+  -logout ros error
+-logout ros error
+  NOT
+    +temp ku231 4m bw
++temp ku231 4m bw
+  ORNOT
+    -temp
+      NAND
+        -temp
+          NAND
+            +rosar[0](RX)
+            -rosar[1](RX)
+            +rosar[2](RX)
+            -rosar[3..6](RX)
+        +temp
+          NOT
+            -temp ku231 5j bp
+        -clock p1
+    -temp
+      NAND
+        +st bus[63](RS_RT)
+        +scan in word[7]
+    -temp
+      NAND
+        +temp ku231 4m bw
+        -temp ku231 4k cb
+
+-temp ku231 5j bp
+  NAND
+    -scan reset a
+    -temp ku231 4k cb
+    +temp
+      ORNOT
+        -temp ku231 5j bp
+        -temp
+          NAND
+            +log out tgr
+            +ton scan mode tgr
+
+-temp ku231 4k cb
+  NOT
+    +hard stop reset
+
+; PAGE KU251
+
++ros + flt + addrs seq eq 14
+  ORNOT
+    -addr seq eq lth[14]
+    -ros test + flt lth
+
++osc sample O clock p2
+  ANDNOT
+    -osc sample(KC)
+    -clock p1
+
+-inhibit free running osc
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            +flt inhibit sequence tgrs
+            +temp mmsc
++temp mmsc
+  NOT
+    -temp
+      AND
+        NOT
+          +pulsed split log
+        NOR
+          AND
+            +temp
+              ORNOT
+                -release
+                -console log out O sync
+                -error log required(KW)
+            -sync latch
+            +osc sample O clock p2
+          AND
+            +cycle ctr eq 0 lth aq4
+            +osc sample O clock p2
+          AND
+            -temp
+              NOR
+                AND
+                  +osc sample O clock p2
+                  +flt clock time latch[1]
+                  +release O sync lth
+                AND
+                  +osc sample O clock p2
+                  +flt clock time latch[1]
+                  +ros + flt + addrs seq eq 14
+            -mach reset O not log reset
+            +temp mmsc
+-maint mode stop clock
+  NOT
+    +temp mmsc
+-ind mmsc
+  -maint mode stop clock
+
+-inhibit ros error sample
+  NAND
+    +flt clock time 2 or 3 latch
+    +sync latch
+    +ros + flt + addrs seq eq 14
+
+-reset ros m field
+  NAND
+    +ros + flt + addrs seq eq 14
+    +sync trigger
+    +flt clock time 2 tgr
++inh reg ingating
+  ORNOT
+    -reset ros m field
+    -temp
+      NAND
+        +ros + flt + addrs seq eq 14
+        +sync trigger
+        +flt clock time latch[2]
+
+; PAGE KU261
+
++tic ioce 1
+  NOT
+    -tic ioce 1(FX)
+
++gap ioce 1
+  NOT
+    -gap ioce 1(FX)
+
++flt complete ioce 1
+  NOT
+    -flt complete ioce 1(FX)
+
++flt ipl lth
+  NOT
+    -flt ipl lth(KX)
+
++ioce 1
+  1
+-flt ioce 1
+  0
+
+; PAGE KU271
+
++temp flt clock[0..1]
+  NOT
+    -temp[0..1]
+      NOR
+        AND
+          +st bus[62..63](RS_RT)
+          +gt st bus to scan ctr
+        AND
+          -flt clk time lth[2..1]
+          +clock p0 gated
+          -flt clk time lth[3]
+        AND
+          -reset scan ctr ku451
+          -clock p0-1 gated
+          +temp flt clock[0..1]
+-flt clock bit[0..1]
+  NOT
+    +temp flt clock[0..1]
+
+DECODE
+  +temp cbis[0..3]
+  +temp flt clock[0..1]
+
++flt clock time latch[0..3]
+  NOT
+    -flt clk time lth[0..3]
+
+-flt clk time lth[0]
+  NOR
+    AND
+      +temp cbis[0]
+      -clock p1 gated
+    AND
+      +flt clock time latch[0]
+      +clock p0 gated
+-flt clk time lth[1..3]
+  NOR
+    AND
+      +temp cbis[3..1]
+      -clock p1 gated
+    AND
+      +flt clock time latch[1..3]
+      +clock p0 gated
+
+-flt clock time 1 tgr
+  NOT
+    +temp cbis[3]
++flt clock time 2 tgr
+  +temp cbis[2]
+
++flt clock time 1 tgr + lth a
+  ORNOT
+    -flt clock time 1 tgr
+    -flt clk time lth[1]
+
++flt clock time 1 tgr+lth b
+  ORNOT
+    -flt clock time 1 tgr
+    AND
+      +clock p0-2
+      -flt clk time lth[1]
+
+-ind flt clock[0..1]
+  -flt clock bit[0..1]
+
++flt clock time 2 or 3 latch
+  ORNOT
+    -flt clk time lth[2..3]
+
++flt clock time 3
+  +flt clock time latch[3]
+
+; PAGE KU281
+
++remember tic
+  ORNOT
+    -tic pulse
+    -temp
+      NAND
+        -temp
+          NAND
+            +flt clock time latch[3]
+            +transfer in channel latch
+        +remember tic
+-tic pulse
+  NOT
+    +tic ioce 1
+
++gap
+  NOT
+    -gap
+-gap
+  NOT
+    +gap ioce 1
+
+-flt complete
+  NOT
+    +flt complete ioce 1
+
+; PAGE KU291
+
+-ind flt test
+  NOT
+    +flt test
++flt test
+  NOT
+    -flt test
+-flt test
+  NOR
+    AND
+      +temp flt test
+      +manual + not pass pulse
+    AND
+      +temp flt test
+      +flt test
++temp flt test
+  NOT
+    -flt test key(KW)
+
+-ind tic latch
+  NOT
+    +transfer in channel latch
++test in storage
+  +transfer in channel latch
++transfer in channel latch
+  NOT
+    -tic latch
+-tic latch
+  NOR
+    AND
+      +temp
+        NOT
+          -temp
+            NAND
+              +temp
+                NOT
+                  -flt clock time 1 tgr
+              +remember tic
+              -clock p0-3
+              -clock p1
+      -tic pulse
+      +ros test + flt lth
+    AND
+      -temp ku291 3f bt
+      -gap
+      +transfer in channel latch
+-temp ku291 3f bt
+  NAND
+    -clock p1
+    +temp
+      ORNOT
+        -temp
+          NAND
+            +flt clock time 2 tgr
+            +ros test x lth[5]
+        -mach reset O not log reset
+        -scan rst tic and gap lth ros(DR)
+
+-ind gap latch
+  NOT
+    +gap latch
++gap latch
+  NOT
+    -gap latch
+-gap latch
+  NOR
+    AND
+      +ros test + flt lth
+      +gap
+      +flt clock time latch[1]
+    AND
+      -temp ku291 3f bt
+      -release O sync lth
+      +gap latch
+
+-set ros test seq to zero
+  NOR
+    AND
+      +ros test 0 or 1 lth
+      +flt clock time latch[3]
+      +repeat ros test
+    AND
+      +ros test x lth[0]
+      -continue
+      +flt clock time latch[3]
+
+-reset srt lth
+  AND
+    NOR
+      +ros test x lth[6]
+      +gap latch
+    NOR
+      +gap latch
+      ++continue
+      +flt clock time latch[2]
+      +ros test x lth[0]
+
++flt cond subsystem reset
+  ORNOT
+    -temp
+      NAND
+        +gap
+        +ros test + flt lth
+    -flt backspace tgr
+    -subsystem reset
+
++subsystem reset
+  NOT
+    -subsystem reset
+
+; PAGE KU311
+
+-console log out O sync
+  NAND
+    +console log out latch
+    +sync trigger
+
+-ind console log out tgr
+  NOT
+    +console log out latch
++console log out latch
+  NOT
+    -console log out latch
+-console log out latch
+  NOR
+    AND
+      +logout pb gated
+      +manual + not pass pulse
+      +short ss pulse
+    AND
+      -end op
+      -mach reset O not log reset
+      +console log out latch
+
++end op
+  NOT
+    -end op
+-end op
+  NAND
+    +end op tgr bus(KW)
+    -clock p0-1
+
++short ss pulse
+  NOT
+    -short switch ss pulse(KW)
+
++logout pb gated
+  NOT
+    -logout pb gated 0(KW)
+
+-ind flt backspace tgr
+  NOT
+    +flt backspace tgr
++flt backspace tgr
+  NOT
+    -flt backspace tgr
+-flt backspace tgr
+  NOR
+    AND
+      +temp flt backspace pb
+      +short ss pulse
+    AND
+      -flt complete
+      -mach reset O not log reset
+      +flt backspace tgr
++temp flt backspace pb
+  NOT
+    -flt backspace pb gtd(KW)
+
++manual + not pass pulse
+  NOT
+    -manual + not pass pulse(KW)
+
+-flt backspace to ioce
+  NOR
+    AND
+      +temp rewind tgr
+      +ros test+flt lth
+      -flt clk time lth[0]
+    AND
+      +flt backspace tgr
+      -subsystem reset
++temp rewind tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +check reset pb(KW)
+          +temp flt backspace pb
+        AND
+          -mach reset O not log reset
+          +ros test+flt lth
+          +temp rewind tgr
+
+-ind repeat latch
+  NOT
+    +repeat latch
++repeat latch
+  NOT
+    -repeat latch
+-repeat latch
+  NOR
+    AND
+      +temp
+        NOT
+          -repeat test key(KW)
+      -clock p0-1
+    AND
+      +clock p0-2
+      +repeat latch
+
++zero result
+  NOT
+    -zero result
+-zero result
+  NAND
+    +pal 32-39 eq zero(KS)
+    +temp
+      NOT
+        -pal 40-63 equals 0 bus(KD)
+
+; PAGE KU331
+
+-ind scc tgr
+  NOT
+    +scan ctr ctrl tgr
++scan ctr ctrl tgr
+  ORNOT
+    -scc tgr
+    -temp
+      NAND
+        +start count on addr comp
+        +clock p0
+        +addr compare to scan(MA)
+-scc tgr
+  NOR
+    AND
+      +temp scc ros
+      -pulse mode time
+      +clock p0
+    AND
+      +clock p0
+      +flt clock time latch[2]
+      +ros test x lth[2]
+    AND
+      -temp ku331 2c ba
+      -reset scc tgr
+      +scan ctr ctrl tgr
++temp scc ros
+  NOT
+    -set scan ctr cntr ros(DR)
+-temp ku331 2c ba
+  NOR
+    AND
+      +machine reset ku591
+      -soros O sync lth
+    AND
+      +soros O sync lth
+      +flt clock time latch[2]
+      +clock p0
+
+-scan cntr cntl lth a
+  NOT
+    +scan ctr ctrl lth
++scan ctr ctrl lth
+  NOT
+    -scan ctr ctrl lth
+-scan ctr ctrl lth
+  NOR
+    AND
+      +scan ctr ctrl tgr
+      -clock p0-1
+    AND
+      -temp
+        NAND
+          -scc tgr
+          -clock p0-1
+      +scan ctr ctrl lth
+
++start ros test lth
+  NOT
+    -start ros test lth
+-start ros test lth
+  NOR
+    AND
+      +sync latch
+      +flt clock time latch[1]
+      +ros test lth
+    AND
+      +ros test lth
+      -mach reset O not log reset
+      -reset srt lth
+      +start ros test lth
+
++ros test+flt lth
+  +ros test + flt lth
++ros test + flt lth
+  NOT
+    -ros test + flt lth
+-ros test + flt lth
+  NOT
+    +temp
+      ORNOT
+        -ros test lth
+        -flt test
+
+-ind ros test lth
+  NOT
+    +ros test lth
++ros test lth
+  NOT
+    -ros test lth
+-ros test lth
+  NOR
+    AND
+      +temp rt key
+      -clock p0-1
+    AND
+      +temp rt key
+      +ros test lth
++temp rt key
+  NOT
+    -ros test key(KW)
+
+-indicate diagnose tgr
+  NOT
+    +diagnose tgr
++diagnose tgr
+  ANDNOT
+    AND
+      +end op
+      -conditional termination
+    -temp
+      NOR
+        AND
+          +diagnose O not flt
+          +temp scc ros
+          +clock p0-2
+        AND
+          -temp ku331 2c ba
+          +diagnose tgr
+
++block scan mode tgr
+  +ros test lth
+
+; PAGE KU351
+
++soros and not ros test+flt
+  NOT
+    -soros and not ros test O not flt
+-soros and not ros test O not flt
+  NAND
+    -ros test + flt lth
+    +soros O sync lth
++soros and ros test+flt
+  NOT
+    -temp
+      NAND
+        +ros test + flt lth
+        +soros O sync lth
++soros and flt
+  NOT
+    -temp
+      NAND
+        +flt test
+        +soros O sync lth
++soros O sync lth
+  NOT
+    -soros O sync lth
+-soros O sync lth
+  NAND
+    +soros tgr
+    +sync latch
+-pulse mode time
+  NOT
+    +pulse mode time key(KW)
+-flt block stop clock triggers
+  NAND
+    +temp
+      ORNOT
+        -soros tgr
+        -scan ctr ctrl lth
+    +ros test + flt + diag flt
+-ros test + flt + diag flt ax4
+  NOT
+    +temp
+      ORNOT
+        -ros test + flt + diag flt as4
+        -pulse mode count key(KW)
+-ros test + flt + diag flt as4
+  NOT
+    +ros test + flt + diag flt
++ros test + flt + diag flt
+  ORNOT
+    -ros test lth
+    -flt + diag flt
++soros tgr
+  NOT
+    -soros tgr
+-soros tgr
+  NOR
+    AND
+      +temp
+        ORNOT
+          -error log required(KW)
+          -pulsed split log to soros set
+      -clock p0-3
+      -clock p1
+    AND
+      +console log out latch
+      +logout pb gated
+      +short ss pulse
+    AND
+      +temp
+        NOT
+          -temp
+            NAND
+              +cycle ctr eq 0 lth aq4
+              -set scan ctr cntr ros(DR)
+      +clock p0
+    AND
+      -mach reset O not log reset
+      -scan reset + hard stop reset
+      +soros tgr
+
+-flt + diag flt
+  NOT
+    +flt + diag flt
++flt + diag flt
+  ORNOT
+    -flt test
+    -diagnose flt tests
+
+-reset scc tgr
+  NAND
+    -cond term or wrap
+    -clock p0-1
+    +diagnose tgr
+
+-flt scan reset
+  NAND
+    +flt + diag flt
+    +scan machine reset to mc
+
++diagnose O not flt
+  NOT
+    -temp diag no flt
+-temp diag no flt
+  NAND
+    +diagnose(DN)
+    -flt test
+-reset diag i2 field tgrs
+  NAND
+    -temp diag no flt
+    +diagnose flt tests
+    +not scan mode tgr
++ce logout + mc intrpt
+  ORNOT
+    -logout tgr
+    -ce logout + mc intrpt
+-ce logout + mc intrpt
+  NAND
+    -mach not log + intrpt rst(KM)
+    +ce logout + mc intrpt
+
+; PAGE KU371
+
+-ind release
+  NOT
+    +temp release
++temp release
+  NOT
+    -release
+-release
+  NOR
+    AND
+      +temp
+        NOT
+          -temp allow release
+      +transfer in channel latch
+      +flt clock time latch[0]
+    AND
+      -scan reset + hard stop reset
+      -mach reset O not log reset
+      +temp release
+-temp allow release
+  NAND
+    +temp
+      ORNOT
+        -subsystem reset
+        -temp allow release
+    +flt ipl lth
+    +ros test lth
+    -release O sync lth
+
++release O sync lth
+  NOT
+    -release O sync lth
+-release O sync lth
+  NAND
+    +temp release
+    +sync latch
+
++sync latch
+  NOT
+    -sync latch
+-sync latch
+  NOR
+    AND
+      +sync trigger
+      -clock p0-1
+    AND
+      -temp
+        NAND
+          -sync trigger
+          +clock p0-2
+      +sync latch
+
+-ton sample e reg error trigger
+  NAND
+    +flt + diag flt
+    +scan ctr ctrl tgr
+
+-ind sync tgr
+  NOT
+    +sync trigger
++sync trigger
+  NOT
+    -sync trigger
+-sync trigger
+  NOR
+    AND
+      +temp release
+      +flt clock time latch[3]
+      +clock p0
+    AND
+      +soros tgr
+      +flt clock time latch[3]
+      +clock p0
+    AND
+      -temp
+        NOR
+          +pulsed split log
+          +hard stop + scan reset
+      -mach reset O not log reset
+      +sync trigger
+
+-inhibit if padd gate
+  NAND
+    +flt inhibit sequence tgrs
+    -flt + diag flt
++flt inhibit sequence tgrs
+  ORNOT
+    -sync latch
+    -scan mode tgr(DR)
+
++inhibit ls clock
+  ORNOT
+    -sync latch
+    -temp ku371 2n bc
+-temp ku371 2n bc
+  NAND
+    +scan mode tgr
+    +ros test + flt + diag flt
+
++flt inhibit ioce sel and intr
+  ORNOT
+    -sync latch
+    -temp ku371 2n bc
+    -temp
+      NAND
+        +soros tgr
+        +ros test + flt + diag flt
+
++flt inh stat tgr clock
+  ORNOT
+    -sync latch
+    -temp
+      NAND
+        -scc tgr
+        +scan mode tgr
+    -maint mode stop clock
+
+; PAGE KU391
+
+-ind pass
+  NOT
+    +temp pass
++temp pass
+  ORNOT
+    -temp
+      NOR
+        AND
+          +expected response
+          +zero result
+          +p2 O set pass or fail
+        AND
+          -expected response
+          -zero result
+          +p2 O set pass or fail
+        AND
+          -temp p1 reset pass fail
+          +temp pass
+    -initialize at start of record
+-temp p1 reset pass fail
+  NAND
+    +clock p0
+    +temp
+      ORNOT
+        -scan reset pass and fail ros(DR)
+        -reset pass O fail tgrs
+
++fetch alternate test
+  NOT
+    +fetch next test
++fetch next test
+  NAND
+    +temp pass
+    -conditional termination
+    -temp fail
+
+-ind fail
+  NOT
+    +temp fail
++temp fail
+  NOT
+    -temp fail
+-temp fail
+  NOR
+    AND
+      +expected response
+      -zero result
+      +p2 O set pass or fail
+    AND
+      -expected response
+      +zero result
+      +p2 O set pass or fail
+    AND
+      -temp p1 reset pass fail
+      -initialize at start of record
+      +temp fail
+
+-unconditional termination
+  NOT
+    +unconditional termination
+
+CLOCK
+
++p2 O set pass or fail
+  NOT
+    -temp
+      NAND
+        +clock p0
+        +set pass or fail
+
+NOCLOCK
+
+++continue
+  NOT
+    -continue
+-continue
+  NOR
+    AND
+      -conditional termination
+      +temp fail
+      -unconditional termination
+    AND
+      +temp pass
+      -temp fail
+      -unconditional termination
+    AND
+      +ros test lth
+      +repeat latch
+
++set pass or fail
+  ORNOT
+    -set pass+fail tgr ros(DR)
+    -set pass+fail tgr
+
+; PAGE KU411
+
++gt sctr latch to addr seq
+  NOT
+    -reset address sequence
+-reset address sequence
+  NAND
+    +gt addr seq to sctr lth
+    +clock p0-2
++gt addr seq to sctr lth
+  ORNOT
+    -scan sub 1 addr seq reg ros(DR)
+    -temp ku411 2d ab
+    -temp
+      NAND
+        +sync latch
+        -ros test + flt lth
+        +flt clock time latch[3]
+-temp ku411 2d ab
+  NAND
+    +scan ctr ctrl lth
+    -ros test + flt lth
+    +flt counter eq 0 lth
+    +flt clock time latch[0]
+
+-set scan ctr to max
+  NAND
+    +clock p0-2
+    +temp
+      NOT
+        -temp ku411 2d ab
+
++gt sctr lth to scan ctr
+  NOT
+    -reset scan ctr ku411
+-reset scan ctr ku411
+  NAND
+    +clock p0-2
+    +gt scan ctr to sctr lth
++gt scan ctr to sctr lth
+  NOT
+    -temp
+      NAND
+        +scan ctr ctrl lth
+        +flt clock time latch[0]
+        -soros O sync lth
+        -flt counter eq 0 lth
+
+-set addr seq[0]
+  NAND
+    +temp ku411 2f bc
+    +clock p0
++temp ku411 2f bc
+  ORNOT
+    -temp ku411 1f bb
+    -scan set addr seq eq 16(DR)
+    -set addr seq to 23 ros(DR)
+-temp ku411 1f bb
+  NAND
+    -ros test + flt lth
+    +soros tgr
+    -sync latch
+
++set addr seq[1]
+  ORNOT
+    -set addr seqr to 13(DR)
+    -scan set addr seq reg eq 15(DR)
+
++set addr seq[2]
+  +set addr seq[4]
++set addr seq[4]
+  ORNOT
+    -set addr seq to 23 ros(DR)
+    -set addr seqr to 13(DR)
+    -temp ku411 1f bb
+    -scan set addr seq reg eq 15(DR)
+    -scan set addr seq reg eq 7(DR)
+
+-reset addr seq
+  NOR
+    AND
+      +set addr seq[2]
+      +clock p0-2
+    AND
+      +temp ku411 2f bc
+      +clock p0-2
+    AND
+      +gt st to mcw
+      +clock p0-2
+
++set addr seq 3
+  ORNOT
+    -set addr seq to 23 ros(DR)
+    -scan set addr seq reg eq 15(DR)
+    -scan set addr seq reg eq 7(DR)
+    -temp ku411 1f bb
+
+; PAGE KU431
+
+-invert buffer tgr
+  NOR
+    AND
+      +ros test x lth[7]
+      +flt clock time latch[2]
+      +clock p0
+    AND
+      +clock p0
+      +temp
+        NOT
+          -invert bfr tgr ros(DR)
+
++set ros seq to max
+  ORNOT
+    -temp ku431 1e bq
+    -set ros test seq to max
+-temp ku431 1e bq
+  NAND
+    +release O sync lth
+    +flt clock time latch[0]
++gct ros test seq to sctr lth
+  ORNOT
+    -temp
+      NAND
+        +start ros test lth
+        -scan ctr ctrl lth
+    -temp ku431 1e bq
+
++gt sctr lth to ros test seq
+  AND
+    ORNOT
+      -temp ku431 1e bq
+      -temp
+        NOR
+          AND
+            +start ros test lth
+            -scan ctr ctrl lth
+            -ros test x lth[6]
+            +flt clock time latch[3]
+          AND
+            +flt clock time latch[3]
+            +test in storage
+            +ros test x lth[6]
+    +clock p0
+
+-initialize at start of record
+  NOT
+    +temp
+      ORNOT
+        -temp
+          NAND
+            +ros test lth
+            -start ros test lth
+        -flt initialize ros(DR)
+        -mach reset O not log reset
+
+; PAGE KU451
+
++set mach chk trap scan to psw
+  NOT
+    -reset log in progress
+-reset log in progress
+  NAND
+    +temp ku451 3a av
+    -console log out latch
++temp ku451 3a av
+  ANDNOT
+    -scan set mach chk trap ros(DR)
+    +clock p0
+-ton stop tgr
+  NAND
+    +temp ku451 3a av
+    +console log out latch
+
+-set ros test seq to max
+  NOR
+    AND
+      +ros test x lth[0]
+      +flt clock time latch[3]
+    AND
+      +ros test x lth[1]
+      +flt clock time latch[3]
+      +repeat ros test
+    AND
+      +ros test x lth[4]
+      +fetch alternate test
+      -zero result
+
+-reset pass O fail tgrs
+  NOR
+    AND
+      +flt clock time latch[3]
+      +ros test x lth[4]
+      +fetch next test
+    AND
+      +flt clock time latch[3]
+      +ros test x lth[4]
+      +zero result
+
+-set pass+fail tgr
+  NAND
+    +flt clock time latch[2]
+    +ros test x lth[1]
+
++gt st to mcw
+  ORNOT
+    -not ros test O not t to mcw
+    -temp
+      NAND
+        +flt clock time latch[2]
+        +ros test x lth[2]
+
++gt i2 field to mcw
+  AND
+    NOT
+      -gt st bus to mcw 0-7
+    -ros test + flt + diag flt ax4
+
++gt st bus to mcw 0-7
+  NOT
+    -gt st bus to mcw 0-7
+-gt st bus to mcw 0-7
+  NAND
+    +clock p0
+    +gt st to mcw
+    -temp ku451 2j ae
+-temp ku451 2j ae
+  NAND
+    +ros test + flt lth
+    +unconditional termination
+
+-machine reset diag i2 field
+  AND
+    NOR
+      -ros test + flt + diag flt ax4
+      +clock p0
+      -temp ku451 2j ae
+      +gt st to mcw
+    NOT
+      +machine reset O not log reset
+
++ton scan mode tgr
+  NOT
+    -scan reset a
+
++gt st bus to scan ctr
+  NOT
+    -reset scan ctr ku451
+
+-reset scan ctr ku451
+  NAND
+    +clock p0
+    +gt st to mcw
+
++hard stop + scan reset
+  ORNOT
+    -scan reset a
+    -hard stop reset logout tgr(KW)
+
+-scan reset a
+  NAND
+    +clock p0
+    +ros + flt + addrs seq eq 14
+    +sync latch
+    +flt clock time latch[3]
+
+-not ros test O not t to mcw
+  NAND
+    +temp
+      NOT
+        -gt t 32-38 54-63 to mcw(DR)
+    -ros test lth
+
+-scan reset + hard stop reset
+  NOT
+    +hard stop + scan reset
+
+; PAGE KU471
+
+-ind flt storage error
+  NOT
+    +storage error(KW)
+
+-reset pass pulse tgr
+  NOR
+    AND
+      +storage error(KW)
+      +ros test + flt lth
+    AND
+      +ros test x lth[0]
+      -continue
+      +flt clock time latch[2]
+
+
+-reset ipl
+  NOT
+    +temp
+      ORNOT
+        -reset pass pulse tgr
+        -temp
+          NAND
+            -continue
+            -clock p0-3
+            +p2 O set pass or fail
+        -temp
+          NAND
+            +set pass or fail
+            +repeat latch
+
+-flt scan block
+  NOR
+    +temp ku471 4h cn
+    AND
+      +scan mode tgr
+      -ros test + flt lth
++temp ku471 4h cn
+  ORNOT
+    -temp
+      NAND
+        +temp ku471 4h cn
+        +scan mode tgr
+    -sas 2-3-4(DS)
+
+-ind scan mode tgr
+  +not scan mode tgr
++not scan mode tgr
+  NOT
+    +scan mode tgr
++scan mode tgr
+  NOT
+    -scan mode tgr(DR)
+
+-scan disable errors
+  NOT
+    +temp
+      ORNOT
+        -scan mode tgr(DR)
+        -logout tgr
+        -ros test + flt lth
+
+; PAGE KU491
+
+-scan out right
+  NOR
+    AND
+      +right half
+      +flt clock time 1 tgr + lth a
+      +soros and ros test+flt
+    AND
+      +soros and not ros test+flt
+      +flt clock time 1 tgr + lth a
+      -addr seq eq[23]
+
++scan gate paddl to t
+  NOT
+    -temp
+      NOR
+        AND
+          +soros and ros test+flt
+          +flt clock time latch[1]
+          +clock p0-2
+          +addr seq greater than 13
+          -temp ku491 2a ak
+        AND
+          +flt clock time latch[1]
+          +soros and not ros test+flt
+          +osc sample O clock p2
+          -addr seq eq[23]
+-temp ku491 2a ak
+  NAND
+    +right half
+    +addr seq eq[23]
+
+-scan out left
+  NAND
+    +flt clock time 1 tgr+lth b
+    +soros and ros test+flt
+    +left half
+
+
+-log out+scan bypass
+  NOT
+    +temp
+      ORNOT
+        -enable scan bypass from scan
+        -log out tgr
+
+-enable scan bypass from scan
+  NOR
+    +ros test 1+4 lth
+    AND
+      -temp ku491 2a ak
+      +soros and ros test+flt
+      +flt clock time 1 tgr+lth b
+    AND
+      +soros and not ros test+flt
+      +flt clock time 1 tgr+lth b
+      -addr seq eq[23]
+
+-scan out sOt
+  NOT
+    +ros test 1+4 lth
+
+; PAGE KU511
+
++scan force rosar[7]
+  ORNOT
+    -temp ku511 3d ag
+    -temp
+      NAND
+        +flt clock time latch[2]
+        +soros and flt
+        +addr seq greater than 13
+
++scan force rosar[8]
+  ORNOT
+    -temp ku511 3d ag
+    -temp
+      NAND
+        +flt clock time latch[2]
+        +soros and flt
+        +addr seq less than 14
+
+-temp ku511 3d ag
+  NAND
+    +flt clock time latch[2]
+    +soros and not ros test+flt
+    +addr seq eq lth[14]
+
+-scan inhibit next rosa
+  NOR
+    +scan force rosar [7..8]
+
++soros and nt ros + flt
+  NOT
+    -soros and not ros test O not flt
+
+-reset ros sense lth
+  NOR
+    AND
+      +sync trigger
+      +flt clock time latch[1]
+      +ros + flt + addrs seq eq 14
+    AND
+      +start ros test lth
+      -scan ctr ctrl lth
+
+-scan gt 40-51 rosarOyiascO
+  NOR
+    AND
+      +ros test 2 delayed
+      -clock p0-1
+      +scan ctr ctrl tgr
+    AND
+      -clock p0-1
+      +temp
+        NOT
+          -scan gt 40-51 rosarOyiascO
+
+; PAGE KU531
+
++flt inhibit storage field
+  ORNOT
+    -sync trigger
+    -ros test + flt + diag flt as4
+
++flt inh storage requests bcu
+  ORNOT
+    -ros test + flt + diag flt as4
+    -soros tgr
+
+-mdbo to t
+  NAND
+    +ros test 0 or 2 lth
+    +flt clock time latch[1]
+
+-mdbo to s
+  NOR
+    AND
+      +ros test 0 or 2 lth
+      +flt clock time latch[1]
+    AND
+      +flt clock time latch[0]
+      +ros test x lth[4]
+
+-ind buffer 1
+  NOT
+    +buffer 1 tgr
++buffer 1 tgr
+  NOT
+    -buffer 1 tgr
+-buffer 1 tgr
+  NOR
+    AND
+      -temp
+        NOT
+          +temp rem buf 1
+      +temp
+        NOT
+          -invert buffer tgr
+    AND
+      -invert buffer tgr
+      +buffer 1 tgr
+
++temp rem buf 1
+  NOT
+    -temp
+      NOR
+        AND
+          -clock p1
+          +buffer 1 tgr
+        AND
+          +clock p0
+          +temp rem buf 1
+
+-scan storage request
+  NOR
+    AND
+      +ros test 1+3+5 lth
+      +flt clock time latch[0]
+    AND
+      +flt clock time latch[0]
+      +soros and not ros test+flt
+
+-scan set marks t
+  NAND
+    +soros and not ros test+flt
+    +flt clock time latch[1]
+-scan set marks s
+  NAND
+    +soros and not ros test+flt
+    +flt clock time latch[1]
+    -addr seq eq 14 to 22
+
+; PAGE KU551
+
++flt adr bit p08-15
+  NOT
+    -temp
+      NAND
+        -address sequence[0]
+        -ros test + flt lth
+
++flt adr bit[14]
+  NOT
+    -temp
+      NAND
+        +ros test + flt lth
+        -buffer 1 tgr
++flt adr bit[15]
+  NOT
+    -temp
+      NOR
+        AND
+          +address sequence[0]
+          -ros test + flt lth
+        AND
+          +ros test + flt lth
+          +buffer 1 tgr
++flt adr bit[16]
+  NOT
+    -temp
+      NOR
+        AND
+          -address sequence[0]
+          -ros test + flt lth
+        AND
+          +address sequence[0]
+          -mask address to mab
+          +ros test + flt lth
++flt adr bit[17]
+  NOT
+    -temp
+      NAND
+        -mask address to mab
+        +address sequence[1]
++flt adr bit[18]
+  NOT
+    -temp
+      NAND
+        -mask address to mab
+        +address sequence[2]
++flt adr bit[19]
+  NOT
+    -temp
+      NAND
+        -mask address to mab
+        +address sequence[3]
++flt adr bit[20]
+  NOT
+    -temp
+      NOR
+        AND
+          -mask address to mab
+          +address sequence[4]
+        AND
+          +temp ku551 1c ab
+          -ros test x lth[1]
+          -ros test x lth[5]
+
+-mask address to mab
+  NOT
+    +temp ku551 1c ab
++temp ku551 1c ab
+  ORNOT
+    -scan gate mask addr to sab(DR)
+    -ros test lth
+
+; PAGE KU571
+
++flt adr p 16-20
+  NOT
+    -temp
+      NOR
+        AND
+          +ros test lth
+          -ros test x lth[3]
+        AND
+          -mask address to mab
+          +flt test
+          +temp
+            NOT
+              -temp even mab
+        AND
+          -ros test + flt lth
+          -temp even mab
+
+-temp even mab
+  XOR
+    +address sequence[0..4]
+
+; PAGE KU591
+
+CLOCK
+
++clock p0 + p2
+  ORNOT
+    -clock p1
+    -clock p0-1
+
+-clock p1 gated
+  NOT
+    +clock p0 gated
++clock p0 gated
+  NOT
+    -clock p0-1 gated
+-clock p0-1 gated
+  NAND
+    +clock p0-2
+    -temp
+      NAND
+        -scan cntr cntl lth a
+        +start count on addr comp
+
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -clock p0-1
+-clock p0-1
+  NOT
+    +clock p0-2
++clock p0-2
+  NOT
+    -clock p0-3
+-clock p0-3
+  NOT
+    +temp post td
+SPECIAL
+  TD40NS
+    +temp pre td
+    OUT
+    +temp post td
++temp pre td
+  NOT
+    -scan clock(KC)
+
++mach reset O not log reset
+  NOT
+    -mach reset O not log reset
+-mach reset O not log reset
+  NOT
+    +mach reset not log reset(KM)
++machine reset O not log reset
+  +mach reset not log reset(KM)
+
++scan machine reset to mc
+  NOT
+    -scan machine reset
+-scan machine reset
+  NOR
+    AND
+      +temp
+        NOT
+          -scan machine rst ros(DR)
+      +clock p0
+    AND
+      +ros test x lth[2]
+      +flt clock time latch[3]
+
+-machine reset to mcw
+  NOR
+    +soros and not ros test+flt
+    +machine reset ku591
+
++machine reset ku591
+  ORNOT
+    -initialize at start of record
+    -mach reset O not log reset
+
++machine reset micro-order
+  NOT
+    -scan machine reset
+
+NOCLOCK
+
+; PAGE KU601
+
+-logout advance
+  NOR
+    +temp
+      ORNOT
+        -logout advance 1(WA)
+
++req logout of storage
+  NOT
+    -req logout of storage(DR)
+
++storage logout select
+  NOT
+    -temp
+      NOR
+        AND
+          +req logout of storage
+          +clock p2
+        AND
+          -clock p1(KM)
+          -machine reset
+          +storage logout select
+
++clock p2
+  NOT
+    -clock p1(KM)
++storage logout stop
+  NOT
+    -temp
+      NOR
+        +stor logout req
+        AND
+          -clock p1(KM)
+          -stor logout complete
+          +storage logout stop
+
+-subsystem reset
+  NOT
+    +subsystem reset(FX)
+
+; PAGE KU611
+
+-logout select 1
+  NOT
+    +storage logout select
+
+-storage logout stop 1
+  NOT
+    +storage logout stop
+
+-logout complete 1
+  NOT
+    +storage logout complete
+
+; PAGE KU621
+
+-logout stop 1
+  NOT
+    +temp
+      ORNOT
+        -los pulse frame 1(MC)
+        -storage logout stop 1
+
+; PAGE KU631
+
++los terminating
+  ORNOT
+    -temp hold for logout complete
++temp hold for logout complete
+  NOT
+    -temp hold for logout complete
+-temp hold for logout complete
+  NOR
+    AND
+      +storage logout stop
+      +select timing pulse mc401(MC)
+      +abc[5](CW)
+    AND
+      +temp hold for logout complete
+      -mach reset or timeout
+      -stor logout complete
+
+-stor logout complete
+  NOR
+    AND
+      +accept(MC)
+      +temp hold for logout complete
+    AND
+      +se stopped
+      -mach reset or timeout
+      +temp
+        NOT
+          -stor logout complete
+
++inhibit osc on wrap + logout
+  NOT
+    -l o select sent
+
++storage logout complete
+  NOT
+    -temp
+      NAND
+        +temp
+          ORNOT
+            -subsystem reset
+            -stor logout complete
+        -ros test + flt lth
+
++stor logout req
+  NOT
+    -l o select sent
+-l o select sent
+  NOR
+    AND
+      +req logout of storage
+      +clock p0-1(KM)
+      +clock p2
+    AND
+      +stor logout req
+      -mach reset or timeout
+      -logout advance
+
++machine reset ku631
+  NOT
+    -machine reset
+-machine reset
+  NOT
+    +machine reset O not log reset
+
+; PAGE KU635
+
++set timeout not stor
+  ORNOT
+    -l o select sent
+
+-mach reset or timeout
+  NOT
+    +mach reset or timeout
++mach reset or timeout
+  ORNOT
+    -machine reset
+    -timeout wrap or l o stor
+
+-timeout wrap or l o stor
+  NOR
+    AND
+      +temp
+        NOT
+          -timeout pulse not stor(MC)
+
+; PAGE KU641
+
++se stopped
+  ORNOT
+    -temp
+      NAND
+        +temp
+          NOT
+            -logout se 1 stopped(WA)
+

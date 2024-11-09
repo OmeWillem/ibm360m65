@@ -1,0 +1,58 @@
+SECTION KK
+
+; PAGE KK201
+
+CLOCK
+
+; P4 was P2
+
+-reset sense latches
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            AND
+              +clock p4
+              +clock p8
+            +temp
+              NOT
+                -reset ros sense lth(KU)
+
+; PAGE KK211
+
++sense latch strobe
+  ANDNOT
+    -clock p11
+    +clock p10
+
+-clock p11
+  NOT
+    +clock p10
++clock p10
+  NOT
+    -temp
+      NOT
+        +clock p8
++clock p8
+  NOT
+    -temp
+      NOT
+        +temp
+          NOT
+            -temp
+              NOT
+                +clock p4
++clock p4
+  NOT
+    -temp
+      NOT
+        +clock p2
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +temp
+      NOT
+        -clock p0-1(RX)

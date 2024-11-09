@@ -1,0 +1,157 @@
+SECTION JA
+
+; PAGE JA001
+
+-e reg bit[0..15]
+  NOT
+    +e reg bit[0..15]
++e reg bit[0..15]
+  NOT
+    -e bit[0..15](RE)
+
+-siop
+  NOT
+    +siop inst
++siop inst
+  NOT
+    -siop instruction(DN)
+
+; PAGE JA011
+
++wrd
+  NOT
+    -write direct(DN)
+
++rdd
+  NOT
+    -read direct(DN)
+
+; PAGE JA021
+
+DECODE
+  +temp e9-11[0..7]
+  +e reg bit[9..11]
+
+-temp ipl
+  NOT
+    +ipl status(FE)
+
+-wrd ioce logout
+  NAND
+    +wrd
+    +temp e9-11[3]
+    -temp ipl
+
+-wrd ioce start
+  NAND
+    +wrd
+    +temp e9-11[5]
+    -temp ipl
+
+-wrd ioce stop
+  NAND
+    +wrd
+    +temp e9-11[6]
+    -temp ipl
+
+-wrd ioce interrupt
+  NAND
+    +wrd
+    +temp e9-11[7]
+    -temp ipl
+
++ioce operation
+  ORNOT
+    -wrd ioce logout
+    -wrd ioce start
+    -wrd ioce stop
+    -wrd ioce interrupt
+
++write direct ioce operation
+  NOT
+    -temp
+      NOT
+        +temp
+          +ioce operation
+
++time gate tgr
+  NOT
+    -temp
+      NOT
+        +timing gate trigger ap4(KX)
+
+
+
+
+; PAGE JA901
+
++ioce + ce 1
+  NOT
+    -ioce + ce 1
+-ioce + ce 1
+  NAND
+    +e reg bit[12]
+    -e reg bit[13..15]
+
++wrd + rdd + siop spec exc
+  NOT
+    -temp
+      NOR
+        AND
+          +wrd
+          +temp
+            ORNOT
+              -temp
+                NAND
+                  +ioce operation
+                  +e reg bit[15]
+              -e reg bit[8]
+              +ioce + ce 1
+        AND
+          +rdd
+          -ioce + ce 1
+        AND
+          +siop inst
+          +temp
+            ORNOT
+              +ioce + ce 1
+              -e reg bit[15]
+              -temp
+                NAND
+                  +e reg bit[8..11]
+    
+
+
+
+; DUMMIES, revisit later
+
++pir int tgr
+  0
++dar int tgr
+  0
+
+-ind time clock at limit
+  1
+-ind console signal
+  1
+-ind pir int
+  1
+-ind dar int
+  1
+
++external start gated
+  0
++external reset gated
+  0
++external stop enable reset
+  0
++logout signal in
+  0
+
++ext int req O mask
+  0
+
++time clock at limit tgr
+  0
++console signal tgr
+  0

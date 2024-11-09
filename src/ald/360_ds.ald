@@ -1,0 +1,1471 @@
+SECTION DS
+
+; PAGE DS011
+
+CLOCK
+
+DECODE
+  +roslth 62-68 eq j[0..127]
+  +roslth eq 1[62..68]
+
+DECODE
+  +roslth 62-65 eq[0..15]
+  +roslth eq 1[62..65]
+
+-roslth 62-68 eq j[0..127]
+  NOT
+    +roslth 62-68 eq j[0..127]
+-roslth 62-65 eq[0..15]
+  NOT
+    +roslth 62-65 eq[0..15]
+
+; PAGE DS015
+
+DECODE
+  +roslth 66-68 eq[0..7]
+  +roslth eq 1[66..68]
+-roslth 66-68 eq[0..7]
+  NOT
+    +roslth 66-68 eq[0..7]
+
+; PAGE DS025
+
+-sas 2-3-4
+  NAND
+    +temp
+      NOT
+        -p1(RX)
+    +roslth 62-68 eq j[110]
+
+-j103 for dbl cycle
+  NAND
+    +roslth 62-68 eq j[103]
+    +temp
+      NOT
+        -temp
+          NAND
+            +p2(RX)
+            -temp
+              NOT
+                +block rosar on except cond(RX)
+
+; PAGE DS041
+
++pal 32-39 equals 0
+  +pal 32-39 equals 0(AP)
++pal 40-63 equals 0
+  +pal 40-63 equals 0(AP)
++pal 32-63 not eq zero
+  NAND
+    +pal 32-39 equals 0(AP)
+    +pal 40-63 equals 0(AP)
+-set rosar 10 normal e
+  NOR
+    AND
+      +pal 32-63 not eq zero
+      -temp
+        NOT
+          +pal carry 32
+      +roslth 62-68 eq j[125]
+    AND
+      +roslth 62-68 eq j[106]
+      +saddl[1](AS)
+
+; PAGE DS051
+-set rosar 9 normal a
+  NAND
+    +sal 0-7 eq zero(AS)
+    +roslth 62-68 eq j[107]
+
++e12-15 eq 0000
+  +e12-15 eq zero
+
+-set rosar 9 normal b
+  NOR
+    AND
+      +roslth 62-68 eq j[98]
+      +e12-15 eq zero
+    AND
+      +roslth 62-68 eq j[122]
+      +pal 58-61 equals 0(AP)
+    AND
+      +roslth 62-68 eq j[110]
+      +address sequence[2](KU)
+    AND
+      +roslth 62-68 eq j[104]
+      +abc incr eq[3](CW)
+    AND
+      +roslth 62-68 eq j[96]
+      +temp
+        NOT
+          -d 18-21 equal 0(RD)
+    AND
+      +roslth 62-68 eq j[120]
+      +stac eq staf
+
++abc incr eq 7
+  +abc incr eq[7](CW)
+
+; PAGE DS061
+
++stc eq 000 bus
+  +stc incr equal[0](CS)
+-ab 8-11 eq zero
+  -ab 08-11 equal zero(RA_RB)
+
+-set rosar 10 normal a
+  NOR
+    AND
+      +roslth 62-68 eq j[96]
+      +d22 eq 1
+    AND
+      +roslth 62-68 eq j[98]
+      +stc incr equal[0](CS)
+    AND
+      +roslth 62-68 eq j[98]
+      +incr latch 8-11 eq 0000
+    AND
+      +roslth 62-68 eq j[123]
+      +temp
+        NOT
+          -ab 08-11 equal zero(RA_RB)
+    AND
+      +roslth 62-68 eq j[108]
+      +stad bus
+    AND
+      +roslth 62-68 eq j[105]
+      +unnormalized flt pt op(DN)
+
+-set rosar 10 normal b
+  NOR
+    AND
+      +roslth 62-68 eq j[99]
+      +eff ic 21 eq 1
+    AND
+      +roslth 62-68 eq j[101]
+      +stae bus
+    AND
+      +roslth 62-68 eq j[110]
+      +address sequence[3](KU)
+    AND
+      +roslth 62-68 eq j[100]
+      +sal 4-7 eq 1-4 or 10-15(AS)
+    AND
+      +roslth 62-68 eq j[124]
+      +fetch alternate test(KU)
+    AND
+      +roslth 62-68 eq j[102]
+      +temp
+        NOT
+          -e06 eq 1
+
+; PAGE DS065
+-stc eq 7
+  -stc incr equal[7](CS)
++e 8-15 eq 0
+  +incr lth 8-15 eq zero
++stc eq 7
+  NOT
+    -stc incr equal[7](CS)
++abc eq 111
+  +abc incr eq 7
++serial carry
+  +serial carry(AS)
+
+-set rosar 10 normal c
+  NOR
+    AND
+      +roslth 62-68 eq j[122]
+      +temp
+        NOT
+          -pal one[62](AP)
+    AND
+      +roslth 62-68 eq j[120]
+      +within range 1-2(AS)
+    AND
+      +roslth 62-68 eq j[120]
+      +within range 3-4(AS)
+    AND
+      +roslth 62-68 eq j[104]
+      +e 8-15 eq 0
+    AND
+      +roslth 62-68 eq j[104]
+      +stc eq 7
+    AND
+      +roslth 62-68 eq j[121]
+      +d21 eq 1
+
+-set rosar 10 normal d
+  NOR
+    AND
+      +roslth 62-68 eq j[107]
+      +abc incr eq 7
+      +sal 0-7 eq zero(AS)
+    AND
+      +roslth 62-68 eq j[107]
+      +serial carry(AS)
+      -temp
+        NOT
+          +sal 0-7 eq zero(AS)
+    AND
+      +roslth 62-68 eq j[109]
+      +pal 7-11 equals 0(AP)
+    AND
+      +roslth 62-68 eq j[109]
+      +pal 6-11 ones(AP)
+
+; PAGE DS071
+
+-abc incr eq 000
+  -abc incr equal[0](CW)
++e07 eq 1
+  +e 07 eq 1 bus
++e 07 eq 1 bus
+  +e 07 bus
++pal 63 eq one
+  NOT
+    -pal one[63](AP)
+-pal 63 eq one
+  -pal one[63](AP)
+
+-set 11 fast a
+  NOR
+    AND
+      +roslth 62-68 eq j[103]
+      +e 07 bus
+    AND
+      +roslth 62-68 eq j[102]
+      +e 07 bus
+    AND
+      +roslth 62-68 eq j[120]
+      +sal 0-7 eq zero(AS)
+    AND
+      +roslth 62-68 eq j[98]
+      -abc incr equal[0](CW)
+    AND
+      +roslth 62-68 eq j[122]
+      +pal 63 eq one
+    AND
+      +roslth 62-68 eq j[123]
+      +pal 40-43 equals 0(AP)
+
+-set 11 fast b
+  NOR
+    AND
+      +roslth 62-68 eq j[107]
+      +e 8-15 eq 0
+
+; PAGE DS075
+
++f4-7 neq 13+11
+  +f4-7 neq 1101or1011(RF)
++pal 64-67 0
+  +pal 64-67 0(AP)
++pal 32-39 eq 0
+  +pal 32-39 equals 0
++e 07 bus
+  +e bit[7](RE)
++pal 40-63 eq zero
+  +pal 40-63 equals 0
++pal 7-31 eq zero
+  +pal 7-31 equals 0(AP)
+-set bit 11 slow a
+  NOR
+    AND
+      +roslth 62-68 eq j[96]
+      +temp
+        NOT
+          -d bit[23](RD)
+    AND
+      +roslth 62-68 eq j[104]
+      +temp
+        NOT
+          -edmk lth(KZ)
+      +e bit[7](RE)
+    AND
+      +roslth 62-68 eq j[99]
+      +ic 22 eq 1
+    AND
+      +roslth 62-68 eq j[101]
+      +f4-7 neq 1101or1011(RF)
+    AND
+      +roslth 62-68 eq j[110]
+      +address sequence[4](KU)
+    AND
+      +roslth 62-68 eq j[108]
+      +stag bus
+    AND
+      +roslth 62-68 eq j[105]
+      +compare(DN)
+    AND
+      +roslth 62-68 eq j[124]
+      +test in storage(KU)
+
+-set bit 11 c
+  NOR
+    AND
+      +roslth 62-68 eq j[111]
+      +pal 32-39 equals 0
+      +pal 40-63 equals 0
+      +pal 7-31 equals 0(AP)
+    AND
+      +roslth 62-68 eq j[109]
+      +pal 7-31 equals 0(AP)
+      +pal 32-39 equals 0
+      +pal 64-67 0
+      +pal 40-63 equals 0
+
+-set bit 11 e
+  NAND
+    +roslth 62-68 eq j[107]
+    +stc eq 7
+
+; PAGE DS101
+
+-roslth eq 1[47..68]
+  -roslth eq 1[47..68](EF)
++roslth eq 1[47..68]
+  NOT
+    -roslth eq 1[47..68]
++ros bit eq 1[62..68]
+  NOT
+    -roslth eq 1[62..68](EF)
+-ros bit eq 1[62..68]
+  NOT
+    +ros bit eq 1[62..68]
+
++z set rosar 11 normal
+  ORNOT
+    -set rosar normal 11 a
+    -set rosar normal 11 b
+    -set rosar normal 11 c
+    -set rosar normal 11 d
+    -set rosar normal 11 e
+    -set rosar normal 11 f
+    -set rosar normal 11 g
+    -set rosar normal 11 h
+    -set rosar normal 11 j
+    -set rosar normal 11 k
+    -set rosar normal 11 l
+
++ic 22 eq 1
+  +eff ic 22 eq 1
++d 22 eq 1
+  +d22 eq 1
++sal 4-7 eq 5-9+10-15 t
+  +sal 4-7 eq 5-9 or 10-15(AS)
+
+-set bit 11 d
+  NOR
+    AND
+      +roslth 62-68 eq j[98]
+      +e12-15 eq 0000
+    AND
+      +roslth 62-68 eq j[100]
+      +sal 4-7 eq 5-9 or 10-15(AS)
+    AND
+      +roslth 62-68 eq j[125]
+      +pal 32-63 not eq zero
+      +pal carry 32
+    AND
+      +roslth 62-68 eq j[121]
+      +d22 eq 1
+    AND
+      +roslth 62-68 eq j[97]
+      +eff ic 22 eq 1
+    AND
+      +roslth 62-68 eq j[106]
+      +saddl[2](AS)
+
+; PAGE DS105
+
++branch on atr select in
+  NOT
+    -branch on atr select in
+-branch on atr select in
+  NOT
+    +roslth 62-68 eq j[27]
+
+; PAGE DS111
+
++abc eq 0
+  NOT
+    -abc incr eq 000
++t reg bit 32
+  NOT
+    -st bus[32](RS_RT)
+-pal 512 carry
+  -pal 512 carry(AP)
++pal 40-62 eq zero
+  +pal 40-62 equals 0(AP)
++pal 32-39 eq zero
+  +pal 32-39 eq 0
++pal 40-63 eq zero bus
+  +pal 40-63 eq 0
+
+-set rosar normal 11 a
+  NOR
+    AND
+      +roslth 62-68 eq j[7]
+      +abc eq 0
+    AND
+      +roslth 62-68 eq j[2]
+      +serial carry bus
+    AND
+      +roslth 62-68 eq j[3]
+      +t reg bit 32
+    AND
+      +roslth 62-68 eq j[4]
+      +pal carry 28(RS_RT)
+    AND
+      +roslth 62-68 eq j[1]
+
++rosar 11 fast input 11
+  ORNOT
+    AND
+      -temp
+        NAND
+          +roslth 62-68 eq j[45]
+          +temp
+            NOT
+              -pal 512 carry(AP)
+      -temp
+        NAND
+          +roslth 62-68 eq j[80]
+          +temp
+            NOT
+              -pal 63 eq one
+          +pal 40-62 equals 0(AP)
+          +pal 32-39 eq 0
+    -j8 fast branch
+    -temp
+      NAND
+        +roslth 62-68 eq j[10]
+        +pal 32-39 eq 0
+        +pal 40-63 eq 0
+    -temp
+      NAND
+        +roslth 62-68 eq j[9]
+        +pal 40-63 eq 0
+        +pal 64 equals 0(AP)
+
+; PAGE DS113
+
++staa bus
+  +staa bus(KS)
++stac bus
+  +stac bus(KS)
++staf bus
+  +staf bus(KS)
++pal carry 32
+  +pal carry 32(AP)
+
++stac eq staf
+  NOT
+    XOR
+      +stac bus(KS)
+      +staf bus(KS)
+
+-set rosar normal 11 b
+  NOR
+    AND
+      +roslth 62-68 eq j[84]
+      +stac eq staf
+    AND
+      +roslth 62-68 eq j[81]
+      +staa bus(KS)
+    AND
+      +roslth 62-68 eq j[18]
+      -temp
+        NOT
+          +stac bus(KS)
+    AND
+      +roslth 62-68 eq j[13]
+      +eff ic 22 eq 1
+      +eff ic 21 eq 1
+    AND
+      +roslth 62-68 eq j[14]
+      -temp
+        NOT
+          +f bit[4](RF)
+      +pal carry 32(AP)
+
+; PAGE DS121
+
+-set rosar normal 11 c
+  NOR
+    AND
+      +roslth 62-68 eq j[17]
+      +incr latch 14-15 neq 11(CE)
+    AND
+      +roslth 62-68 eq j[33]
+      +i ltch 8-11 eq i ltch 12-15(CE)
+    AND
+      +roslth 62-68 eq j[65]
+      -temp
+        NOT
+          +temp
+            NOT
+              -abc incr eq[3](CW)
+    AND
+      +roslth 62-68 eq j[26]
+      +abc eq 0
+      +stc eq 000 bus
+      +incr latch 8-15 grt 6
+    AND
+      +roslth 62-68 eq j[23]
+      +temp
+        NOT
+          -stc eq 7
+
+-set rosar normal 11 d
+  NOR
+    AND
+      +roslth 62-68 eq j[39]
+      +abc eq 111
+    AND
+      +roslth 62-68 eq j[55]
+      +stc incr not eq[3](CS)
+    AND
+      +roslth 62-68 eq j[71]
+      +stc greater than 3(CS)
+    AND
+      +roslth 62-68 eq j[70]
+      +translate + translateOtest(DN)
+    AND
+      +roslth 62-68 eq j[68]
+      +sal 0-7 eq zero(AS)
+
+; PAGE DS122
+
++int + stop + tcs
+  +timer step+stop trig+intrpt(KM)
++ros transfer pb
+  +ros transfer pb(KW)
++select local store
+  +select local storage(KW)
++store pb gate
+  +store pb gate(KW)
++display pb gate
+  +display pb gate(KW)
++set ic pb + loop tgr
+  +set ic pb + loop tgr(KW)
++start pb + loop branch tgr
+  +start pb + loop branch tgr(KW)
++pushbutton gate + loop tgr
+  +pushbutton gate + loop tgr(KW)
+
++temp pb gate
+  NOT
+    -temp
+      NOT
+        +pushbutton gate + loop tgr(KW)
+
+-set rosar normal 11 e
+  NOR
+    AND
+      +roslth 62-68 eq j[25]
+      +display pb gate(KW)
+      +temp pb gate
+    AND
+      +roslth 62-68 eq j[85]
+      +ros transfer pb(KW)
+      +temp pb gate
+    AND
+      +roslth 62-68 eq j[49]
+      +addr seq eq lth[0](KU)
+    AND
+      +roslth 62-68 eq j[53]
+      +addr seq eq lth[13](KU)
+    AND
+      +roslth 62-68 eq j[69]
+      +timer step+stop trig+intrpt(KM)
+
+-set rosar normal 11 f
+  NOR
+    AND
+      +roslth 62-68 eq j[21]
+      +store pb gate(KW)
+      +temp pb gate
+    AND
+      +roslth 62-68 eq j[5]
+      +select local storage(KW)
+    AND
+      +roslth 62-68 eq j[31]
+      +set ic pb + loop tgr(KW)
+      +temp pb gate
+    AND
+      +roslth 62-68 eq j[34]
+      +start pb + loop branch tgr
+      +temp pb gate
+
+; PAGE DS131
+
++ros+flt test
+  +ros test + flt lth(KU)
++exe in prog
+  +execute in progress tgr bf4(KD)
++stah bus
+  +stah bus(KS)
++stab bus
+  +stab bus(KS)
+
+-set rosar normal 11 g
+  NOR
+    AND
+      +roslth 62-68 eq j[19]
+      +mcw bit[4](KU)
+    AND
+      +roslth 62-68 eq j[35]
+      +ros test + flt lth(KU)
+    AND
+      +roslth 62-68 eq j[20]
+      +execute in progress tgr bf4(KD)
+    AND
+      +roslth 62-68 eq j[67]
+      ++continue(KU)
+    AND
+      +roslth 62-68 eq j[83]
+      +tic + gap O not repeat(KU)
+
+-set rosar normal 11 h
+  NOR
+    AND
+      +roslth 62-68 eq j[50]
+      +stab bus(KS)
+    AND
+      +roslth 62-68 eq j[66]
+      +stah bus(KS)
+    AND
+      +roslth 62-68 eq j[82]
+      +dec divide(DN)
+    AND
+      +roslth 62-68 eq j[29]
+      +dec divide(DN)
+    AND
+      +roslth 62-68 eq j[29]
+      +dec multiply(DN)
+
+; PAGE DS141
+
++e 8-11 eq 1111 bus
+  +incr latch 8-11 eq 15 bus
++d21 eq1 bus
+  +d 21 eq 1
++e03 eq 1
+  +e03 eq 1(RX)
++d22 eq 1 bus
+  +d 22 eq 1
+
++temp e zero
+  NOT
+    -e12-15 eq zero
++temp rr
+  NOT
+    +not rr format f
+-set rosar normal 11 j
+  NOR
+    AND
+      +roslth 62-68 eq j[24]
+      +temp e zero
+      +temp rr
+    AND
+      +roslth 62-68 eq j[16]
+      +incr latch 12-15 neq 0001(CE)
+    AND
+      +roslth 62-68 eq j[32]
+      +incr latch 12-15 neq 0100(CE)
+    AND
+      +roslth 62-68 eq j[48]
+      +incr latch 8-11 eq 15 bus
+      +incr latch 12-15 eq 15
+    AND
+      +roslth 62-68 eq j[64]
+      +incr latch 12-13 neq 00(CE)
+
+-set rosar normal 11 k
+  NOR
+    AND
+      +roslth 62-68 eq j[11]
+      +temp rr
+      +temp e zero
+    AND
+      +roslth 62-68 eq j[11]
+      -cond met for br on cond(KD)
+    AND
+      +roslth 62-68 eq j[38]
+      +d 22 eq 1
+    AND
+      +roslth 62-68 eq j[22]
+      +e03 eq 1
+    AND
+      +roslth 62-68 eq j[15]
+      +d 21 eq 1
+      +d 22 eq 1
+
+; PAGE DS151
+
+-temp inh
+  NOT
+    +inhibit ingating bus(DR)
+
++sal 0 eq 1
+  +saddl[0](AS)
+
+-set rosar normal 11 l
+  NOR
+    AND
+      +roslth 62-68 eq j[30]
+      +enable ipl-psw branch(KW)
+    AND
+      +roslth 62-68 eq j[37]
+      -main stge byte(KW)
+    AND
+      +roslth 62-68 eq j[6]
+      +time clock step trig(KM)
+    AND
+      +roslth 62-68 eq j[46]
+      +addr seq eq[18](KU)
+    AND
+      +roslth 62-68 eq j[12]
+      +limit latch on(DR)
+    AND
+      +roslth 62-68 eq j[28]
+      +temp
+        NOT
+          -temp inh
+      +f bit[0](RF)
+    AND
+      +roslth 62-68 eq j[28]
+      -temp inh
+      +saddl[0](AS)
+    AND
+      +roslth 62-68 eq j[86]
+      +pal 4 carry(RS_RT)
+    AND
+      +roslth 62-68 eq j[52]
+      +release cpu latch(KX)
+;    AND
+;      +roslth 62-68 eq j[36]
+;      +write direct hold in(JA)
+
+; PAGE DS161
+
++stag bus
+  +stag bus(KS)
++not rr format f
+  -rr format(DN)
++ic21Oic22 eq 0Onot rr
+  ANDNOT
+    +temp
+      NOT
+        -rr format(DN)
+    +eff ic 21 eq 1
+    +eff ic 22 eq 1
+
+-j8 fast branch
+  NAND
+    +roslth 62-68 eq j[8]
+    +temp
+      NOT
+        -temp
+          NOT
+            XOR
+              +stag bus(KS)
+              +f4-7 neq 13+11
+
+-normal k set rosar 10 e
+  NOR
+    AND
+      +temp k[12]
+      +temp
+        ANDNOT
+          -eff ic 21 eq 1
+          -eff ic 22 eq 1
+    AND
+      +temp k[12]
+      +ic21Oic22 eq 0Onot rr
+    AND
+      +temp k[27]
+      +move(DN)
+
+; PAGE DS171
+
++st bus 63
+  +st bus[63](RS_RT)
+
+-set rosar 11
+  NOR
+    AND
+      +roslth 62-68 eq j[40]
+      +st bus[63](RS_RT)
+    AND
+      +roslth 62-68 eq j[41]
+      +write direct ioce operation(JA)
+    AND
+      +roslth 62-68 eq j[42]
+      +any ioce mck(KM)
+    AND
+      +roslth 62-68 eq j[43]
+    AND
+      +roslth 62-68 eq j[44]
+      +register set pb gated(KW)
+;    AND
+;      +roslth 62-68 eq j[27]
+;      +satr select received(KR)
+
+-normal k set rosar 10 f
+  NAND
+    +temp k[7]
+    +restart ros timer(KM)
+
+; PAGE DS201
+
++incr lth 8-15 eq zero
+  +incr latch 8-15 eq all zeros(CE)
++serial carry bus
+  +serial carry
+-e12-15 eq zero
+  -incr latch 12-15 eq 0000(CE)
++e12-15 eq zero
+  NOT
+    -incr latch 12-15 eq 0000(CE)
+
+-normal k set rosar bit 10 a
+  NOR
+    AND
+      +temp k[15]
+      +sal 4-7 eq 0001(AS)
+    AND
+      +temp k[16]
+      +incr lth 8-15 eq zero
+    AND
+      +temp k[18]
+      +incr lth 8-15 eq zero
+    AND
+      +temp k[17]
+      +serial carry
+    AND
+      +temp k[20]
+      +e12-15 eq zero
+    AND
+      +temp k[19]
+      +e12-15 eq zero
+
+-normal k set rosar bit 10 b
+  NOR
+    AND
+      +temp k[1]
+    AND
+      +temp k[20]
+      +stc eq 7
+    AND
+      +temp k[18]
+      +stc eq 7
+    AND
+      +temp k[22]
+      +f4-7 neq 0001(RF)
+    AND
+      +temp k[21]
+      +program interrupt tgr on ypi(KM)
+    AND
+      +temp k[23]
+      +f4-7 neq 1001(RF)
+
+; PAGE DS205
+
++incr latch 12-15 eq 15
+  +incr latch 12-15 eq 1111(CE)
++incr latch 8-11 eq 0000
+  NOT
+    -incr latch 8-11 eq 0000(CE)
++incr latch 8-15 grt 6
+  +incr latch 8-15 gr or eq 7(CE)
++incr latch 8-11 eq 15 bus
+  +incr latch 8-11 eq 1111(CE)
++stad bus
+  +stad bus(KS)
++stae bus
+  +stae bus(KS)
++d 21 eq 1
+  +d21 eq 1
++decimal bus
+  +decimal(KM)
+
+-normal k set rosar bit 10
+  NOR
+    AND
+      +temp k[2]
+      +incr latch 12-15 eq 1111(CE)
+    AND
+      +temp k[3]
+      +stc eq 000 bus
+    AND
+      +temp k[3]
+      +incr latch 8-11 eq 0000
+    AND
+      +temp k[26]
+      +incr latch 8-15 gr or eq 7(CE)
+    AND
+      +temp k[4]
+      +incr latch 8-11 eq 1111(CE)
+    AND
+      +temp k[5]
+      +stad bus(KS)
+
+-normal k set rosar bit 10 d
+  NOR
+    AND
+      +temp k[6]
+      +d21 eq 1
+    AND
+      +temp k[8]
+      +stag bus(KS)
+    AND
+      +temp k[9]
+      +psw[39](RS_RT)
+    AND
+      +temp k[10]
+      +decimal
+    AND
+      +temp k[11]
+      +stae bus(KS)
+    AND
+      +temp k[13]
+      +sal 4-7 eq 1111(AS)
+
++decimal
+  +decimal bus
+; PAGE DS208
+
++pal 40-63 eq 0
+  +pal 40-63 eq zero
++man cntls force addr
+  NOT
+    -man cntls force cros address(KC)
+-man cntls force addr
+  -man cntls force cros address(KC)
++pal 32 eor fxp ovf
+  +pal 32 exor fix pt overflow(AP)
++gate rosar scan+mc
+  +gate rosar scan or mc(RX)
+-force yiasc on repeat
+  NOT
+    +temp fyor
++temp fyor
+  NOT
+    -force yiasc on repeat ros add(RX)
++inh normal or branch eop
+  NOT
+    -temp inobe
+-temp inobe
+  NOR
+    AND
+      +stag bus
+      +exe in prog
+    +temp fyor
+
++set rosar 10 fast k14
+  ANDNOT
+    AND
+      +pal 32-39 eq 0
+      -temp e07 eq 1
+      +pal 40-63 eq zero
+    AND
+      -temp e07 eq 1
+      +pal 32 exor fix pt overflow(AP)
+    AND
+      +e07 eq 1
+      -temp
+        NOT
+          +pal 32 exor fix pt overflow(AP)
+      -temp
+        NAND
+          +pal 32-39 eq 0
+          +pal 40-63 eq zero
+
+-temp e07 eq 1
+  NOT
+    +e07 eq 1
+
+-set rosar scan+mc[10]
+  NOR
+    AND
+      +yiasc
+      +force rosar[10](RX)
+    AND
+      +force cros address bit[10](KC)
+      +man cntls force addr
+
+-set rosar scan+mc[11]
+  NOR
+    AND
+      +yiasc
+      +force rosar[11](RX)
+    AND
+      +gate rosar scan+mc
+
+-yiaei bus k25
+  NAND
+    +temp k[25]
+    -temp inobe
+
+; PAGE DS211
+
+-set rosar scan[6]
+  NAND
+    +yiasc
+    +force rosar[6](RX)
+
+-set rosar scan[7..8]
+  NOR
+    AND
+      +yiasc
+      +force rosar[7..8](RX)
+    AND
+      +gate rosar scan+mc
+      +scan force rosar[7..8](KU)
+
+-set rosar scan+mc[9]
+  NOR
+    AND
+      +yiasc
+      +force rosar[9](RX)
+    AND
+      +man cntls force addr
+      +force cros address bit[9](KC)
+
++yiasc
+  NOT
+    -yiasc bus k24
+-yiasc bus k24
+  NOR
+    +temp k[24]
+    +temp
+      ORNOT
+        -force yiasc on repeat
+        -scan gt 40-51 rosarOyiascO(KU)
+
+; PAGE DS215
+
+-eff ic 21 eq 1
+  -ic to branches[21](CA)
+-eff ic 22 eq 1
+  -ic to branches[22](CA)
++d21 eq 1
+  +d bus[21](DR)
++d22 eq 1
+  +d bus[22](DR)
++eff ic 21 eq 1
+  NOT
+    -ic to branches[21](CA)
++eff ic 22 eq 1
+  NOT
+    -ic to branches[22](CA)
+
++effective b field per ic
+  NOR
+    AND
+      -ic to branches[21](CA)
+      -ic to branches[22](CA)
+      -q 16-19 eq zero(RQ)
+    AND
+      -ic to branches[21](CA)
+      +eff ic 22 eq 1
+      -q 32-35 eq zero(RQ)
+    AND
+      +eff ic 21 eq 1
+      -ic to branches[22](CA)
+      -q 48-51 eq zero(RQ)
+    AND
+      +eff ic 21 eq 1
+      +eff ic 22 eq 1
+      -q 00-03 eq zero(RQ)
+
+-temp d 21
+  NOT
+    +d bus[21](DR)
+-temp d 22
+  NOT
+    +d bus[22](DR)
++effective b-field per d
+  NOR
+    AND
+      -temp d 21
+      -temp d 22
+      -q 16-19 eq zero(RQ)
+    AND
+      -temp d 21
+      +d bus[22](DR)
+      -q 32-35 eq zero(RQ)
+    AND
+      +d bus[21](DR)
+      -temp d 22
+      -q 48-51 eq zero(RQ)
+    AND
+      +d bus[21](DR)
+      +d bus[22](DR)
+      -q 00-03 eq zero(RQ)
+
++d 21 O 22 eq 11
+  ANDNOT
+    -temp d 21
+    -temp d 22
+
+; PAGE DS217
+
+-e06 eq 1
+  -e bit[6](RE)
+-eff r00
+  -eff r eq 1[0](RR)
+-eff rr format
+  NAND
+    -eff r eq 1[0..1](RR)
+
++j97Oeff r01 to rosar 8
+  ANDNOT
+    -roslth 62-68 eq j[97]
+    -eff r eq 1[1](RR)
+
++j97+j121Oeff r01 to rosar 7
+  ANDNOT
+    AND
+      -roslth 62-68 eq j[97]
+      -roslth 62-68 eq j[121]
+    -eff r eq 1[1](RR)
++j97+j121Oeff r00 to rosar 6
+  ANDNOT
+    AND
+      -roslth 62-68 eq j[97]
+      -roslth 62-68 eq j[121]
+    -eff r eq 1[0](RR)
+
++j121Oeff r01 to rosar 8
+  ANDNOT
+    -roslth 62-68 eq j[121]
+    -eff r eq 1[1](RR)
+
++j103 to rosar 6 7 10
+  NOT
+    -roslth 62-68 eq j[103]
+
++j102+j103Oe04 to rosar 8
+  AND
+    ORNOT
+      -roslth 62-68 eq j[102]
+      -roslth 62-68 eq j[103]
+    NOT
+      -e bit[4](RE)
+
++j97Oic21+j103Oe06 ros 10
+  ANDNOT
+    AND
+      -roslth 62-68 eq j[97]
+      -e bit[6](RE)
+    AND
+      -roslth 62-68 eq j[97]
+      -roslth 62-68 eq j[103]
+    AND
+      -roslth 62-68 eq j[103]
+      -eff ic 21 eq 1
+    AND
+      -eff ic 21 eq 1
+      -e bit[6](RE)
+
++j102+j103Oe05 to rosar 9
+  AND
+    ORNOT
+      -roslth 62-68 eq j[102]
+      -roslth 62-68 eq j[103]
+    NOT
+      -e bit[5](RE)
+
+; PAGE DS261
+
+DECODE
+  +temp k[0..31]
+  +roslth eq 1[57..61]
+
+-yiasi bus k31
+  NAND
+    -force yiasc on repeat
+    +temp k[31]
++spec - k31
+  NOT
+    -yiasi bus k31
+
+; PAGE DS365
+  
++normal set rosar bit 6
+  NOT
+    -temp
+      NOT
+        +temp
+          NOT
+            -roslth eq 1[53]
++normal set rosar bit 7
+  NOT
+    -temp
+      NOT
+        +temp
+          NOT
+            -roslth eq 1[54]
++normal set rosar bit 8
+  ORNOT
+    -temp
+      NOT
+        +roslth eq 1[55]
+    -temp
+      NAND
+        +serial carry
+        +roslth 62-68 eq j[120]
+
++normal set rosar bit 9
+  ORNOT
+    -set rosar 9 normal a
+    -roslth eq 1[56]
+    -set rosar 9 normal b
+
++normal k set rosar bit 10
+  ORNOT
+    -normal k set rosar 10 e
+    -normal k set rosar 10 f
+    -normal k set rosar bit 10 a
+    -normal k set rosar bit 10
+    -normal k set rosar bit 10 b
+    -normal k set rosar bit 10 d
+
++normal j set rosar bit 10
+  ORNOT
+    -set rosar 10 normal a
+    -set rosar 10 normal b
+    -set rosar 10 normal c
+    -set rosar 10 normal d
+    -set rosar 10 normal e
+    -temp
+      NAND
+        +roslth 62-68 eq j[111]
+        +pal 8-15 equals 0(AP)
+
++normal fast set rosar 11
+  ORNOT
+    -set 11 fast a
+    -set 11 fast b
+    -set bit 11 c
+    -set bit 11 d
+    -set bit 11 e
+
++normal slow set rosar 11
+  ORNOT
+    -set bit 11 slow a
+
+; PAGE DS401
+
+-temp smp
+  NOT
+    +ros back up reg 47-68 sample
++temp smp
+  NOT
+    -temp smp
+
++ros bit[47..54]
+  NOR
+    AND
+      -roslth eq 1[47..54](EF)
+      -temp smp
+    AND
+      +temp smp
+      -ind roslth[47..54]
+-ind roslth[47..54]
+  NOT
+    +ros bit[47..54]
+
++ros parity[55..68]
+  NOR
+    AND
+      -roslth eq 1[55..68](EF)
+      -temp smp
+    AND
+      +temp smp
+      -ind roslth[55..68]
+-ind roslth[55..68]
+  NOT
+    +ros parity[55..68]
+
++ros 85 par bit
+  NOR
+    AND
+      -roslth eq 1[85](EF)
+      -temp smp
+    AND
+      +temp smp
+      -ind roslth[85]
+-ind roslth[85]
+  NOT
+    +ros 85 par bit
+
+; PAGE DS412
+
+CLOCK
+
++p2
+  NOT
+    -p1
+-p1
+  NOT
+    +p0
++p0
+  NOT
+    -p0-1
+-p0-1
+  NOT
+    +p0-2
++p0-2
+  +clock p0-2(RY)
+
+NOCLOCK
+
+; PAGE DS431
+
+-ind ros 2-42 parity error
+  NOT
+    +temp pe2-42
++temp pe2-42
+  ANDNOT
+    AND
+      -ros parity error bits 2-42(RY)
+      -temp pe2-42
+    AND
+      -temp pe2-42
+      -temp p1
+-temp pe2-42
+  NAND
+    +temp pe2-42
+    -temp ere
+-temp ere
+  NOT
+    +error reset extended
+
+CLOCK
+
+-temp p1
+  NOT
+    +temp p0
++temp p0
+  NOT
+    -temp
+      NAND
+        +p0-2
+        -scan block errors(RY)
+
+NOCLOCK
+
+-ind ros 69-99 parity error
+  NOT
+    +temp pe69-99
++temp pe69-99
+  ANDNOT
+    AND
+      -ros parity ck 69-99(AP)
+      -temp pe69-99
+    AND
+      -temp pe69-99
+      -temp p1
+-temp pe69-99
+  NAND
+    +temp pe69-99
+    -temp ere
++error reset
+  +error reset extended
+
+-ros err to blk cpu clk
+  NOR
+    AND
+      +temp pe2-42
+      -temp ere
+    AND
+      +temp pe69-99
+      -temp ere
+    AND
+      +temp pe43-68
+      -temp ere
+
+-disable+blk err sc
+  -disable+scan block errors b(RY)
+
+-ros error 43-68 blocked
+  NAND
+    -disable+scan block errors b(RY)
+    +temp ros par ck 43-68
+
+-ind ros 43-68 parity error
+  NOT
+    +temp pe43-68
++temp pe43-68
+  ANDNOT
+    AND
+      -temp ros par ck 43-68
+      -temp pe43-68
+    AND
+      -temp pe43-68
+      -temp p1
+-temp pe43-68
+  NAND
+    +temp pe43-68
+    -temp ere
+
+-temp ros par ck 43-68
+  NOT
+    +temp ros par ck 43-68
++temp ros par ck 43-68
+  NAND
+    AND
+      +temp
+        XOR
+          +bits 43-46 odd(DR)
+          +ros bit[47..54]
+          +ros parity[55..68]
+          +ros 85 par bit
+      -temp rpc43-68
+    AND
+      -temp rpc43-68
+      +p2
+-temp rpc43-68
+  NAND
+    +temp ros par ck 43-68
+    +p0
+
++ros back up reg 43-46 sample
+  +ros back up reg 47-68 sample
++ros back up reg 47-68 sample
+  NOT
+    -temp
+      NAND
+        -ros error 43-68 blocked
+        +p0-2
+
+; PAGE DS481
+
++error reset extended
+  ORNOT
+    -temp ds481 3d cd nand
+    -temp ds481 3f cf nand
+
+NOCLOCK
+
+-temp ds481 3d cd nand
+  NAND
+    -clock p3(KS)
+    +temp
+      ORNOT
+        -temp
+          NOT
+            +error reset bus(DP)
+        -temp ds481 3d cd nand
+-temp ds481 3f cf nand
+  NAND
+    +clock p0(KS)
+    +temp
+      ORNOT
+        -temp ds481 3d cd nand
+        -temp ds481 3f cf nand

@@ -1,0 +1,278 @@
+SECTION MB
+
+; PAGE MB163
+
++sdbi[0..63]
+  NOT
+    -sdbi[0..63]
+-sdbi[0..63]
+  NOT
+    +st bus[0..63](RS_RT)
+
+; PAGE MB243
+
++sdbi parity[0]
+  NOT
+    -sdbi parity[0]
+-sdbi parity[0]
+  NOT
+    +st bus parity 00-07(RS_RT)
+
++sdbi parity[1]
+  NOT
+    -sdbi parity[1]
+-sdbi parity[1]
+  NOT
+    +st bus parity 08-15(RS_RT)
+
++sdbi parity[2]
+  NOT
+    -sdbi parity[2]
+-sdbi parity[2]
+  NOT
+    +st bus parity 16-23(RS_RT)
+
++sdbi parity[3]
+  NOT
+    -sdbi parity[3]
+-sdbi parity[3]
+  NOT
+    +st bus parity 24-31(RS_RT)
+
++sdbi parity[4]
+  NOT
+    -sdbi parity[4]
+-sdbi parity[4]
+  NOT
+    +st bus parity 32-39(RS_RT)
+
++sdbi parity[5]
+  NOT
+    -sdbi parity[5]
+-sdbi parity[5]
+  NOT
+    +st bus parity 40-47(RS_RT)
+
++sdbi parity[6]
+  NOT
+    -sdbi parity[6]
+-sdbi parity[6]
+  NOT
+    +st bus parity 48-55(RS_RT)
+
++sdbi parity[7]
+  NOT
+    -sdbi parity[7]
+-sdbi parity[7]
+  NOT
+    +st bus parity 56-63(RS_RT)
+
+; PAGE MB253
+
+-sdbi error byte 00-07
+  XOR
+    +sdbi[0..7]
+    +sdbi parity[0]
+
+-sdbi error byte 08-15
+  XOR
+    +sdbi[8..15]
+    +sdbi parity[1]
+
+-sdbi error byte 16-23
+  XOR
+    +sdbi[16..23]
+    +sdbi parity[2]
+
+-sdbi error byte 24-31
+  XOR
+    +sdbi[24..31]
+    +sdbi parity[3]
+
+-sdbi error byte 32-39
+  XOR
+    +sdbi[32..39]
+    +sdbi parity[4]
+
+-sdbi error byte 40-47
+  XOR
+    +sdbi[40..47]
+    +sdbi parity[5]
+
+-sdbi error byte 48-55
+  XOR
+    +sdbi[48..55]
+    +sdbi parity[6]
+
+-sdbi error byte 56-63
+  XOR
+    +sdbi[56..63]
+    +sdbi parity[7]
+
+; PAGE MB273
+
+-ind sdbi pty check
+  NOT
+    +check reg 09
++check reg 09
+  NOT
+    -sdbi parity check
+-sdbi parity check
+  NOR
+    AND
+      +temp spc smp
+      +temp
+        ORNOT
+          -sdbi error byte 00-07
+          -sdbi error byte 08-15
+          -sdbi error byte 16-23
+          -sdbi error byte 24-31
+          -sdbi error byte 32-39
+          -sdbi error byte 40-47
+          -sdbi error byte 48-55
+          -sdbi error byte 56-63
+    AND
+      -temp
+        NOT
+          +error reset(MA)
+      +check reg 09
+
+CLOCK
+
++temp spc smp
+  NOT
+    -temp
+      NAND
+        +clock p0 to bcu(KC)
+        -clock p5 to bcu(KC)
+        +sample sdbi(MC)
+
+NOCLOCK
+
++error reset
+  +error reset(MA)
+
+; PAGE MB601
+
++mark[0..7]
+  NOT
+    -temp[0..7]
+      NOT
+        +mark tgr[0..7](CT)
++mark parity
+  NOT
+    -temp
+      NOT
+        +mark parity(CT)
+
+; PAGE MB801
+
+-stg prot key[0..3]
+  NOR
+    AND
+      +f bit[0..3](RF)
+      +temp gate f
+    AND
+      +storage key bit[8..11](RW)
+      +temp gate sk
+
+-stg prot key[4]
+  NOR
+    AND
+      +f bit[4](RF)
+      +temp gate f
+
++temp gate sk
+  ANDNOT
+    +temp gate f
+    -gate keys to bus(MC)
++temp gate f
+  NOT
+    -gate f reg to key bus(MC)
+
+-stg prot key parity
+  NOR
+    AND
+      +parity f00-f04(RF)
+      +temp gate f
+    AND
+      +storage key parity(RW)
+      +temp gate sk
+    AND
+      +force key parity bit on bus(MC)
+
+; PAGE MB805
+
++in key [0..4]
+  NOT
+    -stg prot key[0..4]
++normal operation
+  NOT
+    -normal op mc166(MC)
++double cycle
+  NOT
+    -double cycle to mplx bus(MC)
++in key parity
+  NOT
+    -stg prot key parity
+
+; PAGE MB901
+
++bit count odd byte[0]
+  XOR
+    +sdbo[0..7](WA)
++bit count odd byte[1]
+  XOR
+    +sdbo[8..15](WA)
++bit count odd byte[2]
+  XOR
+    +sdbo[16..23](WA)
++bit count odd byte[3]
+  XOR
+    +sdbo[24..31](WA)
++bit count odd byte[4]
+  XOR
+    +sdbo[32..39](WA)
++bit count odd byte[5]
+  XOR
+    +sdbo[40..47](WA)
++bit count odd byte[6]
+  XOR
+    +sdbo[48..55](WA)
++bit count odd byte[7]
+  XOR
+    +sdbo[56..63](WA)
+
+; PAGE MB975
+
++sdbo 61-63 not zero
+  OR
+    +sdbo[61..63](WA)
+
++parity 16-23 required
+  XOR
+    +sdbo[56..60](WA)
+
+; PAGE MB981
+
+-parity byte[0..7]
+  NOT
+    +sdbo parity[0..7](WA)
+
+; PAGE MB991
+
+-byte pty err[0..7]
+  NOT
+    XOR
+      +bit count odd byte[0..7]
+      -parity byte[0..7]
+
++sdbo parity error
+  ORNOT
+    -byte pty err[0..7]
+
+; MAY BE WRONG
+
+-ind sdbo pty check
+  NOT
+    +sdbo parity error

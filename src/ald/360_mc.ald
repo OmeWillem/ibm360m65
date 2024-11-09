@@ -1,0 +1,2197 @@
+SECTION MC
+
+; PAGE MC061
+
++d storage req
+  ORNOT
+    -storage req d 4 cycles(KD)
+    -d req storage(DR)
+
++d sync tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +d storage req
+          -temp block d
+          +cpu clock p4(KD)
+        AND
+          -clock p1
+          -temp block d
+          +d sync tgr
+-temp block d
+  NOT
+    +block d sync tgr(RX)
+
+-ind d request
+  NOT
+    +d sync lth
++d sync lth
+  NOT
+    -d sync lth
+-d sync lth
+  NOR
+    AND
+      +d sync tgr
+      -inhibit requests
+      -clock p3
+    AND
+      -clock p3
+      -flt inhibit requests
+      +temp
+        NOT
+          -storage req d 3 cycles(KD)
+    AND
+      +clock p0+p2
+      +d sync lth
+
++d req tgr
+  NOT
+    -d req tgr
+-d req tgr
+  NOR
+    AND
+      +d sync lth
+      +p0-2
+    AND
+      -master reset 1
+      -reset request tgrs
+      +d req tgr
+
+; PAGE MC062
+
++gt pal 40-63 to d or ic
+  AND
+    NOT
+      +cpu req tgr
+    ANDNOT
+      AND
+        -gt pal 40-63 to ic(DR)
+        -d sync lth
+      AND
+        -gt pal 40-63 to d(DR)
+        -ic sync lth
+
++gate d to sab
+  NOT
+    -temp
+      NAND
+        +gate d
+        -gate scan to sab
+
++gate ic to bus
+  NOT
+    -temp
+      NAND
+        +gate ic
+        -gate scan to sab
+
+; PAGE MC063
+
++gate d
+  NOT
+    -temp
+      NOR
+        AND
+          +d sync lth
+          -ic req tgr
+        +d req tgr
+
++pal tgr
+  +gate paddl to bus
++gate paddl to bus
+  NOT
+    -temp
+      NOR
+        AND
+          -flt inhibit requests
+          +gt pal 40-63 to d or ic
+        AND
+          +clock b0
+          +gate paddl to bus
+
+; PAGE MC065
+
++gate ic
+  NOT
+    -temp
+      NOR
+        AND
+          +ic sync lth
+          -d req tgr
+        +ic req tgr
+
+; PAGE MC066
+
++ic sync tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +temp
+            ORNOT
+              -ic request storage(DR)
+              -ic req storage(DR)
+          +cpu clock p4(KD)
+        AND
+          -clock p1
+          -master reset 1
+          +ic sync tgr
+
+-ind ic request
+  NOT
+    +ic sync lth
++ic sync lth
+  NOT
+    -ic sync lth
+-ic sync lth
+  NOR
+    AND
+      +ic sync tgr
+      -flt inhibit requests
+      -clock p3
+    AND
+      -clock p3
+      +temp
+        ORNOT
+          -storage req from ic 3 cycles(KD)
+          -ic storage req 3 cycles(KD)
+          -storage req ic 4 cycles(KD)
+      -flt inhibit requests
+    AND
+      +clock p0+p2
+      +ic sync lth
+
++ic req tgr
+  NOT
+    -ic req tgr
+-ic req tgr
+  NOR
+    AND
+      +ic sync lth
+      +p0-2
+    AND
+      -master reset 1
+      -reset request tgrs
+      +ic req tgr
+
+; PAGE MC068
+
++cpu request sync lth
+  ORNOT
+    -d sync lth
+    -ic sync lth
+    -scan sync lth
+
++scan sync tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +temp
+            NOT
+              -scan req storage(DR)
+          +cpu clock p4(KD)
+        AND
+          +temp
+            NOT
+              -scan storage request(KU)
+          +clock p0+p2
+        AND
+          -master reset 1
+          -clock p1
+          +scan sync tgr
+
+-ind scan request
+  NOT
+    +scan sync lth
++scan sync lth
+  NOT
+    -scan sync lth
+-scan sync lth
+  NOR
+    AND
+      +scan sync tgr
+      -clock p1
+    AND
+      +clock p0+p2
+      +scan sync lth
+
+-scan req tgr ay4
+  NOT
+    +scan request tgr
++scan request tgr
+  NOT
+    -scan req tgr am4
+-scan req tgr am4
+  NOR
+    AND
+      +scan sync lth
+      +p0-2
+    AND
+      -master reset 1
+      -reset request tgrs
+      +scan request tgr
+
+-gate scan to sab
+  NAND
+    +temp
+      ORNOT
+        -scan req tgr am4
+        -scan sync lth
+    -temp
+      NOR
+        +d req tgr
+        +ic req tgr
+
+; PAGE MC071
+
+++3 cycle sync tgr
+  NOT
+    -+3 cycle sync tgr
+-+3 cycle sync tgr
+  NOR
+    AND
+      +temp
+        NOT
+          -+3 cycle access(DR)
+      +cpu clock p4(KD)
+    AND
+      -clock p1
+      -master reset 1
+      ++3 cycle sync tgr
+
+-ind 3 cycle request
+  NOT
+    ++3 cyc sync lth
+++3 cyc sync lth
+  NOT
+    -temp
+      NOR
+        AND
+          ++3 cycle sync tgr
+          -temp
+            NOR
+              AND
+                +d sync tgr
+                +block d req(KD)
+              +flt inh storage requests bcu(KU)
+          -clock p1
+        AND
+          -clock p1
+          +temp
+            ORNOT
+              -ic storage req 3 cycles(KD)
+              -storage req from ic 3 cycles(KD)
+              -storage req d 3 cycles(KD)
+          -flt inhibit requests
+        AND
+          +clock p0+p2
+          ++3 cyc sync lth
+
+-+3 cycle tgr
+  NOT
+    ++3 cycle tgr
+++3 cycle tgr
+  NOT
+    -temp
+      NOR
+        AND
+          ++3 cyc sync lth
+          -rs branch reset 3 cycle req(KD)
+          +clock p0+p2
+        AND
+          +cpu 2 lth
+          ++3 cycle tgr
+        AND
+          -clock p1
+          -master reset 1
+          ++3 cycle tgr
+
+; PAGE MC121
+
++cpu 2 tgr
+  NOT
+    -cpu 2 tgr
+-cpu 2 tgr
+  NOR
+    AND
+      +cpu request sync lth
+      -insert key tgr
+      +clock p2
+    AND
+      -clock p1
+      -master reset 1
+      +cpu 2 tgr
+
++cpu 2 lth
+  NOT
+    -temp
+      NOR
+        AND
+          +cpu 2 tgr
+          -clock p1
+        AND
+          +clock p0
+          +cpu 2 lth
+
++sample sdbi
+  NOT
+    -temp
+      NAND
+        +store
+        +cpu 3 tgr
+        -suppress log check ma901 bc4(MA)
+
++cpu 3 tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +cpu 2 lth
+          +clock p2
+        AND
+          -clock p1
+          -master reset 1
+          +cpu 3 tgr
+
++cpu 3 lth
+  NOT
+    -temp
+      NOR
+        AND
+          +cpu 3 tgr
+          -clock p3
+          -+3 cycle tgr
+          -store to cpu seq
+        AND
+          +clock p2
+          +cpu 3 lth
+
+; PAGE MC141
+
++cpu 4 tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +cpu 3 lth
+          +clock p2
+        AND
+          -clock p1
+          -master reset 1
+          +cpu 4 tgr
+
++cpu 4 lth
+  NOT
+    -temp
+      NOR
+        AND
+          +cpu 3 tgr
+          ++3 cycle tgr
+          -store to cpu seq
+          -clock p1
+        AND
+          +cpu 4 tgr
+          -clock p1
+        AND
+          +clock p0
+          +cpu 4 lth
+
++cpu 5 tgr
+  NOT
+    -cpu 5 tgr
+-cpu 5 tgr
+  NOR
+    AND
+      +cpu 4 lth
+      +clock p2
+    AND
+      +clock p2
+      +cpu request sync lth
+      +insert key tgr
+    AND
+      -clock p1
+      -master reset 1
+      +cpu 5 tgr
++cpu 5 lth
+  NOT
+    -temp
+      NOR
+        AND
+          +single cycle
+          -clock p1
+          +store
+        AND
+          +cpu 5 tgr
+          -clock p1
+        AND
+          +clock p0
+          +cpu 5 lth
+          
+-cpu 5 lth clocked
+  NAND
+    +cpu 5 lth
+    +clock p0
+
+
+; PAGE MC161
+
++set inhibit storage select
+  ORNOT
+    -psa request
+    -ss inhibit cpu request bh4
+    -reset cpu request tgrs
+    -ss inhibit cpu request av4
+    -sc inh sw+los terminating
+;    -inh clean up succ
+
++cpu req tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +clock p0
+          +cpu request sync lth
+        AND
+          -master reset 1
+          -reset request tgrs
+          +cpu req tgr
+
+; PAGE MC166
+
+-double cycle to mplx bus
+  -double cycle
+
++fetch
+  NOT
+    -temp
+      NAND
+        +temp
+          NOT
+            +temp 3e bz
+        -store to cpu seq
++temp 3e bz
+  ORNOT
+    -temp
+      NOT
+        -normal op mc181
+    -double cycle
+    -suppress log check ma905(MA)
+
+-normal op mc166
+  XOR
+    +temp 3e bz
+    +diag reverse normal op(KU)
+
+-gate f reg to key bus
+  NAND
+    +temp
+      NOT
+        -set key tgr
+    +d req tgr
+
++force key parity bit on bus
+  -gate keys to bus
+-gate keys to bus
+  NOT
+    -inhibit storage protect
+
+; PAGE MC171
+
+-store to mplx bus
+  NAND
+    -set key tgr
+    +store
+
++store or test and set
+  ORNOT
+    -test and set
+    -store
+
+-d reg store
+  NAND
+    -test and set
+    +store on d request(DR)
+    +d req tgr
+    -temp 2b bk
+
+-temp 2b bk
+  NOR
+    AND
+      -clock p1
+      +single cycle
+      +d req tgr
+    AND
+      +late bcu clean up ak4
+      +temp
+        NOT
+          -temp 2b bk
+
+-store to cpu seq
+  NOR
+    AND
+      +cpu 2 lth
+      +store
+    AND
+      +cpu 3 tgr
+      +store
+
+-store
+  NOT
+    +store
+
++store
+  ORNOT
+    -d reg store
+    -store to cpu seq
+    -temp
+      NAND
+        -test and set
+        +store on d request(DR)
+        +scan request tgr
+    
+-flt inhibit requests
+  NOT
+    +flt inh storage requests bcu(KU)
+
+-store per d register
+  NAND
+    +store
+    +d req tgr
+    +clock b2
+
+-inhibit requests
+  NOR
+    +flt inh storage requests bcu(KU)
+    +block d req(KD)
+
+; PAGE MC181
+
+-ind set key
+  NOT
+    +set key tgr
++set key tgr
+  NOT
+    -set key tgr
+-set key tgr
+  NOR
+    AND
+      +clock p2
+      +set key(DR)
+    AND
+      -late bcu clean up ar4
+      -master reset 3
+      +set key tgr
+-ind insert key
+  -insert key tgr
+-insert key tgr
+  NOT
+    +insert key tgr
++insert key tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +d storage req
+          +temp
+            NOT
+              -temp
+                NAND
+                  +insert key(DR)
+                  +clock p0
+        AND
+          -late bcu clean up ar4
+          -master reset 3
+          +insert key tgr
+
+-insert key
+  NOT
+    +insert key(DR)
+
+-inhibit storage protect
+  NOR
+    AND
+      +clock p0+p2
+      +inhibit stor protect(DR)
+    AND
+      -master reset 3
+      -late bcu clean up ah4
+      +temp
+        ORNOT
+          -scan req tgr am4
+          -inhibit storage protect
+
+-test and set
+  NOT
+    +temp t and s
++temp t and s
+  ANDNOT
+    +logout tgr
+    -temp
+      NOR
+        AND
+          +ros lth decode test and set(DR)
+          +clock p2
+        AND
+          -master reset 3
+          -late bcu clean up ar4
+          +temp t and s
+
+-normal op mc181
+  ORNOT
+    -set key tgr
+    -insert key tgr
+    -test and set
+
+; PAGE MC191
+
+-double cycle
+  NAND
+    +temp dbl cyc
+    +not single cycle
+    +d req tgr
++temp dbl cyc
+  NOT
+    -temp
+      NOR
+        AND
+          +dbl cycle inst(DN)
+          -block i fetch tgr(KD)
+          +temp
+            NOT
+              -lth i fetch rst(DR)
+        AND
+          -invalid addr bus
+          +temp dbl cyc
+          -temp
+            NOT
+              +temp
+                ORNOT
+                  -temp
+                    NOT
+                      +master reset
+                  -temp
+                    NAND
+                      +d req tgr
+                      +early accept
+
++ros decode e2-7 to rosar
+  NOT
+    -j103 for dbl cycle(DS)
+
+; PAGE MC261
+
+-hss accept
+  NOT
+    +hss early accept
+
++hss early accept
+  ORNOT
+    -accept se 1 to 4
+    -temp
+      NAND
+        +hss early accept
+        -master reset 3
+        -temp accept
+
++accept
+  NOT
+    -temp accept
+-temp accept
+  NOT
+    +hss accept lth
++hss accept lth
+  NOT
+    -temp
+      TD
+        -temp
+          TD
+            -hss accept
+
+; PAGE MC271
+
+; this one to KC
+-stop clock tgr aw4
+  NAND
+    +stop clock tgr
+    -inh sto req on repeat ros add(RX)
+    -rate single cycle inhibit sw
++stop clock tgr
+  ANDNOT
+    AND
+      -stop clock tgr ar4
+      -temp
+        NAND
+          +insert key tgr
+          +d sync lth
+          +clock p0
+    AND
+      +bcu clean up sel successful
+      -insert key tgr
+    +temp
+      ORNOT
+        -temp
+          NAND
+            +temp
+              NOT
+                -temp
+                  NOT
+                    +key advance(WA)
+            +cpu 5 lth
+        -temp
+          NAND
+            +clock b0
+            -clock b5
+            +stor i-o sync lth
+
+-stop clock tgr ar4
+  NOR
+    AND
+      +cpu 2 lth
+      +clock p0
+    AND
+      -master reset 1
+      -reset cpu request tgrs
+      +stop clock tgr
+
+; PAGE MC291
+
+-ss inhibit cpu request bh4
+  NOR
+    AND
+      -master reset 1
+      +temp cpu clock go
+      +temp
+        NOT
+          -ss inhibit cpu request bh4
+    AND
+      +late bcu clean up ak4
+      +single cycle
+;      -inh clean up succ
+
+-bcu hold on cpu clock
+  NOT
+    +temp cpu clock go
++temp cpu clock go
+  NOT
+    -temp cpu clock go
+-temp cpu clock go
+  NOR
+    AND
+      +short switch ss pulse(KW)
+      +stop clock tgr
+      -rate single cycle inhibit sw
+      -clock b0-1
+    AND
+      -master reset 1
+      -cpu 5 lth clocked
+      +temp cpu clock go
+
++single cycle
+  NOT
+    +not single cycle
++not single cycle
+  NOR
+    +single cycle bg4(KW)
+    AND
+      -reset single cycle mode(KW)
+      -master reset 1
+      +single cycle
+
+-rate single cycle inhibit sw
+  NAND
+    +single cycle
+    +temp sc inh sw
++temp sc inh sw
+  NOT
+    -rate single cycle inhibit sw(KW)
+
+-sc inh sw+los terminating
+  NOR
+    +los terminating(KU)
+    AND
+      +temp sc inh sw
+      +single cycle
+
+-ss inhibit cpu request av4
+  NOR
+    AND
+      -temp cpu clock go
+      +single cycle
+    +temp
+      NOT
+        -inh sto req on repeat ros add(RX)
+
+; PAGE MC331
+
++delayed invalid address bus
+  NOT
+    -delayed invalid address bus
+-delayed invalid address bus
+  NOT
+    +temp
+      TD
+        +temp
+          NOT
+            -invalid address bus mc741
+
+; PAGE MC351
+
++ignore se size[31..23]
+  +reg se size[31..23](*)
++se 1 decoded
+  ANDNOT
+    -temp[1..23]
+      AND
+        +sab[1..23](MA)
+        NOT
+          +reg se size[22..0](*)
+
+; PAGE MC381
+
++decoded se de stopped
+  ORNOT
+    -temp
+      NOR
+        AND
+          +se 1 decoded
+          +se 1 ready
+          +se 1 stopped
+        AND
+          +select timing pulse mc401
+          +decoded se de stopped
+
+; PAGE MC385
+
+-any sel lth not inhibited
+  NOT
+    +any select lth not inhibited
++any select lth not inhibited
+  ORNOT
+    -temp
+      NOR
+        AND
+          +select se 1
+          -inhibit select se 1
+
+; PAGE MC391
+
+-from clk time b12 to b17
+  NOT
+    +temp
+      NOT
+        -temp
+          NAND
+            -clock b0-1
+            +clock b4
+
++sample scon or satr spec
+  ANDNOT
+    -clock b0-1
+    +clock b4
+
+; PAGE MC401
+
+-reset inhibit latches
+  NOT
+    +reset inhibit and select lths
+
+-reset select latches
+  NOT
+    +temp
+      ORNOT
+        -reset inhibit latches
+        -temp
+          NOT
+            +master reset
+        -temp
+          NOT
+            +late bcu clean up cm4
+
++select timing pulse mc401
+  NOT
+    -select timing pulse
+-select timing pulse
+  NOT
+    +select timing pulse mc707
+
+; PAGE MC411
+
++select pulse se 1
+  ANDNOT
+    -select timing pulse
+    +temp inh sel se 1
++temp inh sel se 1
+  ORNOT
+    -inhibit select se 1
+    +se 1 ready
+    -se 1 stopped
+-inhibit select se 1
+  NAND
+    +temp inh sel se 1
+    -reset inhibit latches
+
+; PAGE MC431
+
++psa request
+  NOT
+    -psa request
+-psa request
+  NOR
+    AND
+      +select timing pulse mc707
+      +issue a select
+      +select unsuccessful
+    AND
+      -bcu clean up
+      -master reset 1
+      +psa request
+      -temp mc431 td out
+SPECIAL
+  TD50NS
+    -temp mc431 td in
+    OUT
+    -temp mc431 td out
+
+-temp mc431 td in
+  NAND
+    +psa request
+    -select outstanding mc741
+    -issue a select
+    +clock b0
+
+; PAGE MC471
+
++bcu allow pm
+  NOT
+    -temp
+      NAND
+        +temp mc471 5e bx
+        +temp pm set up
+        -select outstanding mc741
++temp pm set up
+  NOT
+    -pulse mode set up(KW)
++temp mc471 5e bx
+  NOT
+    -temp
+      NOR
+        AND
+          -stg 2 tgr
+          -clock b0-1
+          +temp pm set up
+        AND
+          -stg 2 tgr
+          +temp mc471 5e bx
+
++disable chk
+  NOT
+    +block storage select(KW)
+
+; ORNOT is not entirely clear here...
+-reset cpu request tgrs
+  NAND
+    -select outstanding mc741
+    +temp
+      ORNOT
+        -master reset 1
+        -temp mc471 4j bu
+-temp mc471 4j bu
+  NOR
+    AND
+      +block storage select(KW)
+      +cpu storage chk
+      -stg 2 tgr
+      -clock b0-1
+    AND
+      +temp
+        NOT
+          -temp mc471 4j bu
+      +block storage select(KW)
+      -master reset 1
+
+; PAGE MC511
+
+-select se 1 even
+  NOT
+    +select se 1
+
++select se 1
+  NOT
+    -temp
+      NOR
+        AND
+          +select pulse se 1
+          +se 1 decoded
+        AND
+          +select se 1
+          -reset select latches
+        AND
+          +delayed invalid address bus
+          +select pulse se 1
+
+; PAGE MC611
+
++accept se 1
+  NOT
+    -accept se 1(WA)
+
+; PAGE MC621
+
++se 1 stopped
+  NOT
+    -se 1 stopped(WA)
+
++se 1 ready
+  NOT
+    -se 1 ready(WA)
+
+; PAGE MC631
+
+-se 1 stopped
+  NOT
+    +se 1 stopped
+
+; PAGE MC641
+
++se 1 addr chk
+  NOT
+    -se 1 addr chk(WA)
+
+; PAGE MC643
+
++se 1 data chk
+  NOT
+    -se 1 data chk(WA)
+
+; PAGE MC645
+
++storage data chk
+  NOT
+    -temp
+      NOT
+        +se 1 data chk
+
+; PAGE MC651
+
+-accept se 1 to 4
+  NOR
+    AND
+      +accept se 1
+      +select se 1
+    +stor timeout pulse mc911
+
+; PAGE MC701
+
+-invalid address bus mc701
+  NOT
+    +invalid address bus
+
+-invalid address decoded
+  NOR
+    +invalid address bus
+    AND
+      -temp
+        NOT
+          +se1 lth(KU)
+      +sab[1](MA)
+        
+; PAGE MC706
+
++reset inhibit and select lths
+  ANDNOT
+    +clock b4
+    -issue a select
+
++issue a select
+  NOT
+    -issue a select
+-issue a select
+  NAND
+    +temp
+      ORNOT
+        -d req tgr
+        -ic req tgr
+        -scan req tgr am4
+    -select outstanding mc741
+    -temp inh stg select
+
++temp inh stg select
+  NOT
+    -temp inh stg select
+-temp inh stg select
+  NOR
+    AND
+      +stg 2 tgr
+      -clock b1
+    AND
+      -clock b1
+      +set inhibit storage select
+    AND
+      +clock b0 or +clock b2
+      +temp inh stg select
+
++stg 2 tgr
+  NOT
+    -stg 2 tgr
+-stg 2 tgr
+  NOR
+    AND
+      +issue a select
+      -reset cpu request tgrs
+      +clock b2
+    AND
+      -clock b1
+      -master reset 1
+      +stg 2 tgr
+
+-sample address compare condit
+  NAND
+    +stor add comp bit[1](MA)
+    +temp inh stg select
+    +stg 2 tgr
+
+; PAGE MC707
+
++select timing pulse mc707
+  ANDNOT
+    -stg 2 tgr
+    -temp
+      ORNOT
+        -temp
+          NAND
+            +temp
+              TD
+                +temp
+                  NOT
+                    -bcu osc(KC)
+
+-select outstanding mc707
+  NOT
+    +temp
+      NOT
+        -select outstanding mc741
+
+; PAGE MC711
+
+-pulse select successful
+  -bcu clean up
+-bcu clean up
+  NOT
+    +temp
+      NOT
+        -temp
+          NOT
+            +temp
+              ORNOT
+                -early accept
+                -reset cpu request tgrs
+
+-reset request tgrs
+  NAND
+    +late bcu clean up ak4
+;    -inh clean up succ
+
+;-inh clean up succ
+;  NOT
+;    +inh clean up succ
+
++late bcu clean up ak4
+  ORNOT
+    -temp
+      NAND
+        -clock b1
+        -clock b0-1
+        +temp mc711 2g ad
+    -reset cpu request tgrs
+    -late bcu clean up ah4
++temp mc711 2g ad
+  NOT
+    -temp
+      NOT
+        +hss accept lth
+
++late bcu clean up bm4
+  NOT
+    -late bcu clean up bl4
+-late bcu clean up bl4
+  NOT
+    +temp mc711 2g ad
+
+-early accept
+  NOT
+    +hss early accept
+
++bcu clean up sel successful
+  NOT
+    -temp
+      NAND
+        +temp
+          NOT
+            -early accept
+;        -inh clean up succ
+
++late bcu clean up cm4
+  NOT
+    -late bcu clean up ah4
+
+-late bcu clean up ah4
+  NAND
+    -clock b1
+    -master reset 1
+    +late bcu clean up ak4
+
+-late bcu clean up ar4
+  NOT
+    +late bcu clean up cm4
+
++late bcu clean up for cpu req
+  +late bcu clean up cm4
+
++reset marks
+  ORNOT
+    -master reset 1
+    -rate single cycle inhibit sw
+    -temp
+      NAND
+        +late bcu clean up ak4
+        -clock b1
+        +store or test and set
+
+; PAGE MC741
+
++inh osc select outstanding
+  NOT
+    -select outstanding mc741
+-select outstanding mc741
+  NAND
+    +any select lth not inhibited
+    -early accept
+    -issue a select
+    +temp test for inv adr
++temp test for inv adr
+  NOT
+    -temp
+      NOR
+        AND
+          +stg 2 tgr
+          -clock b5
+          -clock b1
+        AND
+          +temp test for inv adr
+          -master reset 1
+          -bcu clean up
+
+CLOCK
+
++select unsuccessful
+  NOT
+    -temp sel unsucc
+-temp sel unsucc
+  NAND
+    +temp test for inv adr
+    -any sel lth not inhibited
+
+-pulse invalid address
+  NAND
+    +temp inv adr tgr
+    -clock b1(KC)
+
+NOCLOCK
+
++temp inv adr tgr
+  ORNOT
+    -temp
+      NAND
+        +temp test for inv adr
+        -any sel lth not inhibited
+        +clock b4
+        -temp se de stopped lth
+    -temp inv adr tgr
+-temp inv adr tgr
+  NAND
+    -late bcu clean up bl4
+    -master reset 1
+    +temp inv adr tgr
+
+-invalid address
+  NAND
+    -clock b1
+    +temp inv adr tgr 2
++temp inv adr tgr 2
+  ORNOT
+    -temp inv adr tgr
+    -temp se de stopped tgr
+
++invalid address bus
+  NOT
+    -invalid address bus mc741
+-invalid address bus mc741
+  NAND
+    -intrpt priority gated
+    +temp
+      ORNOT
+        -temp sel unsucc
+        -temp
+          NOT
+            +temp inv adr tgr 2
+
+-stat g for ce scon sel
+  NOT
+    +stag(KS)
+
+-pulse se de stopped
+  NAND
+    -clock b1
+    +temp se de stopped tgr
+
++temp se de stopped tgr
+  ORNOT
+    -temp se de stopped tgr
+    -temp
+      NAND
+        +temp test for inv adr
+        -any sel lth not inhibited
+        +temp se de stopped lth
+        +clock b4
+-temp se de stopped tgr
+  NAND
+    +temp se de stopped tgr
+    -late bcu clean up bl4
+    -master reset 1
+
++temp se de stopped lth
+  ORNOT
+    -temp se de stopped lth
+    -temp
+      NAND
+        -invalid address decoded
+        +temp test for inv adr
+        +decoded se de stopped
+-temp se de stopped lth
+  NAND
+    +temp se de stopped lth
+    -late bcu clean up bl4
+    -master reset 1
+
+; PAGE MC743
+
++temp inv adr cancel
+  NOT
+    -temp
+      NOR
+        AND
+          +invalid address bus
+          -clock b1
+        AND
+          -master reset 3
+          +temp inv adr cancel
+          -temp
+            NOT
+              +late bcu clean up bm4
+
++temp cpu cancel
+  NOT
+    -temp
+      NOR
+        AND
+          -clock b1
+          +temp
+            ANDNOT
+              -temp
+                NOR
+                  -cpu 5 tgr
+                  -cpu 2 tgr
+              -temp
+                NOR
+                  -cpu 2 tgr
+                  -insert key tgr
+          +cpu specification error(RX)
+        AND
+          -late bcu clean up ar4
+          -master reset 3
+          +temp cpu cancel
+
+-intrpt priority gated
+  NAND
+    +any intrpt priority(KN)
+    -ic req tgr
+
+-cancel
+  NOR
+    AND
+      +temp inv adr cancel
+      -intrpt priority gated
+    AND
+      +temp cpu cancel
+
+; PAGE MC753
+
++temp 60 cyc
+  NOT
+    -+60 cycle pulse(KD)
+
+-timeout pulse not stor
+  NAND
+    +temp 60 cyc
+    +temp mc753 6e bj
+    +temp mc753 5e au
++temp mc753 6e bj
+  NOT
+    -temp mc753 4f bd
+-temp mc753 4f bd
+  NOT
+    +set timeout not stor(KU)
++temp mc753 5e au
+  NOT
+    -temp
+      NOR
+        AND
+          +temp
+            NOT
+              +temp 60 cyc
+          +temp mc753 5c at
+        AND
+          +temp mc753 5e au
+          +temp 60 cyc
+        AND
+          +temp mc753 5e au
+          +temp mc753 5c at
++temp mc753 5c at
+  NOT
+    -temp
+      NAND
+        OR
+          +temp 60 cyc
+          +temp mc753 5c at
+        +temp
+          ORNOT
+            -temp
+              NOT
+                +temp sel out
+            -temp
+              NAND
+                +not single cycle
+                +temp
+                  ORNOT
+                    -stop clock tgr ar4
+                    -cpu store in progress(KM)
+            -temp mc753 4f bd
++temp sel out
+  NOT
+    -select outstanding mc707
+
++stor timeout pulse mc753
+  ORNOT
+    -stor i-o sync lth
+    -stor timeout pulse
+
++stor i-o sync lth
+  NOT
+    -stor i-o sync lth
+-stor i-o sync lth
+  NOR
+    AND
+      +temp mc753 5e au
+      +temp 60 cyc
+      +clock b4Onot b1
+    AND
+      +temp mc753 5e au
+      +stor i-o sync lth
+
+-stg timeout pulse delayed
+  NOT
+    +temp mc753 td30 out
+SPECIAL
+  TD30NS
+    +stor timeout pulse mc753
+    OUT
+    +temp mc753 td30 out
+
+-ind stg timeout
+  NOT
+    +se timeout
++se timeout
+  NOT
+    -stg timeout
+-stg timeout
+  NOR
+    AND
+      +stor timeout pulse mc753
+      -temp mc753 4f bd
+    AND
+      -error reset mc753
+      +se timeout
+-error reset mc753
+  NOT
+    +error reset
+
+-stor timeout pulse
+  NAND
+    +temp sel out
+    +temp 60 cyc
+    +temp mc753 5e au
+
+; PAGE MC756
+
+-log stg chk set hard stop
+  NAND
+    OR
+      +storage data check
+      +storage address check
+    +temp
+      NOT
+        -logout tgr bcu
+
+-ind cpu storage addr check
+  -stg address check lth
+-stg address check lth
+  NOT
+    +stg addr check
++stg addr check
+  NOT
+    -temp stg addr check
+-temp stg addr check
+  NOR
+    +storage address check
+    AND
+      -error reset mc766
+      +stg addr check
+
+-ind cpu storage data check
+  NOT
+    +stg data check
++stg data check
+  NOT
+    -temp stg data check
+-temp stg data check
+  NOR
+    +storage data check
+    AND
+      -error reset mc766
+      +stg data check
+
++cpu storage chk
+  ORNOT
+    -temp stg addr check
+    -temp
+      NOT
+        +temp mc756 1g be
+    -temp stg data check
+
++temp mc756 1g be
+  ORNOT
+    -fetch data check
+    -stg timeout
+
+-bcu stop cl on cpu stg check
+  NOR
+    AND
+      +temp mc756 1g be
+      +clock b0
+      -clock b3
+    AND
+      +stg addr check
+      +clock b0
+      -clock b3
+    AND
+      +stg data check
+      +clock b0
+      -clock b3
+    AND
+      -error reset mc766
+      +temp
+        NOT
+          -bcu stop cl on cpu stg check
+
+-any stg check
+  NOR
+    +temp mc756 1g be
+    +stg addr check
+    +stg data check
+
+-logout tgr bcu
+  NOT
+    +logout in prog bcu
+
+; PAGE MC766
+
+-master reset 3
+  NOT
+    +master reset
++master reset
+  NOT
+    -master reset 1
+-master reset 1
+  NOT
+    +mach reset O not log reset bcu(KC)
+
++error reset
+  NOT
+    -error reset mc766
+-error reset mc766
+  NOT
+    +error reset gate a O c(KC)
+
++error reset gate a O c
+  +error reset gate a O c(KC)
+
+-log in progress
+  NOT
+    +logout tgr
++logout tgr
+  NOT
+    -logout tgr(KU)
+
+-log out tgr
+  -logout tgr(KU)
+
+; PAGE MC768 + MC151
+
+CLOCK
+
+-clock b7
+  NOT
+    +temp
+      NOT
+        -clock b5
+-clock b5
+  NOT
+    +clock b4
++clock b4
+  NOT
+    -clock b3
+-clock b3
+  NOT
+    +clock b2
++clock b2
+  NOT
+    -clock b1
+-clock b1
+  NOT
+    +clock b0
++clock b0
+  NOT
+    -clock b0-1
+-clock b0-1
+  NOT
+    +temp
+      TD
+        +temp
+          NOT
+            -bcu osc(KC)
+
++clock b4Onot b1
+  NOT
+    -temp
+      NAND
+        -clock b0-1
+        -clock b3
+
++clock b0 or +clock b2
+  ORNOT
+    -clock b0-1
+    -clock b1
+
+-clock p3
+  NOT
+    +clock p2
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -temp p0-1
+-temp p0-1
+  NOT
+    +p0-2
++p0-2
+  +clock p0-2 to bcu(KC)
+
++clock p0+p2
+  ORNOT
+    -clock p1
+    -temp p0-1
+
+NOCLOCK
+
+; PAGE MC776
+
++early stg advance
+  NOT
+    -temp mc776 5a aw
+-temp mc776 5a aw
+  NAND
+    +advance sdbo(WA)
+    -temp late adv lth
+    -temp late adv tgr
+-temp late adv lth
+  NOT
+    +late advance latch
++late advance tgr
+  NOT
+    -temp late adv tgr
+-temp late adv tgr
+  NOR
+    AND
+      +advance sdbo(WA)
+      -clock b0-1
+      +clock b2
+    AND
+      -clock b1
+      +late advance tgr
+
+-adv + t o rst stor in prog
+  NOR
+    AND
+      +advance sdbo(WA)
+      -temp late adv lth
+      -temp late adv tgr
+    AND
+      +temp
+        NOT
+          -stor i-o sync lth
+      -clock b5
+      +clock b0
+
+-late late advance
+  NAND
+    -temp late adv tgr
+    +late advance latch
+
++protection check
+  ANDNOT
+    -temp mc776 5a aw
+    -protected address check
+    
+-gate keys to f00-04
+  NAND
+    +key advance(WA)
+    +clock b0
+
+-protected address check
+  NOT
+    +prot addr check(WA)
+
++storage data check
+  NOT
+    -storage data check pulse
+-storage data check pulse
+  NOT
+    +storage data chk
++storage address check
+  NOT
+    -temp
+      NOT
+        +storage addr chk
+
+; PAGE MC781
+
++cancel
+  NOT
+    -cancel
++insert key
+  NOT
+    -insert key tgr
+
++set key
+  NOT
+    -set key tgr
+
++store to se
+  NOT
+    -store to mplx bus
+
+; PAGE MC791
+
+-ind split log out
+  NOT
+    +split logout
++split logout
+  ORNOT
+    -temp
+      NAND
+        +retain address seq
+        +temp
+          NOT
+            -select outstanding mc707
+    -temp
+      NAND
+        +temp
+          NOT
+            -st bus[60](RS_RT)
+        +temp
+          NOT
+            -scan in word 7(MA)
+    -temp
+      NAND
+        -temp err reset
+        +split logout
+-temp err reset
+  NOT
+    +error reset
+
++retain address seq
+  ORNOT
+    -temp
+      NAND
+        +temp
+          ORNOT
+            -delayed invalid address bus
+            -storage timeout pulse
+        -temp
+          NOT
+            -logout tgr bcu
+    -temp
+      NAND
+        +retain address seq
+        -temp err reset
+
+; PAGE MC881
+  
++remember select 1
+  NOT
+    -temp
+      NOR
+        AND
+          +select se 1
+          +accept se 1
+        AND
+          -late 1 late advance
+          +remember select 1
+
+; PAGE MC891
+
+-late 1 late advance
+  NOT
+    +temp
+      NOT
+        -late late advance
+
+; PAGE MC901
+
+-sbo gate frame 1
+  NOT
+    +sbo gate frame 1
++sbo gate frame 1
+  ORNOT
+    -temp
+      NAND
+        +select se 1
+        +stor timeout gate stg id
+    -temp
+      NAND
+        +remember select 1
+        +sbo gate se 1
+    -temp
+      NAND
+        +sbo gate frame 1
+        -early adv or stg timeout
++sbo gate se 1
+  NOT
+    -sbo gate se 1(WA)
+
+; PAGE MC911
+
+-storage timeout pulse
+  NOT
+    +stor timeout pulse mc911
++stor timeout pulse mc911
+  NOT
+    -stor timeout pulse
+
+-early adv or stg timeout
+  NOT
+    +temp
+      ORNOT
+        -stor timeout pulse
+        -temp
+          NOT
+            +early stg advance
+
++stor timeout gate stg id
+  +stor timeout pulse mc911
+
+; PAGE MC913
+
++storage addr chk
+  ORNOT
+    -temp
+      NOR
+        AND
+          +se 1 addr chk
+          +sbo gate se 1
+          +sbo gate frame 1
+
+; PAGE MC915
+
++stor 1 error gate
+  NOT
+    -temp
+      NAND
+        +sbo gate se 1
+        +sbo gate frame 1
+
+; PAGE MC923
+
+-los pulse frame 1
+  NAND
+    +sbo gate frame 1
+    +temp
+      NOT
+        -temp
+          NAND
+            +error gate
+            +temp
+              ORNOT
+                +allow checks
+;                +ccr 6 + ilos
+;            -disable check
+
++logout stop sent to se
+  ORNOT
+    -los pulse frame 1
+    -temp
+      NAND
+        +logout stop sent to se
+        -error reset mc753
+-ind los pulse
+  NOT
+    +logout stop sent to se
+
+; PAGE MC941
+
++logout in prog bcu
+  NOT
+    -inhibit los
+
+; This seems to make more sense
+
+-inhibit los
+  NOR
+    AND
+      +temp
+          NOT
+            -log in progress
+      +temp
+        NOT
+          -scan req tgr ay4
+      +early accept
+    AND
+      +temp
+        NOT
+          -reset log in progress(KU)
+      +logout in prog bcu
+
+; than this:
+
+;-inhibit los
+;  NOR
+;    +temp
+;      ORNOT
+;        +temp
+;           NOT
+;             -log in progress
+;        +temp
+;          NOT
+;            -scan req tgr ay4
+;        +early accept
+;    AND
+;      +temp
+;        NOT
+;          -reset log in progress(KU)
+;      +logout in prog bcu
+
+-ind fetch data check
+  NOT
+    +sdbo check
++sdbo check
+  NOT
+    -fetch data check
+-fetch data check
+  NOR
+    AND
+      +st bus[57](RS_RT)
+      +temp
+        NOT
+          -scan in word 7(KX)
+    AND
+      -inhibit los
+      +temp
+        NOT
+          -sbo fetch chk pulse
+    AND
+      -error reset mc753
+      +sdbo check
+
+-sbo fetch chk pulse
+  NAND
+    +sdbo parity error(MB)
+    +temp mc941 5e ar
+
++temp mc941 5e ar
+  NOT
+    -temp mc941 td out
+SPECIAL
+  TD125NS
+    -temp mc941 td in
+    OUT
+    -temp mc941 td out
+-temp mc941 td in
+  NAND
+    +b2
+    +temp rem fetch
+    +late advance latch
+    -clock b7
++temp rem fetch
+  NOT
+    -temp
+      NOR
+        AND
+          +fetch
+          +early accept
+        AND
+          -temp
+            NOT
+              +temp mc941 5e ar
+          -error reset mc753
+          +temp rem fetch
+
++late advance lth O b2
+  NOT
+    -temp
+      NAND
+        +b2
+        +late advance latch
+
+-scan in word 7
+  -scan in word 7(KX)
+
++late advance latch
+  NOT
+    -temp
+      NOR
+        AND
+          -b1
+          +late advance tgr
+        AND
+          +b0
+          -error reset mc753
+          +late advance latch
+
+; PAGE MC945
+
+;-disable check
+;  NOT
+;    +disable chk(KR)
++allow checks
+  NOT
+    -temp
+      NAND
+        -temp
+          NOT
+            +stop on ce check switch(KW)
+;        -disable check
+;+ccr 6 + ilos
+;  NOT
+;    -ccr bit 06 + ilos(MP)
+
+-any stg err not inh
+  NAND
+    +allow checks
+    +temp
+      NOT
+        -any stg check
+
+; PAGE MC951
+
++error gate
+  NOT
+    -temp
+      NAND
+        -inhibit los
+        +temp
+          NOT
+            -temp
+              NAND
+                -stop error gate lth
+                +temp strt error gate
+        +temp mc951 3f ab
++temp mc951 3f ab
+  ORNOT
+    -storage data check pulse
+    -temp
+      NAND
+        +late advance lth O b2
+        +temp
+          NOT
+            -stg address check lth
++temp strt error gate
+  ORNOT
+    -temp mc951 3j ae
+    -temp
+      NAND
+        +temp strt error gate
+        -error reset mc753
+-temp mc951 3j ae
+  NOT
+    +temp
+      NOR
+        -stg timeout pulse delayed
+        -sbo fetch chk pulse
+        -temp
+          NOT
+            +temp mc951 3f ab
+  
+-stop error gate lth
+  NOR
+    AND
+      +temp strt error gate
+      -b0-1
+      +b4
+      -temp mc951 3j ae
+    AND
+      +temp strt error gate
+      +temp
+        NOT
+          -stop error gate lth
+
+; PAGE MC971
+
++b4
+  NOT
+    -temp
+      NOT
+        +b2
++b2
+  NOT
+    -b1
+-b1
+  NOT
+    +b0
++b0
+  NOT
+    -b0-1
+-b0-1
+  NOT
+    +temp
+      TD
+        +temp
+          NOT
+            -bcu osc(KC)
+
+; PAGE MC991
+
+-invalid addr bus
+  NOT
+    +invalid address bus
+
++early accept
+  NOT
+    -hss accept
+-hss early accept
+  -hss accept

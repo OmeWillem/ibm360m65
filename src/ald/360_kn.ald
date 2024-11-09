@@ -1,0 +1,258 @@
+SECTION KN
+
+; PAGE KN121
+
+-ind interrupt priority tgr 1
+  NOT
+    +temp pt1
++temp pt1
+  NOT
+    -temp pt1
+-temp pt1
+  NOR
+    AND
+      +set priority trig 1(KM)
+      +temp gt pt
+    AND
+      +st bus[47](RS_RT)
+      +scan in word 4
+    AND
+      -machine rst + interrupt rst(KM)
+      -temp gt pt
+      +temp pt1
++temp gt pt
+  NOT
+    -temp gt pt
+-temp gt pt
+  NAND
+    +temp
+      NOT
+        -gate interrupt priority tgrs(KM)
+    +clock p0(KM)
+
++program interrupt priority
+  NOT
+    -temp
+      NAND
+        +temp pt1
+        -temp pt2
+
++mach ck intrpt priority tgr t
+  ORNOT
+    -temp
+      NAND
+        +clock p2(KM)
+        +machine check int priority(KM)
+        +rosl br+norm end op(KM)
+    -mach ck intrpt priority tgr
+-mach ck intrpt priority tgr
+  NAND
+    -temp
+      NOT
+        +machine rst + interrupt rst(KM)
+    +mach ck intrpt priority tgr t
+
++external interrupt priority
+  NOT
+    -external interrupt priority
+-external interrupt priority
+  NAND
+    -temp pt1
+    +temp pt2
+
++any intrpt priority
+  ORNOT
+    -temp pt1
+    -temp pt2
+
+-io interrupt priority
+  NAND
+    +temp pt1
+    +temp pt2
+
+-ind interrupt priority tgr 2
+  -intrpt priority trg 2
+-intrpt priority trg 2
+  NOT
+    +temp pt2
++temp pt2
+  NOT
+    -temp pt2
+-temp pt2
+  NOR
+    AND
+      +set priority trig 2(KM)
+      +temp gt pt
+    AND
+      +st bus[48](RS_RT)
+      +scan in word 4
+    AND
+      -machine rst + interrupt rst(KM)
+      -temp gt pt
+      +temp pt2
+
++scan in word 4
+  NOT
+    -scan in word[4](KU)
+-scan in word 4
+  -scan in word[4](KU)
+
+; PAGE KN211
+
++temp ext int
+  NOT
+    -external interrupt priority
+
+-psw to st reg bit[20..23]
+  1
+
++i-o interrupt priority
+  NOT
+    -io interrupt priority
+-i-o interrupt priority
+  NOT
+    +i-o interrupt priority
+
++parity 16-23 to st reg
+  NOT
+    -parity 16-23 to st reg
+
+; PAGE KN241
+
++e reg bit[8..15]
+  +e reg bit[8..15](KM)
+
++temp supr
+  NOT
+    -supervisor call trigger(KM)
+
+-psw to st reg bit[24]
+  NOR
+    AND
+      +e reg bit[8](KM)
+      +temp supr
+    AND
+      +time clock at limit tgr(JA)
+      +external interrupt priority
+
+-psw to st reg bit[25]
+  NOR
+    AND
+      +e reg bit[9](KM)
+      +temp supr
+    AND
+      +console signal tgr(JA)
+      +external interrupt priority
+
+; PAGE KN261
+
+-psw to st reg bit[26]
+  NOR
+    AND
+      +e reg bit[10](KM)
+      +temp supr
+
+-psw to st reg bit[27]
+  NOR
+    AND
+      +e reg bit[11](KM)
+      +temp supr
+
+; PAGE KN281
+
+-psw to st reg bit[28]
+  NOR
+    AND
+      +program interrupt tgr code 8(KM)
+      +program interrupt priority
+    AND
+      +e reg bit[12](KM)
+      +temp supr
+
+-psw to st reg bit[29]
+  NOR
+    AND
+      +program interrupt tgr code 4(KM)
+      +program interrupt priority
+    AND
+      +e reg bit[13](KM)
+      +temp supr
+    AND
+      +rdd time out
+      +machine check int priority
+
++rdd time out
+  NOT
+    -temp
+      NOR
+        AND
+          +set mach ckOpsw 29 on rdd t o(DR)
+          -clock p1(KM)
+        AND
+          -rdd t o rst(KM)
+          -temp
+            NOT
+              +machine rst O(KM)
+          +rdd time out
+-ind rdd time out
+  NOT
+    +rdd time out
++rdd time out to ck reg 2
+  +rdd time out
+
++machine check int priority
+  NOT
+    -temp
+      NAND
+        -ce logout + mc intrpt(KU)
+        +temp
+          NOT
+            -machine check int priority bk4(KM)
+
+; PAGE KN301
+
+-psw to st reg bit[30]
+  NOR
+    AND
+      +program interrupt tgr code 2(KM)
+      +program interrupt priority
+    AND
+      +e reg bit[14](KM)
+      +temp supr
+    AND
+      +pir int tgr(JA)
+      +external interrupt priority
+
+-psw to st reg bit[31]
+  NOR
+    AND
+      +program interrupt tgr code 1(KM)
+      +program interrupt priority
+    AND
+      +e reg bit[15](KM)
+      +temp supr
+    AND
+      +dar int tgr(JA)
+      +external interrupt priority
+    AND
+      +temp
+        NOT
+          -ioce 1 mck req trig(KM)
+      +machine check int priority
+
+; PAGE KM311
+
+-parity 16-23 to st reg
+  XOR
+    -psw to st reg bit[20..23]
+    -mask c(RW)
+    -mask 1c(RW)
+    -mask 2c(RW)
+    -mask 3b(RW)
+
++psw to st reg parity 24-31
+  NOT
+    +temp
+      XOR
+        -psw to st reg bit[24..31]
+

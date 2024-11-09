@@ -1,0 +1,477 @@
+SECTION CE
+
+; PAGE CE081
+
++incr latch[8..15]
+  NOT
+    -incr latch[8..15]
+
+-incr latch[8]
+  NOR
+    AND
+      +gate e8-11+1 to incr8-11
+      OR
+        AND
+          +e bit[8](RE)
+          NAND
+            +e bit[9..11](RE)
+        AND
+          NOT
+            +e bit[8](RE)
+          +e bit[9..11](RE)            
+    AND
+      +gate e8-11-1 to incr8-11
+      OR
+        AND
+          +e bit[8](RE)
+          OR
+            +e bit[9..11](RE)
+        ANDNOT
+          +e bit[8..11](RE)
+    AND
+      +gate e8-11 to incr8-11
+      +e bit[8](RE)
+    AND
+      +clock p2 incr reset(RE)
+      +incr latch[8]
+
+-incr latch[9]
+  NOR
+    AND
+      +gate e8-11+1 to incr8-11
+      OR
+        AND
+          +e bit[9](RE)
+          NAND
+            +e bit[10..11](RE)
+        AND
+          NOT
+            +e bit[9](RE)
+          +e bit[10..11](RE)            
+    AND
+      +gate e8-11-1 to incr8-11
+      OR
+        AND
+          +e bit[9](RE)
+          OR
+            +e bit[10..11](RE)
+        ANDNOT
+          +e bit[9..11](RE)
+    AND
+      +gate e8-11 to incr8-11
+      +e bit[9](RE)
+    AND
+      +clock p2 incr reset(RE)
+      +incr latch[9]
+
+; PAGE CE101
+
+-incr latch[10]
+  NOR
+    AND
+      +gate e8-11+1 to incr8-11
+      XOR
+        +e bit[10..11](RE)
+    AND
+      +gate e8-11-1 to incr8-11
+      NOT 
+        XOR
+          +e bit[10..11](RE)
+    AND
+      +gate e8-11 to incr8-11
+      +e bit[10](RE)
+    AND
+      +clock p2 incr reset(RE)
+      +incr latch[10]
+
+-incr latch[11]
+  NOR
+    AND
+      +gate e8-11+1 to incr8-11
+      NOT
+        +e bit[11](RE)
+    AND
+      +gate e8-11-1 to incr8-11
+      NOT
+        +e bit[11](RE)
+    AND
+      +gate e8-11 to incr8-11
+      +e bit[11](RE)
+    AND
+      +clock p2 incr reset(RE)
+      +incr latch[11]
+
+; PAGE CE111
+
+-incr latch[12]
+  NOR
+    AND
+      +gate e12-15+1 to incr12-15
+      OR
+        AND
+          +e bit[12](RE)
+          NAND
+            +e bit[13..15](RE)
+        AND
+          NOT
+            +e bit[12](RE)
+          +e bit[13..15](RE)
+    AND
+      +gate e12-15-1 to incr12-15
+      OR
+        AND
+          +e bit[12](RE)
+          OR
+            +e bit[13..15](RE)
+        ANDNOT
+          +e bit[12..15](RE)
+    AND
+      +gate e12-15 to incr12-15
+      +e bit[12](RE)
+    AND
+      +gate cone to incr12-15
+      +cone 12 and 14
+    AND
+      +gate d18-21 to incr12-15
+      +d bit[18](RD)
+    AND
+      +clock p2 incr reset(RE)
+      +incr latch[12]
+
+; PAGE CE121
+
+-incr latch[13]
+  NOR
+    AND
+      +gate e12-15+1 to incr12-15
+      OR
+        AND
+          +e bit[13](RE)
+          NAND
+            +e bit[14..15](RE)
+        AND
+          NOT
+            +e bit[13](RE)
+          +e bit[14..15](RE)            
+    AND
+      +gate e12-15-1 to incr12-15
+      OR
+        AND
+          +e bit[13](RE)
+          OR
+            +e bit[14..15](RE)
+        ANDNOT
+          +e bit[13..15](RE)
+    AND
+      +gate e12-15 to incr12-15
+      +e bit[13](RE)
+    AND
+      +gate cone to incr12-15
+      +cone 13 and 15
+    AND
+      +gate d18-21 to incr12-15
+      +d bit[19](RD)
+    AND
+      +clock p2 incr reset(RE)
+      +incr latch[13]
+
+; PAGE CE141
+
+-incr latch[14]
+  NOR
+    AND
+      +gate e12-15+1 to incr12-15
+      XOR
+        +e bit[14..15](RE)
+    AND
+      +gate e12-15-1 to incr12-15
+      NOT
+        XOR
+          +e bit[14..15](RE)
+    AND
+      +gate e12-15 to incr12-15
+      +e bit[14](RE)
+    AND
+      +gate cone to incr12-15
+      +cone 12 and 14
+    AND
+      +gate d18-21 to incr12-15
+      +d bit[20](RD)
+    AND
+      +clock p2 incr reset(RE)
+      +incr latch[14]
+
+-incr latch[15]
+  NOR
+    AND
+      +gate e12-15+1 to incr12-15
+      NOT
+        +e bit[15](RE)
+    AND
+      +gate e12-15-1 to incr12-15
+      NOT
+        +e bit[15](RE)
+    AND
+      +gate e12-15 to incr12-15
+      +e bit[15](RE)
+    AND
+      +gate cone to incr12-15
+      +cone 13 and 15
+    AND
+      +gate d18-21 to incr12-15
+      +d bit[21](RD)
+    AND
+      +clock p2 incr reset(RE)
+      +incr latch[15]
+
+; PAGE CE171
+
++change parity of e8-11
+  NOT
+    -change parity of e8-11
+-change parity of e8-11
+  NOR
+    AND
+      -e bit[11](RE)
+      +add 1 to e8-11
+    AND
+      -e bit[9](RE)
+      +e bit[10](RE)
+      +add 1 to e8-11
+    AND
+      +e bit[11](RE)
+      +sub 1 from e8-11
+    AND
+      +e bit[9](RE)
+      -e bit[10](RE)
+      +sub 1 from e8-11
+
++change parity of e12-15
+  NOT
+    -change parity of e12-15
+-change parity of e12-15
+  NOR
+    AND
+      -e bit[15](RE)
+      +add 1 to e12-15
+    AND
+      -e bit[13](RE)
+      +e bit[14](RE)
+      +add 1 to e12-15
+    AND
+      +e bit[15](RE)
+      +sub 1 from e12-15
+    AND
+      +e bit[13](RE)
+      -e bit[14](RE)
+      +sub 1 from e12-15
+
+; PAGE CE181
+
++incr bits 8-15 even
+  NOT
+    -temp
+      NOR
+        AND
+          -block predicted parity
+          -clock p3(RE)
+          XOR
+            +e reg bits 8-15 even(RE)
+            +change parity of e8-11
+            +change parity of e12-15
+        AND
+          +gate d18-21 to incr12-15
+          -clock p3(RE)
+          XOR
+            -e reg bits 8-11 even(RE)
+            +d reg bits 18-21 odd(RD)
+        AND
+          +gate cone to incr12-15
+          -clock p3(RE)
+          +e reg bits 8-11 even(RE)
+
+; PAGE CE901
+
+CLOCK
+
++sub 1 from e8-11
+  ORNOT
+    -e 08-11 -1 to e 08-11(DR)
+    -temp
+      NAND
+        +e12-15 eq 0000(RE)
+        +temp
+          NOT
+            -e 08-15 -1 to e 08-15(DR)
++add 1 to e8-11
+  NOT
+    -e 08-11+1 to e 08-11(DR)
++e8-11 to incr8-11
+  NOR
+    +sub 1 from e8-11
+    +add 1 to e8-11
+
++add 1 to e12-15
+  NOT
+    -e 12-15+1 to e 12-15(DR)
++sub 1 from e12-15
+  ORNOT
+    -e 08-15 -1 to e 08-15(DR)
+    -e 12-15 -1 to e 12-15(DR)
++e12-15 to incr12-15
+  NOR
+    +add 1 to e12-15
+    +sub 1 from e12-15
+    +gate d18-21 to incr12-15
+    +gate cone to incr12-15
++gate d18-21 to incr12-15 a
+  NOT
+    -d 18-21 to e 12-15(DR)
++gate cone to incr12-15 a
+  NOT
+    -constant to e 12-15(DR)
+-block predicted parity
+  NOT
+    +temp
+      ORNOT
+        -d 18-21 to e 12-15(DR)
+        -constant to e 12-15(DR)
+
+; PAGE CE911
+
++gate e8-11+1 to incr8-11
+  NOT
+    -temp
+      NAND
+        -clock p1(RE)
+        +add 1 to e8-11
+
++cone 13 and 15
+  ORNOT
+    -temp
+      NOT
+        +floating point divide(DN)
+    +temp ce911 6d at not
++temp ce911 6d at not
+  NOT
+    +fixed or floating pt mult(DN)
++gate e8-11-1 to incr8-11
+  NOT
+    -temp
+      NAND
+        -clock p1(RE)
+        +sub 1 from e8-11
++cone 12 and 14
+  NOT
+    +temp ce911 6d at not
++gate e8-11 to incr8-11
+  NOT
+    -temp
+      NAND
+        -clock p1(RE)
+        +e8-11 to incr8-11
++gate e12-15-1 to incr12-15
+  NOT
+    -temp
+      NAND
+        -clock p1(RE)
+        +sub 1 from e12-15
++gate e12-15+1 to incr12-15
+  NOT
+    -temp
+      NAND
+        -clock p1(RE)
+        +add 1 to e12-15
++gate d18-21 to incr12-15
+  NOT
+    -temp
+      NAND
+        -clock p1(RE)
+        +gate d18-21 to incr12-15 a
++gate cone to incr12-15
+  NOT
+    -temp
+      NAND
+        -clock p1(RE)
+        +gate cone to incr12-15 a
+
++gate e12-15 to incr12-15
+  NOT
+    -temp
+      NAND
+        -clock p1(RE)
+        +e12-15 to incr12-15
+
+NOCLOCK
+
+; PAGE CE951
+
++incr latch 8-11 eq 1111
+  NOT
+    -temp
+      NAND
+        +incr latch[8..11]
++incr latch 8-15 gr or eq 7
+  ORNOT
+    -incr latch[12]
+    -temp
+      NAND
+        +incr latch[13..15]
+    +temp ce951 4e ah not
++temp ce951 4e ah not
+  NOT
+    -temp
+      NAND
+        -incr latch[8..11]
+-incr latch 8-11 eq 0000
+  NOT
+    +temp ce951 4e ah not
++incr latch 12-15 eq 1111
+  NOT
+    -temp
+      NAND
+        +incr latch[12..15]
+-incr latch 12-15 eq 0000
+  NOT
+    +temp ce951 4h aj not
++temp ce951 4h aj not
+  NOT
+    -temp
+      NAND
+        -incr latch[12..15]
++incr latch 8-15 eq all zeros
+  NOT
+    -temp
+      NAND
+        +temp ce951 4e ah not
+        +temp ce951 4h aj not
++incr latch 12-13 neq 00
+  NAND
+    -incr latch[12..13]
++incr latch 12-15 neq 0001
+  NAND
+    -incr latch[12..14]
+    +incr latch[15]
+
+; PAGE CE961
+
++incr latch 12-15 neq 0100
+  NAND
+    -incr latch[12]
+    +incr latch[13]
+    -incr latch[14..15]
++incr latch 14-15 neq 11
+  NAND
+    +incr latch[14..15]
+
++i ltch 8-11 eq i ltch 12-15
+  NOT
+    -temp
+      NAND
+        +temp[8..11]
+          NOT
+            XOR
+              +incr latch[8..11]
+              +incr latch[12..15]
+
+      

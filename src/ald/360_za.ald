@@ -1,0 +1,48 @@
+SECTION ZA
+
+CLOCK
+
++td 70 in
+  NOT
+    -clock gate(KC)
+
+SPECIAL
+  TD70NS
+    +td 70 in
+    OUT
+    +td 70 out
+
++temp 5f bf
+  NOT
+    -temp
+      NOT
+        +td 70 out
+
+-reset
+  NAND
+    +temp 5f bf
+    +td 20 out
+
++td 20 in
+  NOT
+    +temp 5f bf
+
+SPECIAL
+  TD20NS
+    +td 20 in
+    OUT
+    +td 20 out
+
++sample one
+  NOT
+    -reset
+
+SPECIAL
+  TD60NS
+    -reset
+    OUT
+    -td 60 out
+  
++sample two
+  NOT
+    -td 60 out

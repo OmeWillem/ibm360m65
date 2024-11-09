@@ -1,0 +1,319 @@
+SECTION MA
+
+; PAGE MA001
+
++sab[0..23]
+  NOT
+    -sab[0..23]
+
+-sab[0..13]
+  NOR
+    AND
+      +d bit[0..13](RD)
+      +gate d to sab(MC)
+    AND
+      +ic[0..13](CA)
+      +gate ic to bus(MC)
+    AND
+      +paddl[40..53](AP)
+      +gate paddl to bus(MC)
+
+; PAGE MA141
+
+-sab[14..20]
+  NOR
+    AND
+      +d bit[14..20](RD)
+      +gate d to sab(MC)
+    AND
+      +ic[14..20](CA)
+      +gate ic to bus(MC)
+    AND
+      +paddl[54..60](AP)
+      +gate paddl to bus(MC)
+    AND
+      +flt adr bit[14..20](KU)
+      +gt scan to sab
+
++gt scan to sab
+  NOT
+    -gate scan to sab(MC)
+
+; PAGE MA211
+
+-sab[21..23]
+  NOR
+    AND
+      +d bit[21..23](RD)
+      +gate d to sab(MC)
+    AND
+      +ic[21..23](CA)
+      +gate ic to bus(MC)
+    AND
+      +paddl[61..63](AP)
+      +gate paddl to bus(MC)
+
+; PAGE MA241
+
+-sab p00-07
+  NOR
+    AND
+      +d parity 00-07(RD)
+      +gate d to sab(MC)
+    AND
+      +ic parity 00-07(CA)
+      +gate ic to bus(MC)
+    AND
+      +paddl parity 40-47(AP)
+      +gate paddl to bus(MC)
+
+; PAGE MA245
+
+
+-sab p08-15
+  NOR
+    AND
+      +d parity 08-15(RD)
+      +gate d to sab(MC)
+    AND
+      +ic parity 08-15(CA)
+      +gate ic to bus(MC)
+    AND
+      +paddl parity 48-55(AP)
+      +gate paddl to bus(MC)
+    AND
+      +flt adr bit p08-15(KU)
+      +gt scan to sab
+
+; PAGE MA251
+
+-sab p16-23
+  NOR
+    AND
+      +d parity 16-23(RD)
+      +gate d to sab(MC)
+    AND
+      +ic parity 16-23(CA)
+      +gate ic to bus(MC)
+    AND
+      +paddl parity 56-63(AP)
+      +gate paddl to bus(MC)
+    AND
+      +flt adr p 16-20(KU)
+      +gt scan to sab
+
+; PAGE MA255
+
+-parity bit sab 00-07
+  XOR
+    -sab p00-07
+    OR
+      +reverse stg adr par byte 1
+      +reverse stg adr par byte 2
+
+-parity bit sab 08-15
+  XOR
+    -sab p08-15
+    OR
+      +reverse stg adr par byte 1
+      +reverse stg adr par byte 2
+
+-parity bit sab 16-20
+  XOR
+    -sab p16-23
+    +sab[21..23]
+    OR
+      +reverse stg adr par byte 1
+      +reverse stg adr par byte 2
+
+; PAGE MA261
+
++reverse stg adr par byte 1
+  NOT
+    -reverse storage adr par byte 1(KU)
++reverse stg adr par byte 2
+  NOT
+    -reverse storage adr par byte 2(KU)
+
+; PAGE MA301
+
++stor add comp bit[0..23]
+  NOT
+    -temp
+      XOR
+        -addr key[8..31](PX)
+        -sab[0..23]
+
+; PAGE MA311
+
++sto addr comp sync to aObOcOd
+  ANDNOT
+    -sample address compare condit(MC)
+    NAND
+      +stor add comp bit[2..20]
++stor addr comp
+  NOT
+    -temp
+      NOT
+        +sto addr comp sync to aObOcOd
++stor add comp
+  +stor addr comp
++addr compare to scan
+  +stor addr comp
+
+; PAGE MA401
+
+;-defeat interleaveOreverse
+;  NOT
+;    +defeat interleaveOreverse(MC)
+
+;-defeat interleave
+;  NOT
+;    +defeat interleave(MC)
+
+; PAGE MA601
+
+;+defeat interleave
+;  NOT
+;    -defeat interleave
+;+defeat interleaveOreverse
+;  NOT
+;    -defeat interleaveOreverse
+
+; PAGE MA901
+
+-ind logout addr err
+  NOT
+    +logout address check
++logout address check
+  NOT
+    -logout address chk
+-logout address chk
+  NOR
+    AND
+      +scan in word 7
+      +st bus[32](RS_RT)
+    AND
+      +temp
+        NOT
+          -temp
+            NAND
+              +logout in progress
+              +scan request tgr(MC)
+              +hss early accept pulse
+      +temp
+        ORNOT
+          -sab[12..14]
+          +temp
+            ORNOT
+              -sab[15..16]
+          -temp
+            NAND
+              +temp
+                NOT
+                  -sab[15]
+              -temp
+                ORNOT
+                  -sab[16..17]
+      -temp
+        NOT
+          +hard stop reset(KX)
+      +logout address check
+
++scan in word 7
+  NOT
+    -scan in word[7](KU)
+-scan in word 7
+  -scan in word[7](KU)
+
++hard stop reset
+  +hard stop reset(KX)
+
+-suppress log check ma901 bc4
+  NOT
+    +temp
+      NOT
+        -suppress log check ma901 ad4
+-suppress log check ma901 ad4
+  NAND
+    +logout in progress
+    +sab[15]
+    +sab[18..20]
+
+; PAGE MA905
+-suppress log check ma905
+  -suppress log check ma901 ad4
+
+-suppress log check se 1
+  -suppress log check ma901 bc4
+
+; PAGE MA941
+
++sab pty err ungated
+  NOT
+    -temp
+      NOR
+        +temp
+          XOR
+            +sab[0..7]
+            -sab p00-07
+        +temp
+          XOR
+            +sab[8..15]
+            -sab p08-15
+        +temp
+          XOR
+            +sab[16..23]
+            -sab p16-23
+
+; PAGE MA951
+
+-ind sab pty err
+  NOT
+    +sab parity check
++sab parity check
+  NOT
+    -sab check in ce
+-sab check in ce
+  NOR
+    AND
+      +sab pty err ungated
+      -invalid address decoded(MC)
+      +hss early accept pulse
+    AND
+      +st bus[56](RS_RT)
+      +scan in word 7
+    AND
+      -error reset
+      +sab parity check
+
+-error reset
+  NOT
+    +error reset(MC)
++error reset
+  +error reset(MC)
+
++hss early accept pulse
+  NOT
+    -temp
+      NAND
+        -temp td40 out
+        +temp hss ea
+-temp td40 in
+  NOT
+    +temp hss ea
+SPECIAL
+  TD40NS
+    -temp td40 in
+    OUT
+    -temp td40 out
++temp hss ea
+  NOT
+    -hss early accept(MC)
+
++not log tgr
+  NOT
+    +logout in progress
++logout in progress
+  NOT
+    -log out tgr(MC)

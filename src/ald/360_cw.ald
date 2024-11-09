@@ -1,0 +1,184 @@
+SECTION CW
+
+; PAGE CW011
+
+CLOCK
+
++e reg 13-15 to abc
+  NOT
+    -l2 to abc(DR)
++ic 21-23 to abc
+  NOT
+    -ic 21-23 to abc(DR)
++plus one to abc
+  ORNOT
+    -abc+1 to abc(DR)
+    -edit incr abc(KZ)
++minus one to abc
+  NOT
+    -abc-1 to abc(DR)
++abc reg to abc incr
+  NOT
+    +temp
+      ORNOT
+        -l2 to abc(DR)
+        -ic 21-23 to abc(DR)
+        -abc+1 to abc(DR)
+        -edit incr abc(KZ)
+        -abc-1 to abc(DR)
+        -+000 to abc(DR)
+        -i fetch reset(CS)
+
++st bit[57..59]
+  +st bus[57..59](KD)
+
++paddl 61-63 to abc
+  ANDNOT
+    -clock p1(CS)
+    -pal 61-63 to abc(DR)
++abc incr to abc reg
+  ANDNOT
+    -clock p1(CS)
+    +temp
+      NOT
+        -pal 61-63 to abc(DR)
+
+NOCLOCK
+
++paddl bit[61..63]
+  NOT
+    -pal one[61..63](AP)
+
+-ind abc[0..2]
+  NOT
+    +abc tgr[0..2]
+
+CLOCK
+
++abc tgr[0..2]
+  NOT
+    -abc tgr[0..2]
+-abc tgr[0..2]
+  NOR
+    AND
+      +st bus[57..59](KD)
+      +scan in word 4(CS)
+    AND
+      +paddl bit[61..63]
+      +paddl 61-63 to abc
+    AND
+      +abc incr lth[0..2]
+      +abc incr to abc reg
+    AND
+      -clock p1(CS)
+      +abc tgr[0..2]
+
+NOCLOCK
+
+; PAGE CW021
+
++abc 1 not like abc 2
+  XOR
+    +abc tgr[1..2]
++abc 1 like abc 2
+  NOT
+    +abc 1 not like abc 2
+
+; PAGE CW031
+
++e reg bus[13..15]
+  +e bit[13..15](RE)
+
+-abc incr lth[0..2]
+  NOT
+    +abc incr lth[0..2]
+
++abc incr lth[0..2]
+  ORNOT
+    -temp abc 1[0..2]
+    -temp abc 2[0..2]
+
+; Questionable if this is really an ornot...
++log addr[0..2]
+  ORNOT
+    -abc incr lth[0..2]
+    -temp abc 1[0..2]
+
+-temp abc 1[0..2]
+  NOR
+    AND
+      -clock p3(CS)
+      +e reg 13-15 to abc
+      +e bit[13..15](RE)
+    AND
+      -clock p3(CS)
+      +ic 21-23 to abc
+      +ic[21..23](CA)
+    AND
+      -clock p3(CS)
+      +plus one to abc
+      +temp abc plus one[0..2]
+
+-temp abc 2[0..2]
+  NOR
+    AND
+      -clock p3(CS)
+      +minus one to abc
+      +temp abc minus one[0..2]
+    AND
+      -clock p3(CS)
+      +abc reg to abc incr
+      +abc tgr[0..2]
+    AND
+      +clock p2(CS)
+      +abc incr lth[0..2]
+
+CLOCK
+
++temp abc plus one[0]
+  NOR
+    AND
+      +abc tgr[0..2]
+    AND
+      -abc tgr[0]
+      -abc tgr[2]
+    AND
+      -abc tgr[0..1]
++temp abc plus one[1]
+  +abc 1 not like abc 2
++temp abc plus one[2]
+  -abc tgr[2]
+
++temp abc minus one[0]
+  NOR
+    AND
+      +abc tgr[0]
+      -abc tgr[1..2]
+    AND
+      -abc tgr[0]
+      +abc tgr[2]
+    AND
+      -abc tgr[0]
+      +abc tgr[1]
++temp abc minus one[1]
+  +abc 1 like abc 2
++temp abc minus one[2]
+  -abc tgr[2]
+
+NOCLOCK 
+
+; PAGE CW051
+
+DECODE
+  +abc incr equal[0..7]
+  +abc incr lth[0..2]
+
++abc incr eq[0..7]
+  +abc incr equal[0..7]
++abc[0..7]
+  +abc incr equal[0..7]]
+-abc incr equal[0..7]
+  NOT
+    +abc incr equal[0..7]
+-abc incr eq[0..7]
+  -abc incr equal[0..7]

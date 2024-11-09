@@ -1,0 +1,279 @@
+SECTION RR
+
+; PAGE RR001
+
+-predecode rr format
+  NAND
+    -r[0..1]
+
+-r 00-01 eq 01 rx format
+  NAND
+    -r[0]
+    +r[1]
+
++r 00-01 eq 11 ss format
+  ANDNOT
+    -r[0..1]
+
+-ind r bit[0..15]
+  NOT
+    +r[0..15]
++r[0..15]
+  NOT
+    -r[0..15]
+-r[0..7]
+  NOR
+    AND
+      +q[0..7](RQ)
+      +gate q 00-15 to r
+    AND
+      +q[16..23](RQ)
+      +gate q 16-31 to r
+    AND
+      +q[32..39](RQ)
+      +gate q 32-47 to r
+    AND
+      +q[48..55](RQ)
+      +gate q 48-63 to r
+    AND
+      -rst r 00-07
+      +r[0..7]
+
+; PAGE RR061
+
++r5O6+r5O7
+  ANDNOT
+    -r[5]
+    AND
+      -r[6..7]
+
++r0O5O6
+  ANDNOT
+    -r[0]
+    -r[5..6]
+
+; PAGE RR081
+
+-r[8..15]
+  NOR
+    AND
+      +q[8..15](RQ)
+      +gate q 00-15 to r
+    AND
+      +q[24..31](RQ)
+      +gate q 16-31 to r
+    AND
+      +q[40..47](RQ)
+      +gate q 32-47 to r
+    AND
+      +q[56..63](RQ)
+      +gate q 48-63 to r
+    AND
+      +paddl[56..63](AP)
+      +gate paddl 56-63 to r
+    AND
+      -rst r 08-15
+      +r[8..15]
+
+; PAGE RR141
+
++r 12-15 equals zero
+  NOT
+    -r 12-15 equals zero
+-r 12-15 equals zero
+  NAND
+    -r[12..15]
+
+; PAGE RR161
+
+-ind r parity 00-07
+  NOT
+    +r parity 00-07
++r parity 00-07
+  NOT
+    -temp
+      NOR
+        AND
+          +q parity 00-07(RQ)
+          +gate q 00-15 to r
+        AND
+          +q parity 16-23(RQ)
+          +gate q 16-31 to r
+        AND
+          +q parity 32-39(RQ)
+          +gate q 32-47 to r
+        AND
+          +q parity 48-55(RQ)
+          +gate q 48-63 to r
+        AND
+          -rst r 00-07
+          +r parity 00-07
+
+-ind r parity 08-15
+  NOT
+    +r parity 08-15
++r parity 08-15
+  NOT
+    -temp
+      NOR
+        AND
+          +q parity 08-15(RQ)
+          +gate q 00-15 to r
+        AND
+          +q parity 24-31(RQ)
+          +gate q 16-31 to r
+        AND
+          +q parity 40-47(RQ)
+          +gate q 32-47 to r
+        AND
+          +q parity 56-63(RQ)
+          +gate q 48-63 to r
+        AND
+          +paddl parity 56-63(AP)
+          +gate paddl 56-63 to r
+        AND
+          -rst r 08-15
+          +r parity 08-15
+
+; PAGE RR181
+
++pre decode shift inst
+  NOT
+    -pre decode shift instns
+-pre decode shift instns
+  NAND
+    +r[0]
+    -r[1..3]
+    +r[4]
+
+; 05, 06, 07, 45, 46, 47, 86, 87
+
+-pre decode branch instns
+  NOR
+    AND
+      +r0O5O6
+      -r[1..4]
+    AND
+      -r[0]
+      -r[2..4]
+      +r5O6+r5O7
+
+-eff r eq 1[0..1]
+  NOR
+    AND
+      +sdbo[0..1](WA)
+      +gate q 00-15 to r
+      -repeat instruction
+    AND
+      +sdbo[16..17](WA)
+      +gate q 16-31 to r
+      -repeat instruction
+    AND
+      +sdbo[32..33](WA)
+      +gate q 32-47 to r
+      -repeat instruction
+    AND
+      +r[0..1]
+      -gt q to r O not repeat inst
+
+-repeat instruction
+  NOT
+    +repeat instruction
+
+; PAGE RR801
+
+-gt q to r O not repeat inst
+  NOR
+    AND
+      +gt q 00-15 to r 00-15(DR)
+      +clock p0 minus 2(RQ)
+      -repeat instruction
+    AND
+      +gt q 16-31 to r 00-15(DR)
+      +clock p0 minus 2(RQ)
+      -repeat instruction
+    AND
+      +gt q 32-47 to r 00-15(DR)
+      +clock p0 minus 2(RQ)
+      -repeat instruction
+
++predecode lpsw
+  ANDNOT
+    -temp
+      NAND
+        +r[0]
+        -r[1..3]
+    -r reg x2
+
+-r reg x2
+  NAND
+    -r[4..5]
+    +r[6]
+    -r[7]
+
++repeat instruction
+  +repeat instruction az4(KW)
+
+; PAGE RR901
+
++gate q 00-15 to r
+  NOT
+    -gate q 00-15 to r
+-gate q 00-15 to r
+  NAND
+    +gt q 00-15 to r 00-15(DR)
+    +clock p0 minus 2(RQ)
+
++gate q 16-31 to r
+  NOT
+    -gate q 16-31 to r
+-gate q 16-31 to r
+  NAND
+    +gt q 16-31 to r 00-15(DR)
+    +clock p0 minus 2(RQ)
+
++gate q 32-47 to r
+  NOT
+    -gate q 32-47 to r
+-gate q 32-47 to r
+  NAND
+    +gt q 32-47 to r 00-15(DR)
+    +clock p0 minus 2(RQ)
+
++gate q 48-63 to r
+  NOT
+    -gate q 48-63 to r
+-gate q 48-63 to r
+  NAND
+    +gt q 48-63 to r 00-15(DR)
+    +clock p0 minus 2(RQ)
+
+-rst r 00-07
+  NOR
+    AND
+      +clock p0 minus 2(RQ)
+      OR
+        +gt q 00-15 to r 00-15(DR)
+        +gt q 16-31 to r 00-15(DR)
+        +gt q 32-47 to r 00-15(DR)
+        +gt q 48-63 to r 00-15(DR)
+
++gate paddl 56-63 to r
+  NOT
+    -gate paddl 56-63 to r
+-gate paddl 56-63 to r
+  NAND
+    +gt pal 56-63 to r 08-15(DR)
+    +clock p0 minus 2(RQ)
+
+-rst r 08-15
+  NOR
+    AND
+      +clock p0 minus 2(RQ)
+      OR
+        +gt q 00-15 to r 00-15(DR)
+        +gt q 16-31 to r 00-15(DR)
+        +gt q 32-47 to r 00-15(DR)
+        +gt q 48-63 to r 00-15(DR)
+        +gt pal 56-63 to r 08-15(DR)
+

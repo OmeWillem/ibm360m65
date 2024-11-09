@@ -1,0 +1,310 @@
+SECTION LS
+
+CLOCK
+
+; PAGE LS001
+
+SPECIAL
+  LS_MEMORY
+    +mem read addr[0..4]
+    +mem write addr[0..4]
+    +mem write gate
+    +mem data in[0..31]
+    +mem par in[0..3]
+    OUT
+    +mem data out[0..31]
+    +mem par out[0..3]
+
++local store bus[0..31]
+  ORNOT
+    -+9020 out bus bit[0..31](BF)
+    -temp[0..31]
+      NAND
+        +mem data out[0..31]
+        -+9020 regs to ls bus out(RY)
+
++ls bus--[0..31]
+  NOT
+    -local store bus[0..31](BF)
+
++mem read addr[0..4]
+  NOT
+    -decode reg[0..4]
+
++mem data in[0..31]
+  NOT
+    -st bus[32..63](RS_RT)
+
+; PAGE LS075
+
++local store bus p00-07
+  ORNOT
+    -+9020 out bus bit p00-07(BF)
+    -temp
+      NOR
+        +mem par out[0]
+
++ls bus--parity 00-07
+  NOT
+    -local store bus p00-07(BF)
+
++mem par in[0]
+  NOT
+    -st parity 32-39
+
+; PAGE LS155
+
++local store bus p08-15
+  ORNOT
+    -+9020 out bus bit p08-15(BF)
+    -temp
+      NOR
+        +mem par out[1]
+
++ls bus--parity 08-15
+  NOT
+    -local store bus p08-15(BF)
+
++mem par in[1]
+  NOT
+    -st bus parity 40-47(RS_RT)
+
+; PAGE LS235
+
++local store bus p16-23
+  ORNOT
+    -+9020 out bus bit p16-23(BF)
+    -temp
+      NOR
+        +mem par out[2]
+
++ls bus--parity 16-23
+  NOT
+    -local store bus p16-23(BF)
+
++mem par in[2]
+  NOT
+    -st bus parity 48-55(RS_RT)
+
+; PAGE LS315
+
++local store bus p24-31
+  ORNOT
+    -+9020 out bus bit p24-31(BF)
+    -temp
+      NOR
+        +mem par out[3]
+
++ls bus--parity 24-31
+  NOT
+    -local store bus p24-31(BF)
+
++mem par in[3]
+  NOT
+    -st bus parity 56-63(RS_RT)
+
+; PAGE LS409
+
++mem write addr[0..4]
+  +wr decode reg[0..4]
+
++mem write gate
+  NOT
+    -temp
+      NOT
+        +gt wr ls reg
+
+; PAGE LS501
+
++gt wr ls reg
+  NOT
+    -gt wr ls reg
+
+; PAGE LS801
+
+-lal bit[0..4]
+  NOT
+    +lal bit[0..4]
+-temp lal[0..4]
+  NAND
+    +lal bit[0..4]
+    +clock p0
+
++lal bit[0]
+  ANDNOT
+    AND
+      +clock p2
+      -temp lal[0]
+    AND
+      -e to lal [0](RE)
+      -gt 1 to lal 0 flt pt(RE)
+      -temp lal[0]
+      -read + write lswr(DR)
+
++lal bit[1]
+  ANDNOT
+    AND
+      +clock p2
+      -temp lal[1]
+    AND
+      -e to lal [1](RE)
+      -q or r to lal[1](RQ)
+      -temp lal[1]
+      -read + write lswr(DR)
+
++lal bit[2..3]
+  ANDNOT
+    AND
+      +clock p2
+      -temp lal[2..3]
+    AND
+      -e to lal [2..3](RE)
+      -q or r to lal[2..3](RQ)
+      -temp lal[2..3]
+
++lal bit[4]
+  ANDNOT
+    AND
+      +clock p2
+      -temp lal[4]
+    AND
+      -e to lal [4](RE)
+      -q or r to lal[4](RQ)
+      -temp lal[4]
+      -gt 1 to lal 4(DR)
+
+; PAGE LS812
+
+-ind st parity 32-39
+  -st parity 32-39
+-st parity 32-39
+  NOT
+    -temp
+      NOR
+        AND
+          -st bus parity 32-39(RS_RT)
+          +delayed clock
+        AND
+          -st bus[63](RS_RT)
+          +scan in word 5
+        AND
+          -delayed clock
+          -scan in word 5
+          -st parity 32-39
+
+-gt wr ls reg
+  NAND
+    +delayed clock
+    +temp gt wr
++temp gt wr
+  NOT
+    -temp
+      NOR
+        AND
+          +clock p0
+          +write into ls(DR)
+        AND
+          -st bus[62](RS_RT)
+          +scan in word 5
+        AND
+          -clock p0-1 cd4
+          +temp gt wr
+          -reset for scan in word 5
+-ind write ls
+  NOT
+    +temp gt wr
+        
+; PAGE LS821
+
+-decode reg[0..4]
+  NAND
+    +lal bit[0..4]
+
+; PAGE LS851
+
+-ind lar bit[0..4]
+  NOT
+    +lar[0..4]
++lar[0..4]
+  ORNOT
+    -lar[0..4]
+    -temp
+      NAND
+        -st bus[49..53](RS_RT)
+        +scan in word 5
+-lar[0..4]
+  NOR
+    AND
+      +clock p0
+      +lal bit[0..4]
+    AND
+      -clock p0-1 cd4
+      -reset for scan in word 5
+      +lar[0..4]
+
+; PAGE LS871
+
+-wr decode reg[0..4]
+  NOT
+    +lar[0..4]
+
+; PAGE LS881
+
++wr decode reg[0..4]
+  NOT
+    -wr decode reg[0..4]
+
+; PAGE LS991
+
++delayed clock
+  NOT
+    -delayed clock
+-delayed clock
+  NOT
+    +temp td50 out
+SPECIAL
+  TD50NS
+    +clock p0
+    OUT
+    +temp td50 out
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -clock p0-1 cd4
+-clock p0-1 cd4
+  NAND
+    +temp p0-2
+    -force addrs tgr(KC)
+    -temp inh
+-clock p0-1 cf4
+  NAND
+    +temp p0-2
+    -temp inh
+-clock p0-1 fl4
+  NOT
+    +temp p0-2
++temp p0-2
+  +clock p0-2 from gate(KC)
+;  TD
+;    +temp
+;      NOT
+;        -clock gate a bottom(KC)
+-temp inh
+  NOT
+    +inhibit ls clock(KU)
+
+-scan in word 5
+  -scan in word[5](KU)
++scan in word 5
+  NOT
+    -reset for scan in word 5
+-reset for scan in word 5
+  NOT
+    +temp
+      NOT
+        -scan in word[5](KU)

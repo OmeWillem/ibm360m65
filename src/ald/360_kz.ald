@@ -1,0 +1,402 @@
+SECTION KZ
+
+; PAGE KZ011
+
+-temp 2x
+  NAND
+    -sibb[0..1](AR)
+    +sibb[2](AR)
+    -sibb[3](AR)
+
+-temp x0
+  NAND
+    -sibb[4..7](AR)
+-temp x1
+  NAND
+    -sibb[4..6](AR)
+    +sibb[7](AR)
+-temp x2
+  NAND
+    -sibb[4..5](AR)
+    +sibb[6](AR)
+    -sibb[7](AR)
+
++dig sel or sig start kz011
+  ANDNOT
+    -temp 2x
+    AND
+      -temp x0
+      -temp x1
+
++signif start
+  ANDNOT
+    -temp 2x
+    -temp x1
+
++fld separator
+  ANDNOT
+    -temp 2x
+    -temp x2
+
+; PAGE KZ101
+
++dig neq zero
+  NOT
+    -temp
+      NOR
+        AND
+          +rt dig latch
+          +sba 04-07 not zero(AR)
+        AND
+          +not rt dig latch
+          +sba 00-03 not zero(AR)
+
+-edit sba0-3 to sa z4-7
+  NAND
+    +temp dig ins lth
+    +not rt dig latch
+
+-edit sba4-7 to sa z4-7
+  NAND
+    +temp dig ins lth
+    +rt dig latch
+
++temp dig ins lth
+  NOT
+    -temp
+      NOR
+        AND
+          +dig sel or sig start kz101
+          +s trigger
+          +edit control a
+        AND
+          +dig sel or sig start kz101
+          +dig neq zero
+          +edit control a
+        AND
+          +clock p2
+          +temp dig ins lth
+
++edit control a
+  ANDNOT
+    -edit control
+    +clock p2
+
++dig sel or sig start kz101
+  NOT
+    -dig sel or sig start
+
+-edmk lth
+  NOR
+    AND
+      -s trigger
+      +dig neq zero
+      +edit control a
+      +dig sel or sig start kz101
+    AND
+      +clock p2
+      +temp
+        NOT
+          -edmk lth
+
+; PAGE KZ111
+
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NAND
+    -flt inhibit clock bus(KD)
+    +clock p0(AS)
+
+-flt inhibit clock
+  -flt inhibit clock bus(KD)
+
++edit f to sadd
+  NOT
+    -edit f to sadd
+-edit f to sadd
+  NOR
+    AND
+      -temp kz111 4b ak
+      +edit control a
+    AND
+      +clock p2
+      +edit f to sadd
+
+-edit sba0-7 to sa0-7
+  NOT
+    +edit f to sadd
+
++set leave lth
+  ANDNOT
+    -temp kz111 4b ak
+    +dig sel or sig start kz011
+
+-temp kz111 4b ak
+  NOR
+    AND
+      -fld separator
+      +s trigger
+    AND
+      +dig neq zero
+      +dig sel or sig start kz011
+
++sign lth
+  NOT
+    -sign lth
+-sign lth
+  NOR
+    AND
+      +dig sel or sig start kz011
+      +sign sba 04-07(AR)
+      +edit control a
+    AND
+      +clock p2
+      +sign lth
+
+; PAGE KZ201
+
++edit digit examine ltch
+  +dig examine lth
++dig examine lth
+  NOT
+    -dig examine lth
+-dig examine lth
+  NOR
+    AND
+      +dig sel or sig start kz011
+      +edit control a
+    AND
+      +clock p2
+      +dig examine lth
+
+-scan in word 3
+  -scan in word[3](KU)
+
+-dig sel or sig start
+  NOT
+    +dig sel or sig start kz011
+
++scan in word 3
+  NOT
+    -scan in word 3
+
++edit sbb to sadd
+  ORNOT
+    -edit sbb to sadd
+    -temp
+      NAND
+        +scan in word 3
+        +st bus[39](RS_RT)
+-edit sbb to sadd
+  NOR
+    AND
+      +leave lth
+      +clock p2
+    AND
+      -master reset
+      -clock p1
+      +edit sbb to sadd
+
+-ind leave trigger
+  NOT
+    +edit sbb to sadd
+
++leave lth
+  NOT
+    -temp
+      NOR
+        AND
+          +set leave lth
+          +edit control a
+        AND
+          +clock p2
+          +leave lth
+
+
+-master reset
+  NOT
+    +master reset(AS)
+
+; PAGE KZ301
+
++set s trigger
+  ORNOT
+    -temp
+      NOR
+        AND
+          +signif start
+          +edit control a
+        AND
+          +clock p2
+          +set s trigger
+    -edit set staa
+
++edit set staa
+  NOT
+    -edit set staa
+-edit set staa
+  NOR
+    AND
+      +dig neq zero
+      +dig sel or sig start kz101
+      +edit control a
+    AND
+      +clock p2
+      +edit set staa
+
+-fld separator
+  NOT
+    +fld separator
+
++reset s trigger
+  ORNOT
+    -temp
+      NOR
+        AND
+          +pos sign sba 04-07(AR)
+          +dig sel or sig start kz101
+          +edit control a
+        AND
+          +clock p2
+          +reset s trigger
+    -edit reset staa
+
++edit reset staa
+  NOT
+    -edit reset staa
+-edit reset staa
+  NOR
+    AND
+      +fld separator
+      +edit control a
+    AND
+      +clock p2
+      +edit reset staa
+
+; PAGE KZ321
+
+-ind s trigger
+  NOT
+    +s trigger
++s trigger
+  NOT
+    -s trigger
+-s trigger
+  NOR
+    AND
+      +st bus[50](RS_RT)
+      +scan in word 3
+    AND
+      -temp tgr reset
+      +set s trigger
+      +clock p2
+    AND
+      -temp kz321 3d aq
+      -temp tgr reset
+      +s trigger
+
+-temp tgr reset
+  NAND
+    +reset s trigger
+    +clock p2
+
+-temp kz321 3d aq
+  NOR
+    +master reset bus(KD)
+    AND
+      +i fetch reset(AS)
+      +clock p2
+
++master reset
+  +master reset bus(KD)
+
+-ind rt dig trigger
+  NOT
+    +rt dig trigger
++rt dig trigger
+  NOT
+    -rt dig trigger
+-rt dig trigger
+  NOR
+    AND
+      +st bus[51](RS_RT)
+      +scan in word 3
+    AND
+      +temp
+        ANDNOT
+          +sign lth
+          +rt dig latch
+      +temp dig ex
+      +clock p2
+    AND
+      -temp kz321 3d aq
+      -temp
+        NAND
+          +temp dig ex
+          +rt dig latch
+          +clock p2
+      +rt dig trigger
++temp dig ex
+  NOT
+    -dig examine lth
++not rt dig latch
+  NOT
+    +rt dig latch
++rt dig latch
+  NOT
+    -rt dig latch
+-rt dig latch
+  NOR
+    AND
+      +rt dig trigger
+      -clock p1
+    AND
+      -temp
+        NAND
+          -rt dig trigger
+          -clock p1
+      +rt dig latch
+
+; PAGE KZ501
+
+-edit control
+  NAND
+    +stat g(KD)
+    +edit decode(DR)
+
+-ind step abc trigger
+  NOT
+    +step abc trigger
++step abc trigger
+  ORNOT
+    -temp
+      NAND
+        +st bus[40](RS_RT)
+        +scan in word 3
+    -temp
+      NOR
+        AND
+          +temp
+            ORNOT
+              -rt dig latch
+              -sign lth
+          +dig examine lth
+          +clock p2
+        AND
+          -master reset
+          -clock p1
+          +step abc trigger
+
+-edit incr abc
+  NAND
+    +step abc trigger
+    -flt inhibit clock(AS)
+
++flt inhibit sequence tgrs
+  NOT
+    -flt inhibit clock(AS)
+
++i fetch reset
+  +i fetch reset(AS)

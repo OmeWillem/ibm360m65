@@ -1,0 +1,411 @@
+SECTION PK_PL
+
++unused sw 0[15..23]  
+  +switches 0[15..23](*)
++unused sw 1[0..2]
+  +switches 1[0..2](*)
++unused sw 6[20..23]
+  +switches 6[20..23](*)
++unused sw 7[0..23]
+  +switches 7[0..23](*)
+
+; PAGE PK001
+
++roller switch 1 pos[1..5]
+  NOT
+    +switches 1[5..9](*)
++roller switch 1 pos[6]
+  AND
+    +switches 1[5..9](*)
+
++roller switch 2 pos[1..5]
+  NOT
+    +switches 1[10..14](*)
++roller switch 2 pos[6]
+  AND
+    +switches 1[10..14](*)
+
++roller switch 3 pos[1..5]
+  NOT
+    +switches 1[15..19](*)
++roller switch 3 pos[6]
+  AND
+    +switches 1[15..19](*)
+
++roller switch 4 pos[1..4]
+  NOT
+    +switches 1[20..23](*)
++roller switch 4 pos[5]
+  NOT
+    +switches 4[16](*)
++roller switch 4 pos[6]
+  AND
+    +switches 1[20..23](*)
+    +switches 4[16](*)
+
++roller switch 5 pos[1..5]
+  NOT
+    +switches 4[17..21](*)
++roller switch 5 pos[6]
+  AND
+    +switches 4[17..21](*)
+
++roller switch 6 pos[1..2]
+  NOT
+    +switches 4[22..23](*)
++roller switch 6 pos[3..5]
+  NOT
+    +switches 6[0..2](*)
++lamp test O allow ind pb
+  +roller switch 6 pos[6]
++roller switch 6 pos[6]
+  AND
+    +switches 4[22..23](*)
+    +switches 6[0..2](*)
+
+-ce data key[0..23]
+  NOT
+    +switches 2[0..23](*)
+-ce data key[24..47]
+  NOT
+    +switches 3[0..23](*)
+-ce data key[48..63]
+  NOT
+    +switches 4[0..15](*)
+
+-ce data key parity 00-07
+  XOR
+    -ce data key[0..7]
+-ce data key parity 08-15
+  XOR
+    -ce data key[8..15]
+-ce data key parity 16-23
+  XOR
+    -ce data key[16..23]
+-ce data key parity 24-31
+  XOR
+    -ce data key[24..31]
+-ce data key parity 32-39
+  XOR
+    -ce data key[32..39]
+-ce data key parity 40-47
+  XOR
+    -ce data key[40..47]
+-ce data key parity 48-55
+  XOR
+    -ce data key[48..55]
+-ce data key parity 56-63
+  XOR
+    -ce data key[56..63]
+
+-ce address key[8..31]
+  NOT
+    +switches 5[8..31](*)
+
+-ce address key parity 08-15
+  XOR
+    -ce address key[8..15]
+-ce address key parity 16-23
+  XOR
+    -ce address key[16..23]
+-ce address key parity 24-31
+  XOR
+    -ce address key[24..31]
+
+; PAGE PK041
+
++ce start pb
+  NOT
+    +switches 6[9](*)
+
++ce psw restart pb
+  NOT
+    +switches 6[15](*)
+
++ce reset pb
+  NOT
+    +switches 1[4](*)
+
++ce store pb
+  NOT
+    +switches 6[16](*)
+
++ce stop pb
+  NOT
+    +switches 6[18](*)
+
++ce set ic pb
+  NOT
+    +switches 6[7](*)
+
++ce load pb
+  NOT
+    +switches 0[14](*)
+
++ce interrupt pb
+  NOT
+    +switches 0[13](*)
+
++ce display pb
+  NOT
+    +switches 6[6](*)
+
++ce ros transfer pb
+  NOT
+    +switches 6[14](*)
+
++ce logout pb
+  NOT
+    +switches 6[17](*)
+
++ce check reset pb
+  NOT
+    +switches 1[3](*)
+
++flt backspace pb
+  NOT
+    +switches 6[8](*)
+
++register set pb
+  0
+
+-gated common pushbuttons
+  AND
+    +switches 0[13..14](*)
+    +switches 1[3..4](*)
+    +switches 6[6..9](*)
+    +switches 6[14..18](*)
+
++cava power on pb
+  NOT
+    +switches 0[11](*)
++cava power off pb
+  NOT
+    +switches 0[12](*)
+
+-ce rate instruction step sw
+  NOT
+    +switches 6[11](*)
+-ce rate single cycle sw
+  NOT
+    +switches 6[10](*)
+-ce rate single cycle inh sw
+  NOT
+    +switches 6[19](*)
+
+;  s_rate_proc_o  <= switches_i(6)(20);
+
+-frequency alteration switch
+  NOT
+    +switches 7[15](*)
+
+; PAGE PK051
+
++ce addr comp stop
+  NOT
+    +switches 7[3](*)
++ce addr comp loop
+  0
+
++flt repeat test key
+  0
+
++inhibit ce hard stop key
+  0
+
++defeat intlv O rev stge
+  NOT
+    +switches 7[14](*)
++defeat intlv switch
+  NOT
+    +switches 7[6](*)
+
++repeat insn single
+  NOT
+    +switches 7[9](*)
++repeat insn multiple
+  NOT
+    +switches 7[0](*)
+
++disable timer key
+  NOT
+    +switches 7[13](*)
+
++pm count key
+  NOT
+    +switches 7[10](*)
++pm time key
+  NOT
+    +switches 7[1](*)
+
++local stor sw
+  NOT
+    +switches 7[4](*)
+
+-main storage byte
+  NOT
+    +switches 7[12](*)
+
++repeat ros addr
+  NOT
+    +switches 7[8](*)
++stop on ros addr compare
+  0
+
++test switch on
+  0
+
++flt test key
+  0
++ros test key
+  0
+
++disable check key
+  NOT
+    +switches 7[11](*)
++stop on ce check key
+  NOT
+    +switches 7[2](*)
+
+-mc turn on test lamp
+  AND
+    +switches 7[1..3](*)
+    +switches 7[6](*)
+    +switches 7[8](*)
+    +switches 7[10..11](*)
+    +switches 7[13..14](*)
+    NOT
+      +flt test key
+    NOT
+      +ros test key
+    NOT
+      +test switch on
+
+
+; BELOW ARE 360 specific
+
+-storage indicate 5-8
+  NOT
+    +switches 7[7](*)
+
++stop on storage check
+  NOT
+    +switches 7[5](*)
+
+; PAGE PK061
+
++ce load chan addr bit[4]
+  0
++ce load chan addr bit[5]
+  NOT
+    +switches 0[10](*)
++ce load chan addr bit[6]
+  NOT
+    +switches 0[9](*)
++ce load chan addr bit[7]
+  NOT
+    +switches 0[8](*)
+
++ce load unit addr bit[0]
+  NOT
+    +switches 0[7](*)
++ce load unit addr bit[1]
+  NOT
+    +switches 0[6](*)
++ce load unit addr bit[2]
+  NOT
+    +switches 0[5](*)
++ce load unit addr bit[3]
+  NOT
+    +switches 0[4](*)
++ce load unit addr bit[4]
+  NOT
+    +switches 0[3](*)
++ce load unit addr bit[5]
+  NOT
+    +switches 0[2](*)
++ce load unit addr bit[6]
+  NOT
+    +switches 0[1](*)
++ce load unit addr bit[7]
+  NOT
+    +switches 0[0](*)
+
++ce load chan addr bit p04-07
+  NOT
+    XOR
+      +ce load chan addr bit[4..7]
++ce load unit addr bit p00-07
+  NOT
+    XOR
+      +ce load unit addr bit[0..7]
+      
+; PAGE PL011
+
++lamps 0[36..39](*)
+  0
++lamps 1[36..39](*)
+  0
++lamps 2[36..39](*)
+  0
+
+; POWER ON
++lamps 3[36..37](*)
+  1
+; POWER OFF
++lamps 3[38..39](*)
+  0
+
++lamps 4[37](*)
+  NOT
+    -ind manual state mc(KW)
++lamps 4[38](*)
+  NOT
+    -ce ind wait(KW)
++lamps 4[39](*)
+  NOT
+    -ind test mc(KW)
++lamps 5[36](*)
+  NOT
+    -ce ind load(KW)
++lamps 5[37](*)
+  0
+
+; STORAGE ERRORS
++lamps 5[38](*)
+  NOT
+    -ind check reg 2 summary(KW)
+; CPU ERRORS
++lamps 5[39](*)
+  NOT
+    -ind check reg 1 summary(KW)
+
+; SYSTEM: not WAIT, MANUAL, or CHECK
+
++lamps 4[36](*)
+  AND
+    -ce ind wait(KW)
+    -ind manual state mc(KW)
+    -ind check reg 1 summary(KW)
+    -ind check reg 2 summary(KW)
+
+
++lamps 0[0..35](*)
+  NOT
+    -ind roller 1 bit[0..35](KT)
++lamps 1[0..35](*)
+  NOT
+    -ind roller 2 bit[0..35](KT)
++lamps 2[0..35](*)
+  NOT
+    -ind roller 3 bit[0..35](KT)
++lamps 3[0..35](*)
+  NOT
+    -ind roller 4 bit[0..35](KT)
++lamps 4[0..35](*)
+  NOT
+    -ind roller 5 bit[0..35](KT)
++lamps 5[0..35](*)
+  NOT
+    -ind roller 6 bit[0..35](KT)
+

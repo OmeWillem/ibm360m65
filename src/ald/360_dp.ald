@@ -1,0 +1,314 @@
+SECTION DP
+
+; PAGE DP011
+
+-mpr bus parity a
+  NOR
+    AND
+      +s reg par 00-07
+      +gate s reg byte[0]
+    AND
+      +s reg par 08-15
+      +gate s reg byte[1]
+
+-mpr bus parity b
+  NOR
+    AND
+      +s reg par 16-23
+      +gate s reg byte[2]
+    AND
+      +s reg par 24-31
+      +gate s reg byte[3]
+
+-mpr bus a[0..7]
+  NOR
+    AND
+      +s reg bit[0..7]
+      +gate s reg byte[0]
+    AND
+      +s reg bit[8..15]
+      +gate s reg byte[1]
++mpr bus[0..7]
+  ORNOT
+    -mpr bus a[0..7]
+    -mpr bus b[0..7]
+-mpr bus b[0..7]
+  NOR
+    AND
+      +s reg bit[16..23]
+      +gate s reg byte[2]
+    AND
+      +s reg bit[24..31]
+      +gate s reg byte[3]
+
+; PAGE DP021
++gate s reg byte[0..3]
+  NOT
+    -gate s reg byte[0..3](RE)
+
++st bus[0..63]
+  +st bus[0..63](RS_RT)
++s reg bit[0..31]
+  +st bus[0..31](RS_RT)
+
++s reg par 00-07
+  +st bus parity 00-07(RS_RT)
++s reg par 08-15
+  +st bus parity 08-15(RS_RT)
++s reg par 16-23
+  +st bus parity 16-23(RS_RT)
++s reg par 24-31
+  +st bus parity 24-31(RS_RT)
+
+; PAGE DP031
++m[1..2]
+  NOT
+    -m[1..2]
+-m[1..2]
+  NOT
+    +m bus[1..2]
+
++m bus[1..2]
+  ANDNOT
+    AND
+      -mpr bus a[0..1]
+      +temp
+        NOT
+          -e14e15 eq[0](RE)
+      -mpr bus b[0..1]
+    AND
+      -mpr bus a[2..3]
+      +temp
+        NOT
+          -e14e15 eq[1](RE)
+      -mpr bus b[2..3]
+    AND
+      -mpr bus a[4..5]
+      +temp
+        NOT
+          -e14e15 eq[2](RE)
+      -mpr bus b[4..5]
+    AND
+      -mpr bus a[6..7]
+      +temp
+        NOT
+          -e14e15 eq[3](RE)
+      -mpr bus b[6..7]
+
++mpr selOm1
+  ANDNOT
+    -m[1]
+    -mpr select
+
+-mpr select
+  NOT
+    +sel multiple per e12-15(DR)
++mpr select
+  NOT
+    -mpr select
+
++mpr term
+  NOT
+    -mpr term
+-mpr term
+  NOT
+    +mpy term select(DR)
+
++fix point term
+  ANDNOT
+    -mpr term
+    +flt point
++flt point
+  NOT
+    -fl pt(KS)
+
+; PAGE DP051
+
+-mpy sel 1x true
+  NOR
+    AND
+      -clock p3
+      -m[1..2]
+      +temp dp051 2c bk andnot
+    AND
+      -clock p3
+      -m[1]
+      +m[2]
+      +temp dp051 2h bl andnot
+    AND
+      -clock p3
+      +mpr term
+      +tx
+      +flt point
+    AND
+      +clock p2
+      +temp
+        NOT
+          -mpy sel 1x true
+
+-mpy sel 2x true
+  NOR
+    AND
+      -clock p3
+      +m[1]
+      -tx
+      -m[2]
+      +mpr select
+    AND
+      -clock p3
+      -m[1]
+      +m[2]
+      +temp dp051 2c bk andnot
+    AND
+      +clock p2
+      +temp
+        NOT
+          -mpy sel 2x true
+
+-mpy sel 1x comp
+  NOR
+    AND
+      -clock p3
+      +m[1..2]
+      +temp dp051 2h bl andnot
+    AND
+      -clock p3
+      +m[1]
+      -m[2]
+      +temp dp051 2c bk andnot
+    AND
+      +clock p2
+      +temp
+        NOT
+          -mpy sel 1x comp
+
++temp dp051 2c bk andnot
+  ANDNOT
+    -tx
+    AND
+      -mpr term
+      -mpr select
+    AND
+      +flt point
+      -mpr select
+
++temp dp051 2h bl andnot
+  ANDNOT
+    +tx
+    AND
+      -mpr term
+      -mpr select
+    AND
+      +flt point
+      -mpr select
+
+; PAGE DP071
+
+-mpy sel 2x comp
+  NOR
+    AND
+      -clock p3
+      +fix point term
+      +m[1]
+      -m[2]
+      -tx
+    AND
+      +clock p2
+      +temp
+        NOT
+          -mpy sel 2x comp
+
+-tx
+  NOT
+    +tx
+-ind tx tgr
+  -tx
++tx
+  ORNOT
+    -temp
+      NOR
+        AND
+          +temp tx lth
+          +clock p2
+        AND
+          +st bus[60](RS_RT)
+          +scan in word 4 bf
+    -temp
+      NAND
+        +tx
+        -master reset(KD)
+        -clock p1
++temp tx lth
+  NOT
+    -temp
+      NOR
+        AND
+          -clock p3
+          +mpr selOm1
+          +m[2]
+        AND
+          -clock p3
+          +mpr selOm1
+          +tx
+        AND
+          +clock p2
+          +temp tx lth
+
+-clock p3
+  NOT
+    +clock p2
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0(CS)
++scan in word 4 bp
+  NOT
+    -temp
+      NOT
+        +scan in word 4 bf
++scan in word 4 bf
+  NOT
+    -scan in word 4
+-scan in word 4
+  -scan in word 4(CS)
+
+; PAGE DP091
+
++error reset bus
+  +error reset gate a O c(MC)
+
+-ind s reg mpr parity check
+  -s reg mpr parity check
+-s reg mpr parity check
+  NOR
+    AND
+      +temp s mpr par chk
+      +clock p2
+    AND
+      -temp
+        NOT
+          +error reset gate a O c(MC)
+      +temp
+        NOT
+          -s reg mpr parity check
++temp s mpr par chk
+  NOT
+    -temp
+      NOR
+        AND
+          +temp
+            ANDNOT
+              AND
+                -mpr select
+                -mpr term
+              +clock p2
+          XOR
+            +mpr bus[0..7]
+            ORNOT
+              -mpr bus parity a
+              -mpr bus parity b
+        AND
+          +clock p2
+          +temp s mpr par chk

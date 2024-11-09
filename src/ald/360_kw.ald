@@ -1,0 +1,1432 @@
+SECTION KW
+
+;Page KW001
+
++address compare stop or loop
+  ORNOT
+    -temp
+      NOR
+        AND
+          +ce addr comp stop(PK_PL)
+    -temp kw001 4e an nor
+-temp kw001 4e an nor
+  NOR
+    AND
+      +ce addr comp loop(PK_PL)
++sto addr cmp sync pt c gate
+  NOT
+    -temp kw001 1l ba not
+-temp kw001 1l ba not
+  NOT
+    +sto addr comp sync to aObOcOd(MA)
++loop tgr
+  NOT
+    -loop tgr
+-loop branch tgr
+  NOR
+    AND
+      +gt addr keys to d(RS_RT)
+      +loop tgr
+    AND
+      +temp kw001 5e ar not
+      -machine reset(KC)
+      -reset stop tgrs(KW)
+      +temp kw001 7j ay not
++temp kw001 7j ay not
+  NOT
+    -loop branch tgr
++temp kw001 5e ar not
+  NOT
+    -temp kw001 4e an nor
+-loop tgr
+  NOR       
+    AND
+      +temp kw001 5e ar not
+      +temp kw001 2l bb not
+      -manual tgr(KW)
+    AND
+      +temp kw001 5e ar not
+      -machine reset(KC)
+      -reset stop tgrs(KW)
+      +loop tgr
++temp kw001 2l bb not
+  NOT
+    -temp kw001 1l ba not 
+-loop tgr cond set ic
+  NAND
+    +loop tgr
+    -loop branch tgr
+
+; PAGE KW005
+
+; KW005 should use -invalid address bus mc701(MC)
+
+
+-begin reset
+  NAND
+    +temp
+      ORNOT
+        -power on reset 3
+        -subsy reset pb
+        -subsystem psw restart
+        -subsystem ipl
+    +temp
+      ORNOT
+        -begin reset
+        -temp
+          NOR
+            +temp kw005 3f af not
+            +temp kw005 3g ag ornot
++temp kw005 3f af not
+  NOT
+    INT
+      -gated common pushbuttons(PK_PL)
++temp kw005 3g ag ornot
+  ORNOT
+    -power on reset 3
+    -ipl or stop latched
+
+; Shown as OR in ALD, should probably be ORNOT
+
++begin reset
+  ORNOT
+    -begin reset
+-allow switch ss
+  NOR
+    AND
+      +begin reset
+      +inhibit oscillator(KC)
+    AND
+      +sample ss(KC)
+      +temp kw005 3f af not
+    AND
+      +sample ss(KC)
+      +temp kw005 3g ag ornot
+-ipl or stop latched
+  NAND
+    -fire sw ss
+    +temp
+      ORNOT
+        -stop pb
+        -ipl or stop latched
+
+
+; PAGE KW011
+
+-fire sw ss
+  NOT
+    +temp
+      ORNOT
+        -temp kw011 2a al nand
+        -temp kw011 2c da nand
+-temp kw011 2a al nand
+  NAND
+    +temp
+      ORNOT
+        -ros transfer pb
+        -logout pb gated 2
+        -check reset pb
+        -flt backspace pb gtd
+        -register set pb
+        -set ic pb
+    +temp kw011 3b db ornot
+-temp kw011 2c da nand
+  NAND
+    +temp kw011 3b db ornot
+    +temp
+      ORNOT
+        -interrupt pb ce
+        -store pb
+        -stop pb
+        -ipl or stop latched
+        -display pb
+        -start pb
+        -begin reset
++temp kw011 3b db ornot
+  ORNOT
+    -allow switch ss
+    -temp kw011 2c da nand
+    -temp kw011 2a al nand
+
++switch ss 0
+  NOT
+    -temp ss3u2 out
+
+CLOCK
+
+SPECIAL
+  NSSN3US
+    -fire sw ss
+    OUT
+    -temp ss3u2 out
+
+NOCLOCK
+
++switch ss 2
+  NOT
+    -switch single shot
++ext interrupt
+  ANDNOT
+    AND
+      -interrupt pb ce
+    AND
+      -temp kw011 3j cr nand
+-temp kw011 3j cr nand
+  NAND
+    +switch ss 0
+    -delayed switch single shot
+-delayed switch single shot
+  TD
+    NOT
+      +switch ss 0
+-switch single shot
+  NOT
+    +switch ss 0
++pushbutton gate + loop tgr
+  ORNOT
+    -loop tgr
+    -switch single shot
++delayed switch single shot
+  NOT
+    -delayed switch single shot
+-short switch ss pulse
+  NOT
+    +short switch ss pulse
++short switch ss pulse
+  NOT
+    -temp kw011 3j cr nand
+
+; PAGE KW021
+
++single cycle bg4
+  ANDNOT
+    +manual tgr
+    -temp kw021 4c aj nor
+-temp kw021 4c aj nor
+  NOR
+    AND
+      +temp kw021 2b ab ornot
+      +manual + not pass pulse
+    AND
+      +temp kw021 2b ab ornot
+      +single cycle al4
++temp kw021 2b ab ornot
+  ORNOT
+    -rate single cycle sw
+    -rate single cycle inhibit sw
+-ind single cycle tgr
+  NOT
+    +single cycle al4
++single cycle al4
+  NOT
+    -temp kw021 4c aj nor
+-single cycle storage inhibit
+  NAND
+    -rate single cycle sw
+    +single cycle al4
+-reset single cycle mode
+  NAND
+    +pass pulse tgr
+    +osc d(KC)
+    -temp kw021 4c aj nor
+-ind instruction step tgr
+  NOT
+    +instruction step
++instruction step
+  NOT
+    -temp kw021 4g ak nor
+-temp kw021 4g ak nor
+  NOR
+    AND
+      +manual + not pass pulse
+      +temp kw021 2f ad not
+    AND
+      +temp kw021 2f ad not
+      +instruction step
++temp kw021 2f ad not
+  NOT
+    -rate instruction step sw
+-single cycle + inst step
+  NOT
+    +temp kw021 6f be ornot
++temp kw021 6f be ornot
+  ORNOT
+    -temp kw021 4c aj nor
+    -temp kw021 4g ak nor
+
+-ind test mc
+  NOT
+    +temp
+      ORNOT
+        -single cycle + inst step
+        -mc turn on test lamp(PK_PL)
+        -lamp test O allow ind pb
+        -flt ton test light(KU)
+
+-reset stop tgrs
+  NAND
+    +rst stop stop loop tgrs(DR)
+    -osc a sample latched lines(KC)
+-ind block interrupts
+  NOT
+    +block interrupts on start
++block interrupts on start
+  ORNOT
+    -reset stop tgrs
+    -temp kw021 3m a5 nand
+-temp kw021 3m a5 nand
+  NAND
+    -temp kw021 2m az nand
+    -reset manual controls(KC)
+    +block interrupts on start
+-temp kw021 2m az nand
+  NAND
+    +ros decode i fetch reset(KD)
+    -osc a sample latched lines(KC)
+
+; PAGE KW031
++stop tgr
+  ORNOT
+    -ton stop tgr(KU)
+    -temp
+      NOR
+        AND
+          +temp kw031 5m b5 ornot
+          -osc a sample latched lines(KC)
+          -end op tgr
+          +osc d (KC)
+        AND
+          +reset interrupt triggers(KM)
+          -osc a sample latched lines(KC)
+          +instruction step
+        AND
+          +instruction step
+          -osc a sample latched lines(KC)
+          +ros decode i fetch reset(KD)
+        AND
+          +stop pb
+          -end op tgr
+          +switch ss 0
+        AND
+          -reset stop tgrs
+          +stop tgr
++temp kw031 5m b5 ornot
+  ORNOT
+    -temp
+      NAND
+        +sto addr comp sync to aObOcOd(MA)
+        +address compare stop or loop
+    -temp
+      NAND
+        -manual tgr
+        +temp kw031 5m b5 ornot
+-ind stop tgr
+  NOT
+    +stop tgr
+-reset on psw fetch
+  NOT
+    +temp
+      NOT
+        -gt s 00-07 to psw sys mask(DR)
++manual + not pass pulse
+  ORNOT
+    +pass pulse tgr
+    -manual tgr
+-manual + not pass pulse
+  NOT
+    +manual + not pass pulse
+-ind manual state mc
+  NOT
+    +temp
+      ORNOT
+        -lamp test O allow ind pb
+        -manual tgr
+-manual tgr
+  NOR
+    AND
+      +set stop loop tgr(DR)
+      -osc a sample latched lines(KC)
+    AND
+      -reset stop tgrs
+      +manual tgr
+      -temp kw031 2m ca nand
+-temp kw031 2m ca nand
+  NAND
+    +delayed switch single shot
+    +temp
+      NOT
+        -logout pb gated 2
++manual tgr
+  NOT
+    -manual tgr
+-manual trigger
+  NOT
+    +manual tgr
+
+; KW041
+
+-ind pass pulse tgr
+  NOT
+    +pass pulse tgr
++pass pulse tgr
+  NOT
+    -pass pulse tgr
+-pass pulse tgr
+  NOR
+    AND
+      +osc sample(KC)
+      +switch ss 0
+      -temp kw041 3d ac nand
+      +temp
+        ORNOT
+          -logout pb gated 2
+          -start pb
+          -force addrs tgr(KC)
+    AND
+      -temp kw041 3d ac nand
+      +pass pulse tgr
+-temp kw041 3d ac nand
+  NAND
+    +temp
+      ORNOT
+        -reset pass pulse tgr(KU)
+        -temp
+          NAND
+            +ros addr compare stop(RX)
+        -temp kw041 4f aj nor
+    +osc sample(KC)
+    -bcu hold on cpu clock(MC)
+-temp kw041 4f aj nor
+  NOR
+    AND
+      +temp
+        ORNOT
+          -switch single shot
+          -pass pulse tgr
+      +temp kw041 5f al not
+    AND
+      -manual tgr
+      +single cycle al4
+      +temp
+        ORNOT
+          -logout pb gated 2
+          -start pb
+          -ros transfer pb
+      +osc b(KC)
+      +pass pulse tgr
++temp kw041 5f al not
+  NOT
+    -temp kw041 4f aj nor
+-ind block tgr
+  NOT
+    +temp kw041 5f al not
+-disable time clock
+  NOR
+    AND
+      +temp
+        ORNOT
+          -single cycle + inst step
+          -scan disable timer(KU)
+          +pass pulse tgr
+    AND
+      -temp
+        NAND
+          +pm initilization tgr
+          +pulse mode time key
+      +disable time clock key
+    AND
+      +repeat single instruction key
+      +repeat inst initilization
+    AND
+      +manual tgr
+
+; PAGE KW051
+
++repeat instruction ba4
+  NOT
+    -temp kw051 4d am nor
+-temp kw051 4d am nor
+  NOR
+    AND
+      +manual tgr
+      -temp
+        NOT
+          +allow pulse mode
+      -temp kw051 5l at nor
+    AND
+      +temp kw051 6d aw andnot
+-temp kw051 5l at nor
+  NOR
+    AND
+      +temp kw051 6d aw andnot
+      -osc e(KC)
+      +set stat g(KS)
+    AND
+      +repeat inst initilization
+      -reset manual controls(KC)      
++temp kw051 6d aw andnot
+  ANDNOT
+    AND
+      -temp kw051 4d am nor
+    AND
+      +osc d(KC)
+      +repeat four syllables key
+      +repeat inst initilization
+    AND
+      +allow pulse mode
+      +manual tgr
+-ind repeat instruction adjust
+  NOT
+    +temp kw051 6d aw andnot
++allow pulse mode
+  NOR
+    AND
+      +repeat single instruction key
+    AND
+      +repeat four syllables key
+-ind repeat inst initilization
+  NOT
+    +repeat inst initilization
++repeat instruction az4
+  NOT
+    -temp kw051 5l at nor
++repeat inst initilization
+  ANDNOT
+    AND
+      +allow pulse mode
+      +manual tgr
+    AND
+      -temp kw051 5l at nor
+-end op tgr
+  NOT
+    +rosr br+norm end op(KM)
++end op tgr bus
+  +rosr br+norm end op(KM)
+
+; PAGE KW061
+
+-pulse mode count or time
+  NOR
+    AND
+      -single cycle + inst step
+      +pulse mode time key
+    AND
+      +pulse mode count key
+-ind pulse mode adjust tgr
+  NOT
+    +pulse mode tgr
+-pulse mode
+  NAND
+    +pulse mode tgr
+    +pm initilization tgr
+-pulse mode set up
+  NOR
+    AND
+      +pm initilization tgr
+      +pulse mode tgr
+      +sample ss(KC)
+    AND
+      +pulse mode tgr
+      +start pb
+      +sample ss(KC)
+      -temp kw061 5l aw nor
+    AND
+      +pulse mode tgr
+      +temp kw061 7h cc andnot
++temp kw061 7h cc andnot
+  ANDNOT
+    -pulse mode set up
+    +reset manual controls(KC)
+-temp kw061 5l aw nor
+  NOR
+    AND
+      +pulse mode tgr
+      -begin reset
+      +pulse mode ss
+    AND
+      +allow pulse mode
+      -reset manual controls(KC)
+      +pm initilization tgr
++pulse mode adjust tgr
+  NOT
+    -temp kw061 5l aw nor
+
+CLOCK
+
+SPECIAL
+  NSSN2800NS
+    -temp kw061 ss in
+    OUT
+    -pulse mode ss
+
+NOCLOCK
+
+-temp kw061 ss in
+  NOT
+    +bcu allow pm(MC)
++pulse mode tgr
+  ANDNOT
+    AND
+      -temp kw061 4d aq nor
+    AND
+      +manual tgr
+      -pulse mode count or time
+-temp kw061 4d aq nor
+  NOR
+    AND
+      -single cycle + inst step
+      +pm initilization tgr
+      +pulse mode time key
+      +temp kw061 2c bh not
+      +allow pulse mode
+    AND
+      +pulse mode tgr
+      +temp kw061 1d ac not
+      +manual tgr
+      +allow pulse mode
+    AND
+      +pm initilization tgr
+      +pulse mode count key
+      +cycle ctr eq 0 lth ap4(KU)
+      +allow pulse mode
+    AND
+      +allow pulse mode
+      -reset stop tgrs
+      +pulse mode tgr
++temp kw061 2c bh not
+  NOT
+    -time clock step ss(KD)
++temp kw061 1d ac not
+  NOT
+    -pulse mode count or time
++pulse mode ss
+  NOT
+    -pulse mode ss
++pm initilization tgr
+  ANDNOT
+    AND
+      -temp kw061 4d aq nor
+      -pulse mode count or time
+    AND
+      -temp kw061 5l aw nor
+-ind pulse mode initilization
+  NOT
+    +pm initilization tgr
+
+; PAGE KW071
+
++wait or manual
+  ORNOT
+    -temp kw071 1j bp not
+    -temp kw071 3g bt nand
+-temp kw071 1j bp not
+  NOT
+    +in wait loop(RX)
+-temp kw071 3g bt nand
+  NAND
+    -end op(KU)
+    +temp kw071 3e b5 ornot
++temp kw071 3e b5 ornot
+  ORNOT
+    -temp kw071 1f a5 not
+    -temp kw071 3g bt nand
+-temp kw071 1f a5 not
+  NOT
+    +manual + not pass pulse(KU)
+
++hard stop reset
+  NOT
+    -temp
+      NOT
+        +error reset gate e(KX)
+
+-hard stop reset
+  NOT
+    +hard stop reset
+-hard stop condition kw071
+  NOT
+    +hard stop condition
+-hard stop reset logout tgr
+  NOT
+    +temp
+      NOT
+        -hard stop condition kw071
+
+; PAGE KW081
+
+-check reg 1 error
+  NOT
+    +temp kw081 6d bh and
++temp kw081 6d bh and
+  AND
+    ORNOT
+      -ros err to blk cpu clk(DS)
+      -s reg mpr parity check(DP)
+      -inhibit clock padd fs error(AP)
+      -sadder half sum error(AS)
+      -parity error e 00-15(RE)
+      -sadder full sum error(AS)
+      -inhibit clock padd hs error(AP)
+    NOT
+      +por ss  
+-hard stop condition kw081
+  NAND
+    -hard stop reset
+    +temp kw081 3g at and
+    -ros+flt test mode
++temp kw081 3g at and
+  AND
+    ORNOT
+      -hard stop condition kw081
+      -psa lockout set ce hardstop(KM)
+      -se stopped O 360 mode hard stop(KM)
+      -log ros check(KU)
+      -log stg chk set hard stop(MC)
+      -logout address chk(MA)
+    -inhibit ce hard stop key
++hard stop inhibit osc
+  NOT
+    -hard stop condition kw081
++storage error
+  NOT
+    -bcu stop cl on cpu stg check(MC) 
+-check reg 2 error
+  NOT
+    AND
+      -temp
+        NOT
+          +por ss
+      ORNOT
+        -bcu stop cl on cpu stg check(MC) 
+        -local store bus parity check(BF)
+        -ioce check response trig(KX)
+        -sab check in ce(MA)
+        -sdbi parity check(MB)
+
+; PAGE KW091
+
+-error log required
+  NAND
+    -stop on check
+    -temp kw091 4d ap nor
+    +delayed error log req
+-temp kw091 4d ap nor
+  NOR
+    AND
+      -stop on check
+      +disable errors
+    AND
+      -stop on check
+      -machine check mask trigger(RW)
+    AND
+      -stop on check
+      +ce logout + mc intrpt(KU)
+-stop on check
+  NOR
+    AND
+      -disable ce check switch
+      +ipl status
+    AND
+      +stop on ce check switch
++disable errors
+  ORNOT
+    -ros test + flt lth
+    -disable ce check switch
++block storage select
+  NOT
+    +temp kw091 5d a5 not
+-disable check
+  NOT
+    +temp kw091 5d a5 not
++temp kw091 5d a5 not
+  NOT
+    -temp kw091 4d ap nor
++osc c
+  NOT
+    +osc b(KC)
+-inhibit clock ce check
+  NOR
+    AND      
+      -temp kw091 4d ap nor
+      +temp kw091 1g am ornot
+      +osc c
+    AND
+      -temp kw091 4d ap nor
+      -temp
+        NAND
+          +osc c
+          +error reset(KC)
+      +error stop lth
++temp kw091 1g am ornot
+  ORNOT
+    -check reg 1 error
+    -check reg 2 error
++ck reg 1+2 pulse not h s
+  NOT
+    -temp kw091 ss out
+
+CLOCK
+
+SPECIAL
+  NSSN525NS
+    -temp kw091 ss in
+    OUT
+    -temp kw091 ss out
+
+NOCLOCK
+
+-temp kw091 ss in
+    NOT
+      -temp kw091 5j bu not
+-temp kw091 5j bu not
+  NOT
+    -temp kw091 4j bt nor
+-temp kw091 4j bt nor
+  NOR
+    AND
+      +osc c
+      +temp kw091 1g am ornot
+    AND
+      +temp kw091 1g am ornot
+      -temp kw091 5j bu not
++error stop lth
+  NOT
+    -inhibit clock ce check
+
+; PAGE KW093
++delayed error log req
+  NOT
+    -temp kw093 5l ar nor
+-temp kw093 5l ar nor
+  NOR
+    AND
+      +temp
+        NOT
+          -temp kw093 6e ap ss
+      +temp kw093 4h ak not
+      +osc c
+    AND
+      +error stop lth
+      +delayed error log req
+SPECIAL
+  SSN5500US
+    -temp kw093 4e aj not
+    OUT
+    -temp kw093 6e ap ss
+-temp kw093 4e aj not
+    NOT
+      -temp kw093 4b ag ss
+SPECIAL
+  SSN5500US
+    -temp kw093 2b aa not
+    OUT
+    -temp kw093 4b ag ss
+-temp kw093 2b aa not
+    NOT
+      AND
+        +error stop lth
+        -temp kw093 3h af nor
++temp kw093 4h ak not
+  NOT
+    -temp kw093 3h af nor
+-temp kw093 3h af nor
+  NOR
+    AND
+      +temp kw093 7e at not
+      +error stop lth
+    AND
+      +error stop lth
+      +temp kw093 4h ak not
++temp kw093 7e at not
+  NOT
+    -temp kw093 6e ap ss
+            
+;PAGE KW095
+
+-ros test + flt lth
+  NOT
+    +ros test + flt lth(KU)
+-ind check summary
+  NOT
+    +temp kw095 3l au ornot
++temp kw095 3l au ornot
+  ORNOT
+    -hard stop condition kw081
+    -check reg 1 error
+    -check reg 2 error
+-ce elc
+  NOR
+    AND
+      +ck reg 1+2 pulse not h s
+      -temp kw095 3e ba not
+      -temp kw095 3d ar not
+    AND
+      -temp kw095 3d ar not
+      -temp kw095 3e ba not
+      +hard stop condition
+    AND
+      +por ss
+-temp kw095 3e ba not
+  NOT
+    +error reset(KC)
+-temp kw095 3d ar not
+  NOT
+    +temp kw095 3d ag ornot
++temp kw095 3d ag ornot
+  ORNOT
+    -temp kw095 1d ac not
+    -stop on check
+-temp kw095 1d ac not
+  NOT
+    +disable errors
++por ss
+  NOT
+    -power on reset 1
++hard stop condition
+  NOT
+    -hard stop condition kw081
+-lamp test O allow ind pb
+  NOT
+    INT
+      +lamp test O allow ind pb(PK_PL)
+-ind check reg 1 summary
+  NOT
+    +temp kw095 3k av ornot
++temp kw095 3k av ornot
+  ORNOT
+    -lamp test O allow ind pb
+    -check reg 1 error
+-ind check reg 2 summary
+  NOT
+    +temp kw095 3m aw ornot
++temp kw095 3m aw ornot
+  ORNOT
+    -lamp test O allow ind pb
+    -hard stop condition kw081
+    -check reg 2 error
+
+; PAGE KW301
+
+; 360 mode controls - skipped
+
+; PAGE KW311
+
+-power on reset 3
+  NOT
+    +power on reset
++power on reset
+  NOT
+    -power on reset 1
+-power on reset 1
+  NOT
+    +power on reset px311(PX)
+-subsy reset pb
+  NAND
+    INT
+      +ce reset pb(PK_PL)
+-ce reset pb
+  NOT
+    INT
+      +ce reset pb(PK_PL)
+
+; PAGE KW321
+
++subsystem ipl lth
+  ANDNOT
+    -subsys ipl lth
+-subsys ipl lth
+  NOR
+    AND
+      +temp
+        NOT
+          -subsystem ipl
+      +switch ss 2
+    AND
+      +subsystem ipl lth  
+      -psw fetch + flt reset
+
++sub sys ipl
+  NOT
+    -subsys ipl lth
+-subsystem psw restart
+  NOT
+    INT
+      +ce psw restart pb(PK_PL)
+-subsys psw rst lth
+  NOR
+    AND
+      +temp kw321 4l ap not
+      +switch ss 2
+    AND
+      +temp kw321 7m bf not     
+      -psw fetch + flt reset
++temp kw321 7m bf not
+  NOT
+    -subsys psw rst lth
++temp kw321 4l ap not
+  NOT
+    -subsystem psw restart
+-subsystem ipl
+  NOT
+    +ce load pb(PK_PL)   
+
+; PAGE KW331
+
+-store pb
+  NOT
+    INT
+      +ce store pb (PK_PL)
++store pb gate
+  NOT
+    -temp
+      NOR
+        AND
+          +temp
+            NOT
+              -store pb
+          +short switch ss pulse
+        AND
+          +switch ss 2
+          +store pb gate
+-interrupt pb ce
+  NOT
+    INT
+      +ce interrupt pb(PK_PL)
+-display pb
+  NOT
+    INT
+      +ce display pb(PK_PL)
++display pb gate
+  NOT
+    -temp
+      NOR
+        AND
+          +temp
+            NOT
+              -display pb
+          +short switch ss pulse
+        AND
+          +switch ss 2
+          +display pb gate
+
+; PAGE KW341
+
+-set ic pb
+  NOT
+    INT
+      +ce set ic pb(PK_PL)
++set ic pb + loop tgr
+  ORNOT
+    -temp kw341 5d av nor
+    -loop tgr cond set ic
+-temp kw341 5d av nor
+  NOR
+    AND
+      +temp
+        NOT
+          -set ic pb
+      +short switch ss pulse
+    AND
+      +switch ss 2
+      +temp
+        NOT
+          -temp kw341 5d av nor
++start pb + loop branch tgr
+  ORNOT
+    -loop branch tgr
+    -temp kw341 6h bc nand
+-temp kw341 6h bc nand
+  NAND
+    -pulse mode count or time
+    +start pb
+-start pb
+  NOT
+    INT
+      +ce start pb(PK_PL)
++start pb
+  NOT
+    -temp kw341 5k ax nor
+-temp kw341 5k ax nor
+  NOR
+    AND
+      +temp kw341 5h aw not
+      +short switch ss pulse
+    AND
+      +switch ss 2
+      +start pb
++temp kw341 5h aw not
+  NOT
+    -start pb
+
+; PAGE KW351
+
+-stop pb
+  NOT
+    INT
+      +ce stop pb(PK_PL)
++stop pb
+  NOT
+    -temp kw351 6e ar nor
+-temp kw351 6e ar nor
+  NOR
+    AND
+      +temp kw351 5b am not
+    AND
+      -manual tgr
+      +stop pb
++temp kw351 5b am not
+  NOT
+    -stop pb
++test on latched
+  NOT
+    -test lthd(PX)
++select local storage
+  NOT
+    -ce local storage sw
+-rate instruction step sw
+  NOT
+    +temp kw351 4n az ornot
++temp kw351 4n az ornot
+  NOT
+    -ce rate insn step
+
+; PAGE KW361
+
++pulse mode count key
+  NOT
+    -pulse mode count key
+-pulse mode count key
+  NAND
+    INT
+      +pm count key(PK_PL)
+    +test lthd(PX)
+-register set pb
+  NAND
+    INT
+      +register set pb(PK_PL)
+    +test lthd(PX)
++pulse mode time key
+  NOT
+    -temp kw361 2c ac nand
+-temp kw361 2c ac nand
+  NAND
+    INT
+      +pm time key(PK_PL)
+    +test lthd(PX)
+-ce local storage sw
+  NOT
+    INT
+      +local stor sw(PK_PL)
++register set pb gated
+  NOT
+    -register set pb
+-main stge byte
+  NOT
+    +temp kw361 6f bc not
++temp kw361 6f bc not
+  NOT
+    INT
+      -main storage byte(PK_PL)
+-ce rate insn step
+  NOT
+    +temp kw361 6g bd not
++temp kw361 6g bd not
+  NOT
+    INT
+      -ce rate instruction step sw(PK_PL)
+-rate single cycle sw
+  NOT
+    +temp kw361 6h be not
++temp kw361 6h be not
+  NOT
+    INT
+      -ce rate single cycle sw(PK_PL)
++repeat ros address
+  NOT
+    -temp kw361 4j ay nand
+-temp kw361 4j ay nand
+  NAND
+    +ros transfer pb
+    INT
+      +repeat ros addr(PK_PL)
++ros transfer pb
+  NOT
+    -ros transfer pb
+-ros transfer pb
+  NOT
+    INT
+      +ce ros transfer pb(PK_PL)
+-rate single cycle inhibit sw
+  NOT
+    +temp kw361 6l bf not
++temp kw361 6l bf not
+  NOT
+    INT
+      -ce rate single cycle inh sw(PK_PL)
++repeat single instruction key
+  NOT
+    -temp kw361 2l az nand
+-temp kw361 2l az nand
+  NOT
+    INT
+      +repeat insn single(PK_PL)
++repeat four syllables key
+  NOT
+    -temp kw361 2m bs nand
+-temp kw361 2m bs nand
+  NOT
+    INT
+      +repeat insn multiple(PK_PL)
+
+; PAGE KW371
+
+-defeat interleave
+  NAND
+    INT
+      +defeat intlv switch(PK_PL)
+-repeat test key
+  NAND
+    INT
+      +flt repeat test key(PK_PL)
+-disable ce check switch
+  NAND
+    INT
+      +disable check key(PK_PL)
+-check reset pb
+  NAND
+    INT
+      +ce check reset pb(PK_PL)
+-flt test key
+  NAND
+    INT
+      +flt test key(PK_PL)
+-ros test key
+  NAND
+    INT
+      +ros test key(PK_PL)
+-defeat intlv O rev stor add
+  NAND
+    INT
+      +defeat intlv O rev stge(PK_PL)
+-ros+flt test mode
+  NOT
+    -temp kw371 6e bp ornot
+-temp kw371 6e bp ornot
+  ORNOT
+    -flt test key
+    -ros test key
++disable time clock key
+  NOT
+    -temp kw371 3d ak nand
+-temp kw371 3d ak nand
+  NAND
+    INT
+      +disable timer key(PK_PL)
++stop on ce check switch
+  NOT
+    -temp kw371 3f bk nand
+-temp kw371 3f bk nand
+  NAND
+    INT
+      +stop on ce check key(PK_PL)
++check reset pb
+  NOT
+    -check reset pb
+-logout pb gated 0
+  NAND
+    INT
+      +ce logout pb(PK_PL)
+-flt backspace pb gtd
+  NAND
+    INT
+      +flt backspace pb(PK_PL)
+-logout pb gated 2
+  NOT
+    +temp kw371 6k ay not
++temp kw371 6k ay not
+  NOT
+    -logout pb gated 0
+-inhibit ce hard stop key
+  NAND
+    INT
+      +inhibit ce hard stop key(PK_PL)
+
+; PAGE KW401
+
++temp kw401 ad ak not
+  NOT
+    -temp ss1000ms out
+CLOCK
+
+SPECIAL
+  NSSN1000MS
+    -temp kw401 5b aj not
+    OUT
+    -temp ss1000ms out
+
+NOCLOCK
+
+-temp kw401 5b aj not
+  NOT
+    AND
+      +temp kw401 3b af ornot
+      +temp kw401 3d bf ornot
++temp kw401 3b af ornot
+  ORNOT
+    -temp kw401 2c ae not
++temp kw401 3d bf ornot
+  ORNOT
+    -flt subsystem reset
+    -switch single shot
+-temp kw401 2c ae not
+  NOT
+    +temp kw401 1c ab ornot
++temp kw401 1c ab ornot
+  ORNOT
+    -subsys ipl lth
+    -flt subsystem reset
+    -subsys psw rst lth
+    -subsy reset pb
+-subsystem reset
+  NAND
+    +temp kw401 ad ak not
+    +temp kw401 1c ab ornot
+
+-ipl status
+  NOT
+    +ipl status
++reset delay ss
+  NOT
+    -reset delay ss
+
+CLOCK
+
+SPECIAL
+  NSSN2500MS
+    -temp ss 2500ms in
+    OUT
+    -reset delay ss
+
+NOCLOCK
+
+-temp ss 2500ms in
+  NOT
+    AND
+      +temp kw401 3b af ornot
+      +switch ss 2
++reset dar
+  ORNOT
+    -mach reset O not log reset(KC)
+    -temp kw401 5l ay nand
+-temp kw401 5l ay nand
+  NAND
+    +temp kw401 4k av not
+    -ros+flt test mode
++temp kw401 4k av not
+  NOT
+    -reset delay ss
++ipl status
+  ORNOT
+    -subsys ipl lth
+    -flt ipl lth ah4
+-ipl set stat a
+  NAND
+    +temp kw401 4k av not
+    -ros+flt test mode
+    +ipl status
+
+; PAGE KW411
+; 9020 
+
++enable ipl-psw branch
+  ORNOT
+    -temp
+      NAND
+        -reset delay ss
+        +flt ipl lth
+    -temp
+      NAND
+        -ros+flt test mode
+        -reset delay ss
+        -switch single shot
+        +temp
+          ORNOT
+            -subsys ipl lth
+            -subsys psw rst lth
+  
+; PAGE KW421
+
+-lamp test and allow ind pb
+  NOT
+    +lamp test and allow ind pb
++lamp test and allow ind pb
+  NOT
+    -lamp test O allow ind pb
+-ce ind wait
+  NOT
+    +temp kw421 3c af ornot
++temp kw421 3c af ornot
+  ORNOT
+    -lamp test and allow ind pb
+    -temp kw421 1c ab not
+-temp kw421 1c ab not
+  NOT
+    +wait state(RW)
+-ce ind load
+  NOT
+    +temp kw421 3f ag ornot   
++temp kw421 3f ag ornot
+  ORNOT
+    -lamp test and allow ind pb
+    -temp kw421 1f ad not
+-temp kw421 1f ad not
+  NOT
+    +ipl status
+-ce ind system operating
+  NOT
+    +temp kw421 3m al ornot
++temp kw421 3m al ornot
+  ORNOT
+    -lamp test and allow ind pb
+    -temp kw421 2m ae nand
+-temp kw421 2m ae nand
+  NAND
+    -temp kw421 1c ab not
+    -manual + not pass pulse
+
+; PAGE KW501
+
+-flt ipl lth ak4
+  NOT
+    +flt ipl lth
++flt ipl lth
+  NOT
+    -flt ipl lth ah4
+-flt ipl lth ah4
+  NOR
+    AND
+      +subsystem ipl lth
+      +temp kw501 2a aa not
+      +reset delay ss
+    AND
+      -mach reset O not log reset(KC)
+      -reset ipl(KU)
+      +flt ipl lth
++temp kw501 2a aa not
+  NOT
+    -ros+flt test mode
+-flt subsystem reset
+  NOT
+    +flt cond subsystem reset(KU)
+-psw fetch + flt reset
+  NOT
+    +temp
+      ORNOT
+        -reset on psw fetch
+        -temp
+          NAND
+            +enable ipl-psw branch
+            +temp kw501 2a aa not
+        -power on reset 3
+        -ce reset pb
+              

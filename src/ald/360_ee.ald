@@ -1,0 +1,15 @@
+SECTION EE
+
+; PAGE EE001
+
+CLOCK
+
++strobe word
+  +sense latch strobe(KK)
+
+; PAGE EE011
+
+-reset sense latches
+  -reset sense latches(KK)
+
+NOCLOCK 

@@ -1,0 +1,657 @@
+SECTION RX
+
+; PAGE RX001
+
+CLOCK
+
++block rosar O set bit 7 yiasi
+  +block rosar O set bit 7 yiasi(KM)
+-yiasi bus
+  -yiasi bus k31(DS)
+-scan-mc inh int cond
+  NOT
+    +gate rosar scan or mc
++yiasi
+  NOT
+    -yiasi bus k31(DS)
++gate rosar scan or mc
+  ORNOT
+    -scan inhibit next rosa(KU)
+    -man cntls force addr(DS)
++yiaei end op
+  NOT
+    -yiaei bus k25(DS)
+-inhibit next address
+  NOR
+    AND
+      +yiasi
+      +block rosar O set bit 7 yiasi(KM)
+    AND
+      +yiaei end op
+      +block rosar on except cond(KM)
+    +temp
+      ORNOT
+        -yiasc bus k24(DS)
+        -scan inhibit next rosa(KU)
+        -man cntls force addr(DS)
++block rosar on except cond
+  +block rosar on except cond(KM)
++yiasc
+  NOT
+    -yiasc bus k24(DS)
+
+; PAGE RX002
+
+CLOCK
+
+-wait state block
+  NAND
+    -temp wsb 0
+    -temp
+      NOT
+        +ros+flt test(DS)
+    +temp wsb 1
+
++temp wsb 0
+  NOT
+    -temp wsb 0
+-temp wsb 0
+  NOR
+    AND
+      +temp wsb 2
+      -p0-3 clock
+      +p2
+    AND
+      +temp wsb 0
+      -temp
+        NAND
+          -temp p0-1
+          +temp wsb 1
+
+
++temp wsb 1
+  NOT
+    -temp
+      NOR
+        AND
+          +temp p0
+          +temp wsb 0
+        AND
+          -temp machine reset
+          -temp stop
+          +temp wsb 1
+-temp machine reset
+  NOT
+    +machine reset(KS)
+-temp stop
+  NOR
+    AND
+      +int + stop + tcs(DS)
+      -temp p0-1
+      +p2
+    AND
+      -p1
+      +log out(KU)
+
++temp wsb 2
+  NOT
+    -temp
+      NOR
+        AND
+          +man ctl wait prior(KM)
+          +temp p0
+          +yiaei end op
+        AND
+          -temp p0-1
+          -temp machine reset
+          +temp wsb 2
+
+NOCLOCK
+
++in wait loop
+  ORNOT
+    -temp
+      NAND
+        +temp
+          NOT
+            -wait state block
+        +temp p0
+    -temp
+      NAND
+        +in wait loop
+        -temp stop
+        -temp machine reset
+
+CLOCK
+
++p2
+  NOT
+    -p1
+-p1
+  NOT
+    +temp p0
++temp p0
+  NOT
+    -temp p0-1
+-temp p0-1
+  NOT
+    +p0-2 clock
+
+NOCLOCK
+
++machine reset
+  +machine reset (KS)
+  
+; PAGE RX0003
+
++block d sync tgr
+  NOT
+    -temp
+      NOR
+        AND
+          +yiasi
+          +block rosar O set bit 7 yiasi
+
++cpu specification error
+  +inhibit local stor write
++inhibit local stor write
+  NOT
+    -temp
+      NOR
+        AND
+          +yiasi
+          +block rosar O set bit 7 yiasi
+          +p4 gate
+        AND
+          -clock p3 blocked
+          +inhibit local stor write
+
+-ind inh ls write
+  NOT
+    +inhibit local stor write
+
+CLOCK
+
+-clock p3 blocked
+  NAND
+    +clock p2 rx003
+    -temp block rosar reset
+
+NOCLOCK
+
++block rosar reset
+  NOT
+    -temp block rosar reset
+-temp block rosar reset
+  NOR
+    AND
+      +ros error 69-99 block rosar(AP)
+      -disable+scan block errors a(RY)
+    +temp
+      NOT
+        -ros error 43-68 blocked(DS)
+    AND
+      +ros error 2-42 block rosar(RY)
+      -disable+scan block errors a(RY)
+
+CLOCK
+
++clock p2 rx003
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +temp
+      NOT
+        -clock p0-1
+
+-clock p0-1
+  NAND
+    -wait state block
+    +p0-2 clock
+
+
++p0-2 clock
+  NOT
+    -p0-3 clock
+-p0-3 clock
+  -clock p0-3 from gate(KC)
+;  NOT
+;    TD
+;      +temp
+;        NOT
+;          -clock gate c bottom(RY)
+
+NOCLOCK
+
+-pwr on reset gated
+  NAND
+    +power on reset(KW)
+    +gate rosar scan or mc
+; PAGE RX021
+
+CLOCK
+
++p4 gate
+  NOT
+    -clock p3 blocked
+
+NOCLOCK
+
+-ind rosar[0..11]
+  NOT
+    +rosar[0..11]
++rosar[0..11]
+  NOT
+    -rosar[0..11]
+-rosar[0..5]
+  NOR
+    AND
+      +temp[0..5]
+        NOR
+          -roslth eq 1[47..52](EF)
+      +p4 gate
+      -inhibit next address
+    AND
+      +force rosar[0..5]
+      +yiasc
+      +p4 gate
+    AND
+      -clock p3 blocked
+      +rosar[0..5]
+
+; PAGE RX061
+-rosar[6]
+  NOR
+    AND
+      +normal set rosar bit 6(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +j97+j121Oeff r00 to rosar 6(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +j103 to rosar 6 7 10(DS)
+      +e bit[2](RE)
+      +p4 gate
+      -inhibit next address
+    AND
+      +rosar bit 6 for yiaei(KM)
+      -scan-mc inh int cond
+      +yiaei end op
+      +p4 gate
+    AND
+      +temp
+        NOT
+          -set rosar scan[6](DS)
+      +p4 gate
+    AND
+      -clock p3 blocked
+      +rosar[6]
+
+; PAGE RX071
+
++e03 eq 1
+  +e bit[3](RE)
+-rosar[7]
+  NOR
+    AND
+      +normal set rosar bit 7(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +j97+j121Oeff r01 to rosar 7(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +j103 to rosar 6 7 10(DS)
+      +e bit[3](RE)
+      +p4 gate
+      -inhibit next address
+    AND
+      +rosar bit 7Od reg 17 yiaei(KM)
+      -scan-mc inh int cond
+      +yiaei end op
+      +p4 gate
+    AND
+      +block rosar O set bit 7 yiasi(KM)
+      -scan-mc inh int cond
+      +yiasi
+      +p4 gate
+    AND
+      +temp
+        NOT
+          -set rosar scan[7](DS)
+      +p4 gate
+    AND
+      -clock p3 blocked
+      +rosar[7]
+
+; PAGE RX081
+
+-rosar[8]
+  NOR
+    AND
+      +temp
+        ORNOT
+          -r 12-15 eq 0 O not q-r(RQ)
+          -pseudo r 12-15 eq 0000(RQ)
+      +j121Oeff r01 to rosar 8(DS)
+      -eff r00(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +normal set rosar bit 8(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +j102+j103Oe04 to rosar 8(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +j97Oeff r01 to rosar 8(DS)
+      +r 12-15 equals zero(RR)
+      -eff r00(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +rosar bit 8Od reg 18 yiaei(KM)
+      -scan-mc inh int cond
+      +yiaei end op
+      +p4 gate
+    AND
+      +temp
+        NOR
+          -pwr on reset gated
+          -set rosar scan[8](DS)
+      +p4 gate
+    AND
+      -clock p3 blocked
+      +rosar[8]
+
+; PAGE RX091
+
+-rosar[9]
+  NOR
+    AND
+      +normal set rosar bit 9(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +j102+j103Oe05 to rosar 9(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +roslth 62-68 eq j[97](DS)
+      +effective b field per ic(DS)
+      -eff rr format(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +roslth 62-68 eq j[121](DS)
+      +effective b-field per d(DS)
+      -eff rr format(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +rosar bit 9Od reg 19 yiaei(KM)
+      -scan-mc inh int cond
+      +yiaei end op
+      +p4 gate
+    AND
+      +temp
+        NOT
+          -set rosar scan+mc[9](DS)
+      +p4 gate
+    AND
+      -clock p3 blocked
+      +rosar[9]
+;    AND
+;      +page exception force addr 007(MC)
+;      +p4 gate
+
+; PAGE RX101
+
+-rosar[10]
+  NOR
+    AND
+      +normal j set rosar bit 10(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +normal k set rosar bit 10(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +temp k[14](DS)
+      +set rosar 10 fast k14(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +j97Oic21+j103Oe06 ros 10(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +rosar bit 10Od reg 20 yiaei(KM)
+      -scan-mc inh int cond
+      +yiaei end op
+      +p4 gate
+    AND
+      +temp
+        NOT
+          -set rosar scan+mc[10](DS)
+      +p4 gate
+    AND
+      -clock p3 blocked
+      +rosar[10]
+;    AND
+;      +page exception force addr 007(MC)
+;      +p4 gate
+
+; PAGE RX111
+
+-rosar[11]
+  NOR
+    AND
+      +normal fast set rosar 11(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +normal slow set rosar 11(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +z set rosar 11 normal(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +rosar 11 fast input 11(DS)
+      +p4 gate
+      -inhibit next address
+    AND
+      +temp
+        NOT
+          -set rosar scan+mc[11](DS)
+      +p4 gate
+    AND
+      -clock p3 blocked
+      +rosar[11]
+;    AND
+;      +page exception force addr 007(MC)
+;      +p4 gate
+
+; PAGE RX201
+
++gate prosaa bits
+  AND
+    +temp gate prosa
+    +temp a gate
++gate prosab bits
+  AND
+    +temp gate prosa
+    +temp b gate
+
++temp gate prosa
+  ANDNOT
+    +block rosar reset
+    -clock p3
+    -clock p1(KS)
+
++temp a gate
+  NOR
+    +temp b gate
+    AND
+      +temp prosaa last
+      -temp p5
++temp b gate
+  NOR
+    AND
+      -temp p5
+      +temp prosab last
+    +temp a gate
++temp prosab last
+  NOT
+    +temp prosaa last
++temp prosaa last
+  NOR
+    AND
+      +temp b gate
+      +temp p6
+    AND
+      -temp p5
+      -machine reset(KS)
+      +temp prosab last
+-prosaa is last
+  NOT
+    +temp prosaa last
+
++temp p6
+  NOT
+    -temp p5
+-temp p5
+  NAND
+    -temp
+      NOT
+        +block rosar reset
+    +p2 reset rosar lth
+-p3 set rosar lth
+  NOT
+    +p2 reset rosar lth
++p2 reset rosar lth
+  NOT
+    -clock p3
+-clock p3
+  NOT
+    +clock p2 rx201
++clock p2 rx201
+  NOT
+    -clock p1(KS)
+
+; PAGE RX211
+
+-ind prosa a[0..11]
+  NOT
+    +temp[0..11]
+      NOR
+        AND
+          +gate prosaa bits
+          -rosar latch eq 1[0..11]
+        AND
+          NOT
+            +gate prosaa bits
+          -ind prosa a[0..11]
+
+-ind prosa b[0..11]
+  NOT
+    +temp[0..11]
+      NOR
+        AND
+          +gate prosab bits
+          -rosar latch eq 1[0..11]
+        AND
+          NOT
+            +gate prosaa bits
+          -ind prosa b[0..11]
+
+-rosar latch eq 1[0..11]
+  NOR
+    AND
+      +temp[0..11]
+        NOT
+          -rosar[0..11]
+      -p3 set rosar lth
+    AND
+      +temp[0..11]
+        NOT
+          -rosar latch eq 1[0..11]
+      +p2 reset rosar lth
+
+; PAGE RX301
+-rosar O keys no comp
+  NOR
+    +temp[0..11]
+      XOR
+        -rosar latch eq 1[0..11]
+        -ce address key[8..19](PK_PL)
+
+; PAGE RX303
+
+-rosar 0-11 O keys 0-11 compa
+  NAND
+    -rosar O keys no comp
+    +clock p2 rx201
+
++ros addr compare stop
+  NOT
+    -temp
+      NAND
+        -rosar O keys no comp
+        +stop on ros addr compare(PK_PL)
+
+; PAGE RX901
+
+-repeat ros addr bd4
+  NOT
+    +repeat ros addr
+-inh sto req on repeat ros add
+  -repeat ros addr bd4
+-force yiasc on repeat ros add
+  -repeat ros addr bd4
+
++repeat ros addr
+  NOT
+    -repeat ros addr ar4
+-repeat ros address
+  -repeat ros addr ar4
+
+-repeat ros addr ar4
+  NOR
+    AND
+      +temp rra
+      -clock p3
+    AND
+      +clock p2 rx201
+      +repeat ros addr
+
++temp rra
+  NOT
+    -temp
+      NOR
+        AND
+          +repeat ros address(KW)
+          +p2 reset rosar lth
+        AND
+          -temp
+            NOT
+              +machine resetOnot log reset(DR)
+          +temp rra
+
++force rosar[0..11]
+  NOR
+    AND
+      -repeat ros addr ar4
+      -st bus[40..51](RS_RT)
+    AND
+      -ce address key[8..19](PK_PL)
+      +repeat ros addr

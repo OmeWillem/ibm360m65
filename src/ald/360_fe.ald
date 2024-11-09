@@ -1,0 +1,261 @@
+SECTION FE
+
+; PAGE FE001
+
+-ind ext reg[0..31]
+  NOT
+    +ext reg[0..31]
++external register[0..31]
+  +ext reg[0..31]
++ext reg[0..31]
+  NOT
+    -ext reg[0..31]
+-ext reg[0..7]
+  NOR
+    AND
+      +load unit addr bit[0..7](PX)
+      +gate ext 00-31 ipl+flt
+    AND
+      +st bus[32..39](RS_RT)
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg[0..7]
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE061
+
+-ind ext reg p00-07
+  NOT
+    +ext reg p00-07
++external register p00-07
+  +ext reg p00-07
++ext reg p00-07
+  NOT
+    -ext reg p00-07
+-ext reg p00-07
+  NOR
+    AND
+      +load unit addr bit p00-07(PX)
+      +gate ext 00-31 ipl+flt
+    AND
+      +st bus parity 32-39(RS_RT)
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg p00-07
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE081
+
+-ext reg[8..19]
+  NOR
+    AND
+      +st bus[40..51](RS_RT)
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg[8..19]
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE141
+
+-ind ext reg p08-15
+  NOT
+    +ext reg p08-15
++external register p08-15
+  +ext reg p08-15
++ext reg p08-15
+  NOT
+    -ext reg p08-15
+-ext reg p08-15
+  NOR
+    AND
+      +gate ext 00-31 ipl+flt
+    AND
+      +st bus parity 40-47(RS_RT)
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg p08-15
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE191
+
+-ext reg[20..23]
+  NOR
+    AND
+      +load chan addr bit[4..7](PX)
+      +gate ext 00-31 ipl+flt
+    AND
+      +st bus[52..55](RS_RT)
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg[20..23]
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE221
+
+-ind ext reg p16-23
+  NOT
+    +ext reg p16-23
++external register p16-23
+  +ext reg p16-23
++ext reg p16-23
+  NOT
+    -ext reg p16-23
+-ext reg p16-23
+  NOR
+    AND
+      +load chan addr bit p04-07(PX)
+      +gate ext 00-31 ipl+flt
+    AND
+      +st bus parity 48-55(RS_RT)
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg p16-23
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE241
+
+-ext reg[24..28]
+  NOR
+    AND
+      +st bus[56..60](RS_RT)
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg[24..28]
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE271
+
+-ext reg[29..31]
+  NOR
+    AND
+      +bit to ext[29..31]
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg[29..31]
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE301
+
+-ind ext reg p24-31
+  NOT
+    +ext reg p24-31
++external register p24-31
+  +ext reg p24-31
++ext reg p24-31
+  NOT
+    -ext reg p24-31
+-ext reg p24-31
+  NOR
+    AND
+      +gate ext 00-31 ipl+flt
+    AND
+      +bit p24-31 to ext
+      +gate st32-63 to ext 00-31
+    AND
+      +ext reg p24-31
+      -reset ext 00-31
+      -reset ext 00-31 ipl+flt
+
+; PAGE FE321
+
++gate st32-63 to ext 00-31
+  NOT
+    -reset ext 00-31
+-reset ext 00-31
+  NAND
+    -clock p1(KM)
+    -ipl
+    +temp write ext
+;+gate st32-63 to ext 00-31
+;  NOT
+;    -reset ext 00-31
+;-reset ext 00-31
+;  NOT
+;    +temp
+;      NOT
+;        -temp
+;          NAND
+;            -clock p1(KM)
+;            -ipl
+;            +temp write ext
+
++gate ext 00-31 ipl+flt
+  NOT
+    -reset ext 00-31 ipl+flt
+-reset ext 00-31 ipl+flt
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            AND
+              -clock p1(KM)
+              +ipl
+              +temp write ext
+            AND
+              -clock p1(KM)
+              +ros test + flt lth(KX)
+              +subsystem reset(FX)
+
++temp write ext
+  NOT
+    -write ext reg(DR)
+
+; PAGE FE331
+
++ipl
+  NOT
+    -ipl
+-ipl
+  NAND
+    +ipl status(KX)
+    +st bus parity 32-39(RS_RT)
+
++ipl status
+  +ipl status(KX)
+
++bit to ext[29..31]
+  NOT
+    -temp[29..31]
+      NOR
+        AND
+          +st bus[61..63](RS_RT)
+          -temp e to ext
+        AND
+          +e bit[5..7](RE)
+          +temp e to ext
+
++temp e to ext
+  NOT
+    -temp e to ext
+-temp e to ext
+  NOT
+    +gate e5-7 to ext on i-o instr(RE)
+
++bit p24-31 to ext
+  NOT
+    -temp
+      NOR
+        AND
+          +st bus parity 56-63(RS_RT)
+          -temp e to ext
+        AND
+          -e reg p00-07(RE)
+          +temp e to ext
+          -siop(KX)
+        AND
+          -temp
+            NOT
+              +st bus parity 56-63(RS_RT)
+          +temp e to ext
+          +temp
+            NOT
+              -siop(KX)

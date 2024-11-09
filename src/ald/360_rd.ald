@@ -1,0 +1,226 @@
+SECTION RD
+
+; PAGE RD001
+
+-ind d bit[0..23]
+  NOT
+    +d bit[0..23]
++d bit[0..23]
+  ANDNOT
+    AND
+      +addr keys to d(RS_RT)
+      -key to d[8..31](PX)
+    -d bit[0..23]
+-d bit[0..16]
+  AND
+    NOR
+      AND
+        +paddl[8..24](AP)
+        +gt paddl 08-31 to d(RS_RT)
+      AND
+        +paddl[40..56](AP)
+        +gt paddl 40-63 to d(RS_RT)
+      AND
+        -rst d(RS_RT)
+        +d bit[0..16]
+;    -force d bit[0..16]
+
+; PAGE RD151
+
+-d bit[17]
+  AND
+    NOR
+      AND
+        +paddl[25](AP)
+        +gt paddl 08-31 to d(RS_RT)
+      AND
+        +paddl[57](AP)
+        +gt paddl 40-63 to d(RS_RT)
+      AND
+        -rst d(RS_RT)
+        +d bit[17]
+    NAND
+      +gt psw-d 17-20+p(RS_RT)
+      +rosar bit 7Od reg 17 yiaei(KM)
+;    -force d bit[17]
+
+; PAGE RD181
+
+-d bit[18]
+  AND
+    NOR
+      AND
+        +paddl[26](AP)
+        +gt paddl 08-31 to d(RS_RT)
+      AND
+        +paddl[58](AP)
+        +gt paddl 40-63 to d(RS_RT)
+      AND
+        -rst d(RS_RT)
+        +d bit[18]
+    NAND
+      +gt psw-d 17-20+p(RS_RT)
+      +rosar bit 8Od reg 18 yiaei(KM)
+;    -force d bit[18]
+
+-d bit[19]
+  AND
+    NOR
+      AND
+        +paddl[27](AP)
+        +gt paddl 08-31 to d(RS_RT)
+      AND
+        +paddl[59](AP)
+        +gt paddl 40-63 to d(RS_RT)
+      AND
+        -rst d(RS_RT)
+        +d bit[19]
+    NAND
+      +gt psw-d 17-20+p(RS_RT)
+      +rosar bit 9Od reg 19 yiaei(KM)
+;    -force d bit[19]
+
+-d bit[20]
+  AND
+    NOR
+      AND
+        +paddl[28](AP)
+        +gt paddl 08-31 to d(RS_RT)
+      AND
+        +paddl[60](AP)
+        +gt paddl 40-63 to d(RS_RT)
+      AND
+        -rst d(RS_RT)
+        +d bit[20]
+    NAND
+      +gt psw-d 17-20+p(RS_RT)
+      +rosar bit 10Od reg 20 yiaei(KM)
+;    -force d bit[20]
+
+; PAGE RD211
+
+-d bit[21..23]
+  NOR
+    AND
+      +paddl[29..31](AP)
+      +gt paddl 08-31 to d(RS_RT)
+    AND
+      +paddl[61..63](AP)
+      +gt paddl 40-63 to d(RS_RT)
+    AND
+      -rst d(RS_RT)
+      +d bit[21..23]
+
+; PAGE RD215
+
+-ind d p00-07
+  NOT
+    +d parity 00-07
++d parity 00-07
+  ANDNOT
+    AND
+      +addr keys to d(RS_RT)
+      -key p08-15 to d(PX)
+    -temp
+      AND
+        NOR
+          AND
+            +gt paddl 08-31 to d(RS_RT)
+            +paddl parity 08-15(AP)
+          AND
+            +gt paddl 40-63 to d(RS_RT)
+            +paddl parity 40-47(AP)
+          AND
+            -rst d(RS_RT)
+            +d parity 00-07
+        -temp
+          NOT
+            +gt one d parity 00-07(RS_RT)
+;        -force d p00-07
+
+-ind d p08-15
+  NOT
+    +d parity 08-15
++d parity 08-15
+  ANDNOT
+    AND
+      +addr keys to d(RS_RT)
+      -key p16-23 to d(PX)
+    -temp
+      AND
+        NOR
+          AND
+            +gt paddl 08-31 to d(RS_RT)
+            +paddl parity 16-23(AP)
+          AND
+            +gt paddl 40-63 to d(RS_RT)
+            +paddl parity 48-55(AP)
+          AND
+            -rst d(RS_RT)
+            +d parity 08-15
+        -temp
+          NOT
+            +gt one d parity 08-15(RS_RT)
+;        -force d p08-15
+
+-ind d p16-23
+  NOT
+    +d parity 16-23
++d parity 16-23
+  ANDNOT
+    AND
+      +addr keys to d(RS_RT)
+      -key p24-31 to d(PX)
+    -temp
+      AND
+        NOR
+          AND
+            +gt paddl 08-31 to d(RS_RT)
+            +paddl parity 24-31(AP)
+          AND
+            +gt paddl 40-63 to d(RS_RT)
+            +paddl parity 56-63(AP)
+          AND
+            -rst d(RS_RT)
+            +d parity 16-23
+        -temp
+          NAND
+            +gt psw-d 17-20+p(RS_RT)
+            +d parity 16-23 psw+timer rd(KM)
+;        -force d p16-23
+
+; PAGE RD220
+
++d reg bits 18-21 odd
+  XOR
+    +d bit[18..21]
+
+-d 18-21 equal 0
+  NAND
+    -d bit[18..21]
+
+; PAGE RD301
+
+;-force d bit[0..20]
+;  NAND
+;    +sdbo[40..60](WA)
+;    +gate new address(RS_RT)
+
+;-force d p00-07
+;  NAND
+;    +sdbo parity 40-47(WA)
+;    +gate new address(RS_RT)
+
+; PAGE RD311
+
+;-force d p08-15
+;  NAND
+;    +sdbo parity 48-55(WA)
+;    +gate new address(RS_RT)
+
+; PAGE RD321
+
+;-force d p16-23
+;  NAND
+;    +pty 16-23 required(CA)
+;    +gate new address(RS_RT)

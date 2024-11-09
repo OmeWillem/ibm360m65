@@ -1,0 +1,1371 @@
+SECTION RA_RB
+
+; PAGE RA001
+
+-ind ab bit[0..67]
+  NOT
+    +ab bit[0..67]
++ab bit[0..67]
+  NOT
+    -ab bit[0..67]
+-ab bit[0..3]
+  NOR
+    AND
+      +sdbo[0..3](WA)
+      +gt sdbo
+    AND
+      +paddl[32..35](AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab bit[0..3]
+      -rst fm sdbo
+      -rst ab00-07-fm paddl
+
+-ab bit 00 to cond code
+  NOT
+    +ab bit[0]
+
+; PAGE RA031
+
+-ab bit[4..7]
+  NOR
+    AND
+      +paddl[4..7](AP)
+      +gt paddl04-07-ab04-07
+    AND
+      +sdbo[4..7](WA)
+      +gt sdbo
+    AND
+      +paddl[36..39](AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab bit[4..7]
+      -rst fm sdbo
+      -rst ab00-07-fm paddl
+
+; PAGE RA061
+
+-ind ab parity 00-07
+  NOT
+    +ab parity 00-07
++ab parity 00-07
+  NOT
+    -ab parity 00-07
+-ab parity 00-07
+  NOR
+    AND
+      +paddl parity 04-07(AP)
+      +gt paddl04-07-ab04-07
+    AND
+      +sdbo parity[0](WA)
+      +gt sdbo
+    AND
+      +paddl parity 32-39(AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab parity 00-07
+      -rst fm sdbo
+      -rst ab00-07-fm paddl
+
+; PAGE RA081
+
+-ab bit[8..15]
+  NOR
+    AND
+      +paddl[8..15](AP)
+      +gt paddl08-23-ab08-23
+    AND
+      +sdbo[8..15](WA)
+      +gt sdbo
+    AND
+      +paddl[40..47](AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab bit[8..15]
+      -rst fm sdbo
+      -rst ab08-23-fm paddl
+
+; PAGE RA141
+
+-ind ab parity 08-15
+  NOT
+    +ab parity 08-15
++ab parity 08-15
+  NOT
+    -ab parity 08-15
+-ab parity 08-15
+  NOR
+    AND
+      +paddl parity 08-15(AP)
+      +gt paddl08-23-ab08-23
+    AND
+      +sdbo parity[1](WA)
+      +gt sdbo
+    AND
+      +paddl parity 40-47(AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab parity 08-15
+      -rst fm sdbo
+      -rst ab08-23-fm paddl
+
+; PAGE RA161
+
+-ab bit[16..23]
+  NOR
+    AND
+      +paddl[16..23](AP)
+      +gt paddl08-23-ab08-23
+    AND
+      +sdbo[16..23](WA)
+      +gt sdbo
+    AND
+      +paddl[48..55](AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab bit[16..23]
+      -rst fm sdbo
+      -rst ab08-23-fm paddl
+
+; PAGE RA221
+
+-ind ab parity 16-23
+  NOT
+    +ab parity 16-23
++ab parity 16-23
+  NOT
+    -ab parity 16-23
+-ab parity 16-23
+  NOR
+    AND
+      +paddl parity 16-23(AP)
+      +gt paddl08-23-ab08-23
+    AND
+      +sdbo parity[2](WA)
+      +gt sdbo
+    AND
+      +paddl parity 48-55(AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab parity 16-23
+      -rst fm sdbo
+      -rst ab08-23-fm paddl
+
+; PAGE RA241
+
+-ab bit[24..31]
+  NOR
+    AND
+      +paddl[24..31](AP)
+      +gt paddl24-31-ab24-31
+    AND
+      +sdbo[24..31](WA)
+      +gt sdbo
+    AND
+      +paddl[56..63](AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab bit[24..31]
+      -rst fm sdbo
+      -rst ab24-31-fm paddl
+
+; PAGE RB301
+
+-ind ab parity 24-31
+  NOT
+    +ab parity 24-31
++ab parity 24-31
+  NOT
+    -ab parity 24-31
+-ab parity 24-31
+  NOR
+    AND
+      +paddl parity 24-31(AP)
+      +gt paddl24-31-ab24-31
+    AND
+      +sdbo parity[3](WA)
+      +gt sdbo
+    AND
+      +paddl parity 56-63(AP)
+      +gt paddl32-63-ab00-31
+    AND
+      +ab parity 24-31
+      -rst fm sdbo
+      -rst ab24-31-fm paddl
+
+; PAGE RB321
+
+-ab bit[32..39]
+  NOR
+    AND
+      +paddl[32..39](AP)
+      +gt paddl32-63-ab32-63
+    AND
+      +sdbo[32..39](WA)
+      +gt sdbo
+    AND
+      +ab bit[32..39]
+      -rst fm sdbo
+      -rst ab32-63-fm paddl
+
+; PAGE RB381
+
+-ind ab parity 32-39
+  NOT
+    +ab parity 32-39
++ab parity 32-39
+  NOT
+    -ab parity 32-39
+-ab parity 32-39
+  NOR
+    AND
+      +paddl parity 32-39(AP)
+      +gt paddl32-63-ab32-63
+    AND
+      +sdbo parity[4](WA)
+      +gt sdbo
+    AND
+      +ab parity 32-39
+      -rst fm sdbo
+      -rst ab32-63-fm paddl
+
+; PAGE RB401
+
+-ab bit[40..47]
+  NOR
+    AND
+      +paddl[40..47](AP)
+      +gt paddl32-63-ab32-63
+    AND
+      +sdbo[40..47](WA)
+      +gt sdbo
+    AND
+      +ab bit[40..47]
+      -rst fm sdbo
+      -rst ab32-63-fm paddl
+
+; PAGE RB461
+
+-ind ab parity 40-47
+  NOT
+    +ab parity 40-47
++ab parity 40-47
+  NOT
+    -ab parity 40-47
+-ab parity 40-47
+  NOR
+    AND
+      +paddl parity 40-47(AP)
+      +gt paddl32-63-ab32-63
+    AND
+      +sdbo parity[5](WA)
+      +gt sdbo
+    AND
+      +ab parity 40-47
+      -rst fm sdbo
+      -rst ab32-63-fm paddl
+
+; PAGE RB481
+
+-ab bit[48..55]
+  NOR
+    AND
+      +paddl[48..55](AP)
+      +gt paddl32-63-ab32-63
+    AND
+      +sdbo[48..55](WA)
+      +gt sdbo
+    AND
+      +ab bit[48..55]
+      -rst fm sdbo
+      -rst ab32-63-fm paddl
+
+; PAGE RB541
+
+-ind ab parity 48-55
+  NOT
+    +ab parity 48-55
++ab parity 48-55
+  NOT
+    -ab parity 48-55
+-ab parity 48-55
+  NOR
+    AND
+      +paddl parity 48-55(AP)
+      +gt paddl32-63-ab32-63
+    AND
+      +sdbo parity[6](WA)
+      +gt sdbo
+    AND
+      +ab parity 48-55
+      -rst fm sdbo
+      -rst ab32-63-fm paddl
+
+; PAGE RB561
+
+-ab bit[56..63]
+  NOR
+    AND
+      +paddl[56..63](AP)
+      +gt paddl32-63-ab32-63
+    AND
+      +sdbo[56..63](WA)
+      +gt sdbo
+    AND
+      +ab bit[56..63]
+      -rst fm sdbo
+      -rst ab32-63-fm paddl
+
+; PAGE RB621
+
+-ind ab parity 56-63
+  NOT
+    +ab parity 56-63
++ab parity 56-63
+  NOT
+    -ab parity 56-63
+-ab parity 56-63
+  NOR
+    AND
+      +paddl parity 56-63(AP)
+      +gt paddl32-63-ab32-63
+    AND
+      +sdbo parity[7](WA)
+      +gt sdbo
+    AND
+      +ab parity 56-63
+      -rst fm sdbo
+      -rst ab32-63-fm paddl
+
+; PAGE RB641
+
+-ab bit[64..67]
+  NOR
+    AND
+      +paddl[64..67](AP)
+      +gt paddl64-67-ab64-67
+    AND
+      +paddl[28..31](AP)
+      +gt paddl28-31-ab64-67
+    AND
+      +ab bit[64..67]
+      -rst ab64-67-fm paddl28-31
+      -rst ab64-67-fm paddl
+
+; PAGE RB381
+
+-ind ab parity 64-67
+  NOT
+    +ab parity 64-67
++ab parity 64-67
+  NOT
+    -ab parity 64-67
+-ab parity 64-67
+  NOR
+    AND
+      +paddl parity 64-67(AP)
+      +gt paddl64-67-ab64-67
+    AND
+      +paddl parity 24-31(AP)
+      +gt paddl28-31-ab64-67
+    AND
+      +ab parity 64-67
+      -rst ab64-67-fm paddl28-31
+      -rst ab64-67-fm paddl
+
+; PAGE RB701
+-shift instructions
+  NOT
+    +temp
+      NOT
+        -shift instructions(DN)
+
+-ab-paddb bus[4..5]
+  NOR
+    AND
+      +ab bit[4..5]
+      +gt ab 04-07-paddb 04-07
+    AND
+      +ab bit[6..7]
+      +gt ab06-31-pb04-29 l2
+      -shift instructions
+
+-ab-paddb bus[6..7]
+  NOR
+    AND
+      +ab bit[6..7]
+      +gt ab 04-07-paddb 04-07
+    AND
+      +ab bit[8..9]
+      +gt ab06-31-pb04-29 l2
+
+-ab-paddb bus[8..27]
+  NOR
+    AND
+      +ab bit[8..27]
+      +gt ab 08-31-paddb 08-31
+    AND
+      +ab bit[10..29]
+      +gt ab06-31-pb04-29 l2
+
+-ab-paddb bus[28..29]
+  NOR
+    AND
+      +ab bit[28..29]
+      +gt ab 08-31-paddb 08-31
+    AND
+      +ab bit[30..31]
+      +gt ab06-31-pb04-29 l2
+    AND
+      +ab bit[64..65]
+      +gt ab 64-67-paddb28-31
+
+-ab-paddb bus[30..31]
+  NOR
+    AND
+      +ab bit[30..31]
+      +gt ab 08-31-paddb 08-31
+    AND
+      +ab bit[32..33]
+      +gt ab 32-67-paddb 30-65 l2
+    AND
+      +ab bit[66..67]
+      +gt ab 64-67-paddb28-31
+
+-ab-paddb bus[32..59]
+  NOR
+    AND
+      +ab bit[32..59]
+      +gt ab 32-63-paddb 32-63
+    AND
+      +ab bit[34..61]
+      +gt ab 32-67-paddb 30-65 l2
+    AND
+      +ab bit[0..27]
+      +gt ab 00-31-paddb 32-63
+
+-ab-paddb bus[60]
+  NOR
+    AND
+      +ab bit[60]
+      +gt ab 32-63-paddb 32-63
+    AND
+      +ab bit[62]
+      +gt ab 32-67-paddb 30-65 l2
+    AND
+      +ab bit[28]
+      +gt ab 00-31-paddb 32-63
+    AND
+      +f bit[4](RF)
+      +gt f04-07-paddb60-63
+    AND
+      +gt hot one-paddb bit 60
+
+-ab-paddb bus[61]
+  NOR
+    AND
+      +ab bit[61]
+      +gt ab 32-63-paddb 32-63
+    AND
+      +ab bit[63]
+      +gt ab 32-67-paddb 30-65 l2
+    AND
+      +ab bit[29]
+      +gt ab 00-31-paddb 32-63
+    AND
+      +f bit[5](RF)
+      +gt f04-07-paddb60-63
+
+-ab-paddb bus[62]
+  NOR
+    AND
+      +ab bit[62]
+      +gt ab 32-63-paddb 32-63
+    AND
+      +ab bit[64]
+      +gt ab 32-67-paddb 30-65 l2
+    AND
+      +ab bit[30]
+      +gt ab 00-31-paddb 32-63
+    AND
+      +f bit[6](RF)
+      +gt f04-07-paddb60-63
+    AND
+      +gt hot one-paddb bit 62
+
+-ab-paddb bus[63]
+  NOR
+    AND
+      +ab bit[63]
+      +gt ab 32-63-paddb 32-63
+    AND
+      +ab bit[65]
+      +gt ab 32-67-paddb 30-65 l2
+    AND
+      +ab bit[31]
+      +gt ab 00-31-paddb 32-63
+    AND
+      +f bit[7](RF)
+      +gt f04-07-paddb60-63
+
+-ab-paddb bus[64..65]
+  NOR
+    AND
+      +ab bit[66..67]
+      +gt ab 32-67-paddb 30-65 l2
+    AND
+      +ab bit[64..65]
+      +gt ab 64-67-paddb 64-67
+
+-ab-paddb bus[66..67]
+  NOR
+    AND
+      +ab bit[66..67]
+      +gt ab 64-67-paddb 64-67
+
+++2 comp b64-67Ob64-67 eq 0
+  ANDNOT
+    AND
+      -ab-paddb bus[64..67]
+    -+2 comp b64-67(AP)
+
+-+2 comp b64-67
+  -+2 comp b64-67(AP)
+
+; PAGE RB733
+
+-ab to siba a[0..7]
+  NOR
+    AND
+      +ab bit[0..7]
+      +gt ab00-07p-siba
+    AND
+      +ab bit[8..15]
+      +gt ab08-15p-siba
+    AND
+      +ab bit[32..39]
+      +gt ab32-39p-siba
+    AND
+      +ab bit[40..47]
+      +gt ab40-47p-siba
+
+-ab to siba parity a
+  NOR
+    AND
+      +ab parity 00-07
+      +gt ab00-07p-siba
+    AND
+      +ab parity 08-15
+      +gt ab08-15p-siba
+    AND
+      +ab parity 32-39
+      +gt ab32-39p-siba
+    AND
+      +ab parity 40-47
+      +gt ab40-47p-siba
+
+; PAGE RB741
+
+-ab to siba b[0..7]
+  NOR
+    AND
+      +ab bit[16..23]
+      +gt ab16-23p-siba
+    AND
+      +ab bit[24..31]
+      +gt ab24-31p-siba
+    AND
+      +ab bit[48..55]
+      +gt ab48-55p-siba
+    AND
+      +ab bit[56..63]
+      +gt ab56-63p-siba
+
+-ab to siba parity b
+  NOR
+    AND
+      +ab parity 16-23
+      +gt ab16-23p-siba
+    AND
+      +ab parity 24-31
+      +gt ab24-31p-siba
+    AND
+      +ab parity 48-55
+      +gt ab48-55p-siba
+    AND
+      +ab parity 56-63
+      +gt ab56-63p-siba
+ 
+; PAGE RB747
+
+-paddb bus bits 29-30 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[28]
+        AND
+          +ab bit[29]
+          OR
+            +ab bit[30..31]
+
+-ab 08-11 equal zero
+  ORNOT
+    -ab bit[8..11]
+
+-ab 64-65 odd on l2 shift
+  NOR
+    AND
+      +gt ab 32-67-paddb 30-65 l2
+      XOR
+        +ab bit[64..65]
+
+; PAGE RB751
+
+-paddb bus bits 33-34 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[32]
+        AND
+          +ab bit[33]
+          OR
+            +ab bit[34..35]
+
+-paddb bus bits 37-38 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[36]
+        AND
+          +ab bit[37]
+          OR
+            +ab bit[38..39]
+
+-paddb bus bits 41-42 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[40]
+        AND
+          +ab bit[41]
+          OR
+            +ab bit[42..43]
+
+-paddb bus bits 45-46 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[44]
+        AND
+          +ab bit[45]
+          OR
+            +ab bit[46..47]
+
+; PAGE RB753
+
+-paddb bus bits 49-50 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[48]
+        AND
+          +ab bit[49]
+          OR
+            +ab bit[50..51]
+
+-paddb bus bits 53-54 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[52]
+        AND
+          +ab bit[53]
+          OR
+            +ab bit[54..55]
+
+-paddb bus bits 57-58 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[56]
+        AND
+          +ab bit[57]
+          OR
+            +ab bit[58..59]
+
+-paddb bus bits 61-62 ex 6
+  NOR
+    AND
+      +gt ex 6-paddb 28-63
+      OR
+        +ab bit[60]
+        AND
+          +ab bit[61]
+          OR
+            +ab bit[62..63]
+
+; PAGE RB755
+
+-paddb parity 04-07
+  NOR
+    AND
+      +gt ab 04-07-paddb 04-07
+      +ab parity 00-07
+    AND
+      +gt ab06-31-pb04-29 l2
+      ORNOT
+        -shift instructions
+        -ab parity 00-07
+    AND
+      -gt ab06-31-pb04-29 l2
+      -gt ab 04-07-paddb 04-07
+
+-paddb parity 08-15
+  NOR
+    AND
+      +gt ab 08-31-paddb 08-31
+      +ab parity 08-15
+    AND
+      +gt ab06-31-pb04-29 l2
+      +ab parity 08-15
+    AND
+      -gt ab06-31-pb04-29 l2
+      -gt ab 08-31-paddb 08-31
+
+-paddb parity 16-23
+  NOR
+    AND
+      +gt ab 08-31-paddb 08-31
+      +ab parity 16-23
+    AND
+      +gt ab06-31-pb04-29 l2
+      +ab parity 16-23
+    AND
+      -gt ab06-31-pb04-29 l2
+      -gt ab 08-31-paddb 08-31
+
+-paddb parity 24-31
+  NOR
+    AND
+      +gt ab 64-67-paddb28-31
+      +ab parity 64-67
+    AND
+      +gt ab 08-31-paddb 08-31
+      +ab parity 24-31
+    AND
+      +gt ab06-31-pb04-29 l2
+      +ab parity 24-31
+    AND
+      -gt ab06-31-pb04-29 l2
+      -gt ab 08-31-paddb 08-31
+      -gt ab 64-67-paddb28-31
+
+-paddb parity 32-39
+  NOR
+    AND
+      +gt ab 00-31-paddb 32-63
+      +ab parity 00-07
+    AND
+      +gt ab 32-63-paddb 32-63
+      +ab parity 32-39
+    AND
+      +gt ab 32-67-paddb 30-65 l2
+      +ab parity 32-39
+    AND
+      +not gating a or b to-pb
+
++not gating a or b to-pb
+  NOR
+    +gt ab 00-31-paddb 32-63
+    +gt ab 32-63-paddb 32-63
+    +gt ab 32-67-paddb 30-65 l2
+
+-paddb parity 40-47
+  NOR
+    AND
+      +gt ab 00-31-paddb 32-63
+      +ab parity 08-15
+    AND
+      +gt ab 32-63-paddb 32-63
+      +ab parity 40-47
+    AND
+      +gt ab 32-67-paddb 30-65 l2
+      +ab parity 40-47
+    AND
+      +not gating a or b to-pb
+      -gt ic paddb 40-63
+      
+-paddb parity 48-55
+  NOR
+    AND
+      +gt ab 00-31-paddb 32-63
+      +ab parity 16-23
+    AND
+      +gt ab 32-63-paddb 32-63
+      +ab parity 48-55
+    AND
+      +gt ab 32-67-paddb 30-65 l2
+      +ab parity 48-55
+    AND
+      +not gating a or b to-pb
+      -gt ic paddb 40-63
+      +not gating q 04-15 etc to pb(RQ)
+
+-ind gct ab64-67-paddb28-31
+  NOT
+    +gt ab 64-67-paddb28-31
+-ind gct ab08-31-paddb08-31
+  NOT
+    +gt ab 08-31-paddb 08-31
+
+-paddb parity 56-63
+  NOR
+    AND
+      +gt ab 00-31-paddb 32-63
+      +ab parity 24-31
+    AND
+      +gt ab 32-63-paddb 32-63
+      +ab parity 56-63
+    AND
+      +gt ab 32-67-paddb 30-65 l2
+      +ab parity 56-63
+    AND
+      +gt f04-07-paddb60-63
+      +f parity 04-07(RF)
+    AND
+      +not gating a or b to-pb
+      -gt ic paddb 40-63
+      +not gating q 04-15 etc to pb(RQ)
+      +not gating e to paddb 56-63(RQ)
+      -gt hot one or f to pb
+
+-paddb parity 64-67
+  NOR
+    AND
+      +ab parity 64-67
+      +gt ab 64-67-paddb 64-67
+    AND
+      +ab parity 64-67
+      +gt ab 32-67-paddb 30-65 l2
+    AND
+      -gt ab 64-67-paddb 64-67
+      -gt ab 32-67-paddb 30-65 l2
+
+-ind gct ab64-67-paddb64-67
+  NOT
+    +gt ab 64-67-paddb 64-67
+
+; PAGE RB801
+
++ros[86..90]
+  NOT
+    -ros[86..90](EF)
+-ros[86..90]
+  -ros[86..90](EF)
+
+-gt ab-siba per abc
+  ORNOT
+    -ros[86](EF)
+    -edit f to sadd(KZ)
+
++temp gt-ab-siba-abc
+  NOT
+    -gt ab-siba per abc
+
++gt ab00-07p-siba
+  NOT
+    -temp
+      NOR
+        AND
+          +temp gt-ab-siba-abc
+          +abc incr equal[0](CW)
+          +clock p2
+        AND
+          -clock p1
+          +gt ab00-07p-siba
+          
++gt ab08-15p-siba
+  NOT
+    -temp
+      NOR
+        AND
+          +temp gt-ab-siba-abc
+          +abc incr equal[1](CW)
+          +clock p2
+        AND
+          -clock p1
+          +gt ab08-15p-siba
+
++gt ab16-23p-siba
+  NOT
+    -temp
+      NOR
+        AND
+          +temp gt-ab-siba-abc
+          +abc incr equal[2](CW)
+          +clock p2
+        AND
+          -clock p1
+          +gt ab16-23p-siba
+
++gt ab24-31p-siba
+  NOT
+    -temp
+      NOR
+        AND
+          +temp gt-ab-siba-abc
+          +abc incr equal[3](CW)
+          +clock p2
+        AND
+          -clock p1
+          +gt ab24-31p-siba
+
++gt ab32-39p-siba
+  NOT
+    -temp
+      NOR
+        AND
+          +temp gt-ab-siba-abc
+          +abc incr equal[4](CW)
+          +clock p2
+        AND
+          -clock p1
+          +gt ab32-39p-siba
+
++gt ab40-47p-siba
+  NOT
+    -temp
+      NOR
+        AND
+          +temp gt-ab-siba-abc
+          +abc incr equal[5](CW)
+          +clock p2
+        AND
+          -clock p1
+          +gt ab40-47p-siba
+
++gt ab48-55p-siba
+  NOT
+    -temp
+      NOR
+        AND
+          +temp gt-ab-siba-abc
+          +abc incr equal[6](CW)
+          +clock p2
+        AND
+          -clock p1
+          +gt ab48-55p-siba
+
++gt ab56-63p-siba
+  NOT
+    -temp
+      NOR
+        AND
+          +temp gt-ab-siba-abc
+          +abc incr equal[7](CW)
+          +clock p2
+        AND
+          -clock p1
+          +gt ab56-63p-siba
+
++gt f to siba
+  -gt ab-siba per abc
+
+; PAGE RB805
+
+DECODE
+  +temp t[0..15]
+  +ros[87..90]
+
+-ind gct ab00-31-paddb32-63
+  NOT
+    +gt ab 00-31-paddb 32-63
++gt ab 00-31-paddb 32-63
+  NOT
+    -gt ab 00-31-paddb 32-63
+-gt ab 00-31-paddb 32-63
+  NOR
+    AND
+      +temp t[8]
+      +clock p2 O not ros ck
+    AND
+      +gt ab 00-31-paddb 32-63
+      -clock p1 O not ros ck
+
+-ind gct ab04-07-paddb04-07
+  NOT
+    +gt ab 04-07-paddb 04-07
++gt ab 04-07-paddb 04-07
+  NOT
+    -gt ab 04-07-paddb 04-07
+-gt ab 04-07-paddb 04-07
+  NOR
+    AND
+      +temp t[12]
+      +clock p2 O not ros ck
+    AND
+      +gt ab 04-07-paddb 04-07
+      -clock p1 O not ros ck
+
++gt ex 6-paddb 28-63
+  NOT
+    -gt ex 6-paddb 28-63
+-gt ex 6-paddb 28-63
+  NOR
+    AND
+      +temp t[3]
+      +clock p2 O not ros ck
+    AND
+      +gt ex 6-paddb 28-63
+      -clock p1 O not ros ck
+
+-ind gct hot one-paddb 60
+  NOT
+    +gt hot one-paddb bit 60
++gt hot one-paddb bit 60
+  NOT
+    -gt hot one-paddb bit 60
+-gt hot one-paddb bit 60
+  NOR
+    AND
+      +temp t[6]
+      +clock p2 O not ros ck
+    AND
+      +gt hot one-paddb bit 60
+      -clock p1 O not ros ck
+
+-ind gct hot one-paddb 62
+  NOT
+    +gt hot one-paddb bit 62
++gt hot one-paddb bit 62
+  NOT
+    -gt hot one-paddb bit 62
+-gt hot one-paddb bit 62
+  NOR
+    AND
+      +temp t[13]
+      +clock p2 O not ros ck
+    AND
+      +gt hot one-paddb bit 62
+      -clock p1 O not ros ck
+
+-gt hot one or f to pb
+  NOR
+    +gt f04-07-paddb60-63
+    +gt hot one-paddb bit 60
+    +gt hot one-paddb bit 62
+
+-ind gct f04-07-paddb60-63
+  NOT
+    +gt f04-07-paddb60-63
++gt f04-07-paddb60-63
+  NOT
+    -gt f04-07-paddb60-63
+-gt f04-07-paddb60-63
+  NOR
+    AND
+      +temp t[4]
+      +clock p2 O not ros ck
+    AND
+      +gt f04-07-paddb60-63
+      -clock p1 O not ros ck
+
+
++gt ab 64-67-paddb28-31
+  NOT
+    -gt ab 64-67-paddb28-31
+-gt ab 64-67-paddb28-31
+  NOR
+    AND
+      OR
+        +temp t[7]
+        +temp t[15]
+      +clock p2 O not ros ck
+    AND
+      +gt ab 64-67-paddb28-31
+      -clock p1 O not ros ck
+
+-rosr 87-90 eq 0110
+  NOT
+    +gt hot one-paddb bit 60
+
+; PAGE RB807
+
+-ind gct ab32-67-paddb30-65 l2
+  NOT
+    +gt ab 32-67-paddb 30-65 l2
++gt ab 32-67-paddb 30-65 l2
+  NOT
+    -gt ab 32-67-paddb 30-65 l2
+-gt ab 32-67-paddb 30-65 l2
+  NOR
+    AND
+      OR
+        +temp t[1]
+        +temp t[5]
+      +clock p2 O not ros ck
+    AND
+      +gt ab 32-67-paddb 30-65 l2
+      -clock p1 O not ros ck
+
+-ind gct ab06-31-paddb04-29 l2
+  NOT
+    +gt ab06-31-pb04-29 l2
++gt ab06-31-pb04-29 l2
+  NOT
+    -gt ab06-31-pb04-29 l2
+-gt ab06-31-pb04-29 l2
+  NOR
+    AND
+      +temp t[5]
+      +clock p2 O not ros ck
+    AND
+      +gt ab06-31-pb04-29 l2
+      -clock p1 O not ros ck
+
+-ind gct ic-paddb40-63
+  NOT
+    +gt ic paddb 40-63
++gt ic paddb 40-63
+  NOT
+    -gt ic paddb 40-63
+-gt ic paddb 40-63
+  NOR
+    AND
+      +temp t[2]
+      +clock p2 O not ros ck
+    AND
+      +gt ic paddb 40-63
+      -clock p1 O not ros ck
+    AND
+      +ic-pb and 1-pa 60(KD)
+      +clock p2 O not ros ck
+
++gt ab 08-31-paddb 08-31
+  NOT
+    -gt ab 08-31-paddb 08-31
+-gt ab 08-31-paddb 08-31
+  NOR
+    AND
+      OR
+        +temp t[10]
+        +temp t[12]
+        +temp t[14]
+      +clock p2 O not ros ck
+    AND
+      +gt ab 08-31-paddb 08-31
+      -clock p1 O not ros ck
+
+-ind gct ab32-63-paddb32-63
+  NOT
+    +gt ab 32-63-paddb 32-63
++gt ab 32-63-paddb 32-63
+  NOT
+    -gt ab 32-63-paddb 32-63
+-gt ab 32-63-paddb 32-63
+  NOR
+    AND
+      OR
+        +temp t[11]
+        +temp t[12]
+        +temp t[14]
+        +temp t[15]
+      +clock p2 O not ros ck
+    AND
+      +gt ab 32-63-paddb 32-63
+      -clock p1 O not ros ck
+
+
++gt ab 64-67-paddb 64-67
+  NOT
+    -gt ab 64-67-paddb 64-67
+-gt ab 64-67-paddb 64-67
+  NOR
+    AND
+      OR
+        +temp t[9]
+        +temp t[12]
+        +temp t[14]
+        +temp t[15]
+      +clock p2 O not ros ck
+    AND
+      +gt ab 64-67-paddb 64-67
+      -clock p1 O not ros ck
+
+; PAGE RB815
+
++roslth 86-90 odd
+  NOT
+    -temp
+      NOR
+        AND
+          XOR
+            +ros[86..90]
+          +clock p2 O not ros ck
+        AND
+          +roslth 86-90 odd
+          -clock p1 O not ros ck
+
+; PAGE RB816
+
+-ind ros[86..90]
+  NOT
+    -temp
+      NOR
+        AND
+          -ros[86..90]
+          +clock p4
+        AND
+          -ind ros[86..90]
+          -clock p3
+
+; PAGE RB817
+
+CLOCK
+
++clock p4
+  NOT
+    -clock p3
+-clock p3
+  NOT
+    +clock p2 O not ros ck
++clock p2 O not ros ck
+  NOT
+    -clock p1 O not ros ck
+-clock p1 O not ros ck
+  NAND
+    -inhibit local clock p0(AP)
+    +clock p0
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -clock p0-1(AP)
+          
+-inhibit local clock
+  -inhibit local clock p0(AP)
+
+; PAGE RB901
+
++gt sdbo
+  NOT
+    -rst fm sdbo
+-rst fm sdbo
+  NAND
+    +clock p0
+    +temp
+      NOT
+        -gt sdbo to ab(DR)
+
+; PAGE RB903
+
++gt paddl04-07-ab04-07
+  NOT
+    -temp
+      NAND
+        +clock p0
+        +gt pal 04-07 to a 04-07(DR)
+
++gt paddl32-63-ab00-31
+  NOT
+    -temp
+      NAND
+        +clock p0
+        +gt pal 32-63 to a 00-31(DR)
+
+-rst ab00-07-fm paddl
+  NOR
+    AND
+      +clock p0
+      +gt pal 04-07 to a 04-07(DR)
+    AND
+      +clock p0
+      +gt pal 32-63 to a 00-31(DR)
+
++gt paddl08-23-ab08-23
+  NOT
+    -temp
+      NAND
+        +clock p0
+        +gt pal 08-23 to a 08-23(DR)
+
+-rst ab08-23-fm paddl
+  NOR
+    AND
+      +clock p0
+      +gt pal 08-23 to a 08-23(DR)
+    AND
+      +clock p0
+      +gt pal 32-63 to a 00-31(DR)
+
++gt paddl24-31-ab24-31
+  NOT
+    -temp
+      NAND
+        +clock p0
+        +gt pal 24-31 to a 24-31(DR)
+
+-rst ab24-31-fm paddl
+  NOR
+    AND
+      +clock p0
+      +gt pal 24-31 to a 24-31(DR)
+    AND
+      +clock p0
+      +gt pal 32-63 to a 00-31(DR)
+
++gt paddl32-63-ab32-63
+  NOT
+    -rst ab32-63-fm paddl
+-rst ab32-63-fm paddl
+  NOR
+    AND
+      +clock p0
+      +gt pal 32-63 to b 32-63(DR)
+
++scan in word 5
+  NOT
+    -temp
+      NAND
+        +temp
+          NOT
+            -scan in word[5](KU)
+        +clock p2
+
+-rst ab64-67-fm paddl28-31
+  NOR
+    AND
+      +temp
+        NOT
+          -scan in word[5](KU)
+      +clock p2
+    AND
+      +clock p0
+      +gt pal 28-31 to b 64-67(DR)
+
++gt paddl28-31-ab64-67
+  NOT
+    -temp
+      NAND
+        +clock p0
+        +gt pal 28-31 to b 64-67(DR)
+
++gt paddl64-67-ab64-67
+  NOT
+    -rst ab64-67-fm paddl
+-rst ab64-67-fm paddl
+  NAND
+    +clock p0
+    +gt pal 64-67 to b 64-67(DR)

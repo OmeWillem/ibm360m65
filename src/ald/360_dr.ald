@@ -1,0 +1,1708 @@
+SECTION DR
+;Page DR011
+
+CLOCK
+
+DECODE
+  +temp dr011 w lth[0..15]
+  +ros data lth bit[2..5](RY)
+
+DECODE
+  +temp dr011 w reg[0..15]
+  +ros reg bit[2..5](RY)
+
+;W0 - noop
+
+;W1 13->adr-sqcr
+-set addr seqr to 13
+  NOT
+    AND
+      -ros test
+      +temp dr011 w lth[1]
+
+;W2 LMT1
++set limit lth if no 32+48 cry
+  +temp dr011 w lth[2];
+
+;W3 LMT2
++set limit lth if 32+48 cry
+  +temp dr011 w lth[3];
+
+;W4 sample value
++sample value
+  +temp dr011 w lth[4];
+
+;W5 MS -> LM
+-sdbo 00-36 to lm 00-63
+  NOT
+    +temp dr011 w reg[5]
+
+;W9 LOAD-REG - 9020
+
+;W10 N0->V
+-gt n00-07 to n bus 00-07
+  NOT
+    +temp dr011 w reg[10]
+
+;W11 R GREG
+-select g reg
+  NOT
+    +temp dr011 w reg[11]
+
+;W12 R EXTBUS
+-select ext bus
+  NOT
+    +temp dr011 w reg[12]
+
+;W13 GEN-BUS-PAR
+-gen l s buss parity
+  NOT
+    +temp dr011 w lth[13]
+
+;W14 N1->V
+-gt n08-15 to n bus 00-07
+  NOT
+    +temp dr011 w reg[14]
+
+;W15 T->M
+-gt t reg to m reg
+  NOT
+    +temp dr011 w reg[15]
+
+NOCLOCK
+
+; PAGE DR015
+
++limit latch on
+  NOT
+    -temp
+      NOR
+        AND
+          +set limit lth if 32+48 cry
+          +temp
+            ORNOT
+              -temp dr015 2b af not
+              -temp dr015 2c am not
+          +clock p0(RY)
+        AND
+          +clock p0(RY)
+          +temp
+            NOT
+              -temp
+                NOR
+                  AND
+                    -temp dr015 2b af not
+                    -temp
+                      NOT
+                        +temp dr015 2f cd ornot
+                  AND
+                    -temp dr015 2c am not
+                    -temp
+                      NOT
+                        +temp dr015 2h cg ornot
+          +set limit lth if no 32+48 cry
+        AND
+          -machine reset(KS)
+          -temp
+            NAND
+              +clock p0-2(RY)
+              +set limit lth if no 32+48 cry
+          +limit latch on
+-temp dr015 2b af not
+  NOT
+    +pal carry into bit[31](AP)
+-temp dr015 2c am not
+  NOT
+    +pal carry into bit[47](AP)
++temp dr015 2f cd ornot
+  ORNOT
+    -temp
+      NOT
+        +t reg bit 32(DS)
+    -temp
+      NAND
+        +temp dr015 2f cd ornot
+        +set limit lth if no 32+48 cry
++temp dr015 2h cg ornot
+  ORNOT
+    -t reg bit 48(RS_RT)
+    -temp
+      NAND
+        +temp dr015 2h cg ornot
+        +set limit lth if no 32+48 cry
+-ros test
+  NOT
+    +ros test
+
+; 9020
+
+;PAGE DR021
+
+CLOCK
+
+DECODE
+  +temp a[0..15]
+  +ros data lth bit[6..9](RY)
+
++gt pal 32-63 to b 32-63
+  NOT
+    -gt pal 32-63 to b 32-63
+-gt pal 32-63 to b 32-63
+  NOR
+    AND
+      OR
+        +temp a[4]
+        +temp a[6]
+        +temp a[12]
+        +temp a[14]
+      -inhibit ingating
+    AND
+      OR
+        +temp a[1]
+        +temp a[2]
+        +temp a[3]
+        +temp a[5]
+        +temp a[6]
+        +temp a[7]
+
++gt pal 40-63 to ic
+  NOT
+    -gt pal 40-63 to ic
+-gt pal 40-63 to ic
+  NOR
+    AND
+      +temp
+        NOT
+          -i fetch 2 lth bus(KD)
+      -except cond to i fetch(KM)
+      -i fetch 1 lth
+    AND
+      OR
+        +temp a[2]
+        +temp a[10]
+
++gt pal 32-63 to a 00-31
+  NOT
+    -temp
+      NAND
+        OR
+          +temp a[3]
+          +temp a[11]
+
++gt pal 08-23 to a 08-23
+  NOT
+    -temp
+      NOR
+        AND
+          OR
+            +temp a[14]
+            +temp a[15]
+          -inhibit ingating
+        AND
+          OR
+            +temp a[4]
+            +temp a[5]
+          -inhibit ingating
+
++gt pal 24-31 to a 24-31
+  NOT
+    -temp
+      NOR
+        AND
+          OR
+            +temp a[4]
+            +temp a[5]
+            +temp a[6]
+            +temp a[7]
+          -inhibit ingating
+        AND
+          +temp a[5]
+
++gt pal 64-67 to b 64-67
+  NOT
+    -temp
+      NOR
+        AND
+          OR
+            +temp a[6]
+            +temp a[7]
+        AND
+          -inhibit ingating
+          OR
+            +temp a[6]
+            +temp a[7]
+            +temp a[14]
+            +temp a[15]
+        AND
+          OR
+            +temp a[5]
+            +temp a[13]
+          -inhibit ingating
+
++gt pal 28-31 to b 64-67
+  NOT
+    -temp
+      NAND
+        OR
+          +temp a[8]
+          +temp a[12]
+
+-gt m1m2 to pal b 64-65
+  NAND
+    +temp a[7]
+
++gt pal 04-07 to a 04-07
+  NOT
+    -temp
+      NAND
+        +temp a[6]
+
+-gt sdbo to ab
+  NAND
+    +temp a[9]
+
+-rosl decode pal to ic
+  NAND
+    OR
+      +temp a[2]
+      +temp a[10]
+
+-exceptional cond to i fetch
+  -except cond to i fetch(KM)
+
++gt ls to t 32-63
+  NOT 
+    -ros data lth bit[10](RY)
++gt ls to s 00-31
+  NOT
+    -ros data lth bit[11](RY)
+
+; PAGE DR031
+
+DECODE
+  +temp c[0..31]
+  +ros data lth bit[12..16](RY)
+
+;C3 and C28
+-gt s 00-07 to psw sys mask
+  NOR
+    +temp c[3]
+    +temp c[28]
+;C21
+-gt i fetch memory
+  NOT
+    +temp c[21]
+;C22
+-gt sal 00-07 to g 00-07
+  NOT
+    +temp c[22]
+
+;C23
+-gt lm to n O q to r Xic21-22
+  NOT
+    +temp c[23]
+
+;C18
++gt data keys to st
+  NOT
+    -temp
+      NOT
+        +temp c[18]
+
+; C19
+-gt t 32-38 54-63 to mcw
+  NOT
+    +temp c[19]
+
+;C3 + C17
+-gt t 32-39 to psw prog mask
+  NOR
+    +temp c[3]
+    +temp c[17]
+
+;C1 + C20 + C21
+-gt sdbo to q 00-63
+  NOR
+    AND
+      +temp c[20]
+      -temp
+        NOT
+          +bocOcond not metOexc tgr(KD)
+    AND
+      +temp c[21]
+      +rosar bit 10 lth
+    AND
+      +temp c[1]
+      -temp
+        NOT
+          +temp
+            NOT
+              -block pstr gt sdbo to q(KD)
+
+;C7, C12, C13, C15
++gt pal 40-63 to d00-23
+  NOT
+    -gt pal 40-63 to d
+-gt pal 40-63 to d
+  NOR
+    AND
+      OR
+        +temp c[7]
+        +temp c[15]
+      -block i fetch tgr
+    +temp c[12]
+    +temp c[13]
+
+;C3
+-early decode st08-15 to psw
+  NAND
+    -ros reg bit[12](RY)
+    -ros reg bit[13](RY)
+    -ros reg bit[14](RY)
+    +ros reg bit[15](RY)
+    +ros reg bit[16](RY)
+
+;C31
+-gt sal00-07 to n 08-15
+  NAND
+    +temp c[31]
+      
+;C4-7, C21
++gt pal 32-63 to t 32-63
+  ORNOT
+    -temp
+      NOR
+        +temp c[21]
+        AND
+          OR
+            +temp c[4]
+            +temp c[5]
+            +temp c[6]
+            +temp c[7]
+          -inhibit ingating
+    -gt pal 08-63 to dt
+
+; C12, C14, C24, C25
++gt sal to st per stc
+  NOT
+    -temp
+      NOR
+        +temp c[12]
+        +temp c[14]
+        AND
+          OR
+            +temp c[24]
+            +temp c[25]
+          -inhibit ingating
+
+; PAGE DR041
+
+; C1
+
++psw to s 00-15 t 32-39
+  NOT
+    -temp
+      NAND
+        +temp c[1]
+
+; C2
++gt old psw to s 16-31
+  NOT
+    -temp
+      NAND
+        +temp c[2]
+
+; C3
+-gt st 00-39 to psw
+  NAND
+    +temp c[3]
+
+;C11
++gt adr keys to d 00-23
+  NOT
+    -temp
+      NAND
+        +temp c[11]
+
+;C6
+-gt sal 00-07 to t 32-39
+  NAND
+    +temp c[6]
+
+;C30
++gt pal 32-63 to k 00-31
+  NOT
+    -temp
+      NAND
+        +temp c[30]
+
+;C9, C29
+-gt sdbo 00-31 to s 00-31
+  NOR
+    +temp c[29]
+    +temp c[9]
+
+; C8, C9, C26
+-gt sdbo 32-63 to t 32-63
+  NOR
+    +temp c[8]
+    +temp c[9]
+    AND
+      +temp c[26]
+      -d 21 eq 0
+
+; C10, C26
++gt sdbo 00-31 to t 32-63
+  ORNOT
+    -temp
+      NAND
+        +temp c[26]
+        -d 21 eq 1
+    -temp
+      NAND
+        +temp c[10]
+
+;C5, C24, C25
++gt pal 08-31 to d
+  NOT
+    -gt pal 08-63 to dt
+-gt pal 08-63 to dt
+  NOR
+    AND
+      +temp c[5]
+      -inhibit ingating
+    AND
+      OR
+        +temp c[24]
+        +temp c[25]
+      -inhibit ingating
+
+; PAGE DR051
+
+DECODE
+  +temp d r[0..7]
+  +ros reg bit[17..19](RY)
+
+DECODE
+  +temp d l[0..7]
+  +ros data lth bit[17..19](RY)
+
+;D1
+-rosr decode norm eop ah4
+  NAND
+    +temp d r[1]
+    -scan blk fields rosr
+-rosr decode norm eop bv4
+  NAND
+    +temp d r[1]
+    -scan mode tgr
+-ros decode normal end op bus
+  NAND
+    -scan blk field 17-19 rosl
+    +temp d l[1]
+    
+;D1, D3
+-rosr norm or branch eop  
+  NAND
+    OR
+      +temp d r[1]
+      +temp d r[3]
+    -scan blk fields rosr
+-rosr norm+branch eop
+  NAND
+    OR
+      +temp d r[1]
+      +temp d r[3]
+    -scan blk fields rosr
+    -temp dr051 2a bs not
++rosl decode normal or br eop
+  NOT
+    -temp
+      NAND
+        -scan blk field 17-19 rosl
+        OR
+          +temp d l[1]
+          +temp d l[3]
+-rosl decode normal + br eop
+  NAND
+    -scan blk field 17-19 rosl
+    OR
+      +temp d l[1]
+      +temp d l[3]
+    -temp dr051 2a bs not
+-eop reset
+  NAND
+    OR
+      +temp d l[1]
+      +temp d l[3]
+    -temp dr051 2a bs not
+-temp dr051 2a bs not
+  NOT
+    +inh normal or branch eop(DS)
+
+;D2
+-rosr early end op  
+  NAND
+    +temp d r[2]
+    -scan blk fields rosr
+-ros decode early end op
+  NAND
+    -scan blk field 17-19 rosl
+    +temp d l[2]
+
+;D3
+-ros decode branch end op
+  NAND
+    -scan blk field 17-19 rosl
+    +temp d l[3]
+-rosr decode branch eop ak4 
+  NAND
+    +temp d r[3]
+    -scan blk fields rosr
+-rosr decode branch eop bw4
+  NAND
+    +temp d r[3]
+    -scan mode tgr
+
+;D4
+-gt direct data to f00-07
+  NAND
+    -scan blk field 17-19 rosl
+    +temp d l[4]
+ 
+;D5, D7
+-gt sal 00-03 to f 00-03
+  NAND
+    OR
+      +temp d l[5]
+      +temp d l[7]
+    -scan blk field 17-19 rosl
+    -inhibit ingating
+
+;D6, D7
+-gt sal 04-07 to f 04-07
+  NAND
+    OR
+      +temp d l[6]
+      +temp d l[7]
+    -scan blk field 17-19 rosl
+    -inhibit ingating
+    
+    
+
+DECODE
+  +temp dr051 e r[0..15]
+  +ros reg bit[21..24](RY)
+  -block e field reg decodes(RY)
+
+;!E0
++gt emit to sibb
+  OR
+    +ros reg bit[21..24](RY)
+    
+;E1
+-e 08-11+1 to e 08-11
+  NAND
+    +temp dr051 e r[1]
+
+;E2
+-e 12-15+1 to e 12-15
+  NAND
+    +temp dr051 e r[2]
+
+;E4, E5
+-e 08-11 -1 to e 08-11
+  NAND
+    OR
+      +temp dr051 e r[4]
+      +temp dr051 e r[5]
+
+;E4, E6
+-e 12-15 -1 to e 12-15
+  NAND
+    OR
+      +temp dr051 e r[4]
+      +temp dr051 e r[6]
+
+;E7
+-e 08-15 -1 to e 08-15
+  NAND
+    +temp dr051 e r[7]
+
+;E8
+-constant to e 12-15
+  NAND
+    +temp dr051 e r[8]
+
+;E9
+-d 18-21 to e 12-15
+  NAND
+    +temp dr051 e r[9]
+
+; PAGE DR061
+-ic 21-22 eq 00
+  -ic 21-22 eq 00 bus(KD)
++ic 21-22 eq 00
+  NOT
+    -ic 21-22 eq 00 bus(KD)
++ic 21-22 eq 01
+  NOT
+    -ic 21-22 eq 01(KD)
+-ic 21-22 eq 01
+  -ic 21-22 eq 01(KD)
++reset ascOexc on bxh+bxle
+  ANDNOT
+    -rosar bit 10 lth
+    -gt i fetch memory
+-d 21 eq 0
+  NOT
+    -d 21 eq 1
+-d 21 eq 1
+  NOT
+    +d bit[21](RD)
+-d 22 eq 0
+  NOT
+    -d 22 eq 1
+-d 22 eq 1
+  NOT
+    +d bit[22](RD)
++d bus[21..22]
+  +d bit[21..22](RD)
+-d 21-22 eq 10
+  NOT
+    +temp
+      ANDNOT
+        -d 21 eq 1
+        -d 22 eq 0
+-d 21-22 eq 01
+  NOT
+    +temp
+      ANDNOT
+        -d 21 eq 0
+        -d 22 eq 1
++i fetch 1 lth
+  NOT
+    -i fetch 1 lth
+-i fetch 1 lth
+  NOT
+    +i fetch 1 lth bus(KD)
+-block i fetch tgr
+  NOT
+    +block i fetch tgr bus(KD)
++block i fetch tgr
+  +block i fetch tgr bus(KD)
++i fetch 3 lth
+  NOT
+    -i fetch 3 lth bus(KD)
++ic 21-22 eq 11
+  NOT
+    -ic 21-22 eq 11(KD)
+-ic 21-22 eq 11
+  -ic 21-22 eq 11(KD)
++ic 21-22 eq 10
+  NOT
+    -ic 21-22 eq 10(KD)
+-ic 21-22 eq 10
+  -ic 21-22 eq 10(KD)
+
+; PAGE DR071
+
+DECODE
+  +temp dr071 e l[0..15]
+  +ros data lth bit[21..24](RY)
+  -block e field lth decodes(RY)
+
+;E12
++gt q 00-15 to r 00-15
+  NOT
+    -temp
+      NOR
+        AND
+          +temp dr071 e l[12]
+          -block i fetch tgr
+        AND
+          +temp q to r per d
+          -d 21 eq 1
+          -d 22 eq 1
+        AND
+          +i fetch 1 lth
+          +i fetch 3 lth
+          +ic 21-22 eq 00
+        AND
+          +temp gt lm to n O q to r Xic21-22
+          +ic 21-22 eq 00
++temp gt lm to n O q to r Xic21-22
+  NOT
+    -gt lm to n O q to r Xic21-22
++temp q to r per d
+  ANDNOT
+    AND
+      -rosar bit 10 lth
+      -temp dr071 2m ak not
+    AND
+      -temp dr071 2m ak not
+      -gt i fetch memory
+-temp dr071 2m ak not
+  NOT
+    +gt q reg to r per d  
+
+;E13
++gt q 16-31 to r 00-15
+  NOT
+    -temp
+      NOR
+        AND
+          +temp dr071 e l[13]
+          -block i fetch tgr
+        AND
+          +temp q to r per d
+          -d 21 eq 1
+          -d 22 eq 0
+        AND
+          +temp gt lm to n O q to r Xic21-22
+          +ic 21-22 eq 01
+
+;E14
++gt q 32-47 to r 00-15
+  NOT
+    -temp
+      NOR
+        AND
+          +temp dr071 e l[14]
+          -block i fetch tgr
+        AND
+          +temp q to r per d
+          -d 21 eq 0
+          -d 22 eq 1
+        AND
+          +temp gt lm to n O q to r Xic21-22
+          +ic 21-22 eq 10
+
+;E15
++gt q 48-63 to r 00-15
+  NOT
+    -temp
+      NOR
+        AND
+          +temp dr071 e l[15]
+          -block i fetch tgr
+        AND
+          +temp q to r per d
+          -d 21 eq 0
+          -d 22 eq 0
+        AND
+          +temp gt lm to n O q to r Xic21-22
+          +ic 21-22 eq 11
+
+;E10
+
++gt r 00-15 to e 00-15
+  NOT
+    -gt r 00-15 to e 00-15
+-gt r 00-15 to e 00-15
+  NAND
+    +temp dr071 e l[10]
+
+;E3
+-gt pal 56-63 to e 08-15
+  NAND
+    +temp dr071 e l[3]
+
+;E11
++gt pal 56-63 to r 08-15
+  NOT
+    -temp
+      NAND
+        +temp dr071 e l[11]
+
+;PAGE DR081
+
+-temp dr081 2b al not
+  NOT
+    +scan control field 25-30 ros
+
+-temp dr081 1n dk not
+  NOT
+    +scan blk field 25-30 rosr
+
+DECODE
+  +temp dr081 f l[0..63]
+  +ros data lth bit[25..30](RY)
+  -temp dr081 2b al not
+
+DECODE
+  +temp dr081 f r[0..63]
+  +ros reg bit[25..30](RY)
+  -temp dr081 1n dk not
+
+-rosr code bits 25-30 eq 000001
+  NOT
+    +temp dr081 f r[1]
+
+-rosr code bits 28 29 eq 10
+  NAND
+    +ros reg bit[28](RY)
+    -ros reg bit[29](RY)
+
+;PAGE DR091
+
+; F16
++set addr on spec interrupt
+  +temp dr081 f l[16]
+; F17
++set tcl if not pal carry
+  +temp dr081 f l[17]
+; F18
++set divide ck or significance
+  +temp dr081 f l[18]
+; F19
+-set invalid op interrupt
+  NOT
+    +temp dr081 f l[19]
+; F20
++ros set supr call+data intr
+  +temp dr081 f l[20]
+; F21
++set ovflo undflo
+  +temp dr081 f l[21]
+; F22
++set staa pal eq 0 insrt sign
+  +temp dr081 f l[22]
+-gt staa to insrt sign
+  NOT
+    +set staa pal eq 0 insrt sign
+; F41
++set scan mode tgr
+  +temp dr081 f l[41]
+;F42
+; CAVA HACK - delay
++set execute tgr
+  NOT
+    -temp
+      NOT
+        +temp dr081 f l[42]
+;F43
+-pal 61-63 to stc
+  NOT
+    +temp dr081 f l[43]
+;F44
++rst stop stop loop tgrs
+  +temp dr081 f l[44]
+; F45
++reset stag
+  +temp dr081 f l[45]
+;F46
+-pal 61-63 to abc
+  NOT
+    +temp dr081 f l[46]
+;F47
+-d 21-23 to stc
+  NOT
+    +temp dr081 f l[47]
+
+;PAGE DR101
+
+;F1
++lth i-fetch reset
+  NOT
+    -lth i fetch rst
+-lth i fetch rst
+  NOT
+    +lth i fetch rst
++lth i fetch rst
+  AND
+    +temp dr081 f l[1]
+    -block i fetch tgr
+;F2
++set signs
+  +temp dr081 f l[2]
+;F3
++set staa if pal 32-63 eq 0
+  +temp dr081 f l[3]
+;F4
++rst staa pal 32-63 not eq 0
+  +temp dr081 f l[4]
+;F5
++set stab if sa 0-7 eq 0
+  +temp dr081 f l[5]
+;F6
++save signs
+  +temp dr081 f l[6]
+;F7
++set stop loop tgr
+  +temp dr081 f l[7]
+
+;F48, F50
+-stc-1 to stc
+  NOR
+    +temp dr081 f r[48]
+    +temp dr081 f r[50]
+;F49
++abc-1 to abc
+  OR
+    +temp dr081 f r[48]
+    +temp dr081 f r[49]
+;F51
+++000 to stc
+  +temp dr081 f r[51]
+;F52, F54
++stc+1 to stc
+  OR
+    +temp dr081 f r[52]
+    +temp dr081 f r[54]
+;F53
+-abc+1 to abc
+  NOR
+    +temp dr081 f r[52]
+    +temp dr081 f r[53]
+;F55
+-+011 to stc
+  NOT
+    +temp dr081 f r[55]
+
+; PAGE DR111
+
++ros reg decode i fetch rst
+  +temp dr081 f r[1]
++reset stad
+  +temp dr081 f r[8]
++set stad
+  +temp dr081 f r[9]
++inh reg ingating if a07 eq 0
+  +temp dr081 f r[10]
++inh reg ingate a8-11 not eq 0
+  +temp dr081 f r[11]
++mpy term select
+  +temp dr081 f r[12]
+-ic 21-23 to abc
+  NOT
+    +temp dr081 f r[14]
+-+000 to abc
+  NOT
+    +temp dr081 f r[15]
+-l2 to stc
+  NOR
+    +temp dr081 f r[56]
+    +temp dr081 f r[58]
+-l2 to abc
+  NOT
+    +temp dr081 f r[57]
+-+1 to stc bit 0
+  NOT
+    +temp dr081 f r[59]
++edit decode
+  +temp dr081 f r[60]
+
+; PAGE DR121
+
++set asc if pal eq or gtr 0
+  +temp dr081 f l[24]
++reset int tgr
+  +temp dr081 f l[25]
++set asc per address stor com
+  +temp dr081 f l[26]
++reset asc exec tgr
+  +temp dr081 f l[27]
++reset tcs tgr
+  +temp dr081 f l[28]
++set timing gate tgr
+  +temp dr081 f l[29]
++reset timing gate tgr
+  +temp dr081 f l[30]
++inh sadd p check
+  +temp dr081 f l[31]
++stac to staf
+  +temp dr081 f l[36]
++gt i fetch invalid addr
+  +temp dr081 f l[38]
++set stab if pal 31
+  +temp dr081 f l[39]
++insert result sign
+  ORNOT
+    -temp
+      NOT
+        +temp dr081 f l[40]
+    -gt staa to insrt sign
+
++rosr set condition reg
+  +temp dr081 f r[63]
+
+; PAGE DR125
+
++set mach ckOpsw 29 on rdd t o
+  +temp dr081 f r[13]
+
++set ic cry if 512 cry
+  +temp dr081 f l[23]
+
+
++set condition code
+  OR
+    +temp dr081 f r[32]
+    +temp dr081 f r[33]
+    +temp dr081 f r[34]
+    +temp dr081 f r[35]
+
++set condition code 01
+  OR
+    +temp dr081 f r[33]
+    +temp dr081 f r[35]
+
++set condition code 10
+  OR
+    +temp dr081 f r[34]
+    +temp dr081 f r[35]
+
++set d cry if 512 cry
+  +temp dr081 f l[37]
+
+-stc+1 to stc
+  NOR
+    +stc+1 to stc
+    +temp dr081 f r[61]
+
+
+-abc-1 to abc
+  NOR
+    +abc-1 to abc
+    +temp dr081 f r[61]
+
+; PAGE DR131
+
+;CAVA HACK delay by 1 clock
+
++temp dr131 g l[0..31]
+  TD10NS
+    +temp temp dr131 g l[0..31]
+DECODE
+  +temp temp dr131 g l[0..31]
+  +ros data lth bit[31..35](RY)
+  -scan blk field 31-35 rosl
+
+DECODE
+  +temp dr131 g r[0..31]
+  +ros reg bit[31..35](RY)
+  -scan blk fields rosr
+
++set stag
+  +temp dr131 g l[8]
++gt q reg to r per d
+  +temp dr131 g l[9]
++set stah
+  +temp dr131 g l[13]
++set stab on left shift ovflo
+  +temp dr131 g l[14]
+
+; Hack - delay signal by 2 clocks to keep it from interfering in i-fetch
+
++rst asc if pal eq or gtr 0
+  NOT
+    -temp
+      NOT
+        +temp dr131 g l[15]
++dvd mpl sel l0-ins
+  +temp dr131 g l[20]
++dvd mpl sel l1-ins
+  +temp dr131 g l[21]
++rosr ton inst mem fetch req
+  +temp dr131 g r[22]
++rosl ton inst mem fetch req
+  +temp dr131 g l[22]
++rst branch invalid addr
+  +temp dr131 g l[23]
++sample ss inval addr
+  AND
+    +temp dr131 g l[24]
+    -ros test
++ros lth decode test and set
+  AND
+    +temp dr131 g l[31]
+    -ros test
+
+; PAGE DR141
+
++set staa if sal00-07 not eq 0
+  +temp
+    NOT
+      -temp
+        NOT
+          +temp dr131 g l[1]
++set staa if pal07-63 eq 0
+  +temp dr131 g l[2]
++gate fxp ovflo to stab
+  +temp dr131 g l[3]
++reset serial carry to stah
+  +temp dr131 g l[5]
++rosl decode sbdov
+  +temp dr131 g l[6]
++b32 to stab and t32 to stag
+  +temp dr131 g l[7]
+;G16-19
+; HACK: make this signal arrive one clock earlier to be in sync with set ic[21..22]
++set ic 21-22
+  ANDNOT
+    NAND
+      +ros data lth bit[31](RY)
+      -ros data lth bit[32](RY)
+      -ros data lth bit[33](RY)
+      -scan blk field 31-35 rosl
+    NAND
+      -block i fetch tgr
+      -temp
+        NOT
+          +execute in progress tgrs(RW)
++rosr dvd mpl sel l0 ins
+  +temp dr131 g r[20]
++rosr dvd mpl sel l1 ins
+  +temp dr131 g r[21]
++inhibit stor protect
+  AND
+    +temp dr131 g l[25]
+    -ros test
++set key
+  AND
+    +temp dr131 g l[26]
+    -ros test
+    -flt inhibit storage field
++set d on set or insert key
+  AND
+    -ros test
+    OR
+      +temp dr131 g l[25]
+      AND
+        +temp dr131 g l[26]
+        -flt inhibit storage field
++insert key
+  AND
+    +temp dr131 g l[27]
+    -ros test
++sel multiple per e12-15
+  +temp dr131 g r[30]
+
+; PAGE DR 151
+
++se def to f reg
+  +temp dr131 g l[4]    
++set interrupt gate tgr
+  +temp dr131 g l[10]    
++reset interrupt gate tgr
+  +temp dr131 g l[11]
++ce id f reg bits 06-07    
+  +temp dr131 g l[28]    
++pir to f reg bits 04-06
+  +temp dr131 g l[29]  
+
+NOCLOCK
+
++rosar bit 10 lth
+  NOT
+    -rosar bit 10 lth
+-rosar bit 10 lth
+  NOR
+    AND
+      -clock p0-1 ry015(RY)
+      +temp dr151 3k bk not
+    AND
+      +temp dr151 3k bk not
+      +rosar bit 10 lth
++temp dr151 3k bk not
+  NOT
+    -rosar[10](RX)
+ 
+; PAGE DR161
+
+; lots of 9020 specifics
+
+CLOCK
+
+DECODE
+  +temp h[0..127]
+  +ros reg bit[36..42](RY)
+
+;H26, H27
+-read + write lswr
+  NAND
+    OR
+      +temp h[26]
+      +temp h[27]
+
+-ros fld 38-42 gt 1 to lal 0
+  NOR
+    +temp h[8..11]
+    +temp h[16..17]
+    +temp h[24]
+    +temp h[26..27]
+
+-ros field 38-42 eq 1100x
+  NAND
+    +ros reg bits 37-40 0xx0(RY)
+    +ros reg bit[38](RY)
+    +ros reg bit[39](RY)
+    -ros reg bit[41](RY)
+
++ros reg to lal[0..4]
+  NOT
+    -ros reg bit[38..42](RY)
+
+-ros fld 37-42 eq 001xxx
+  NAND
+    +ros reg bits 37O38 00(RY)
+    +ros reg bit[39](RY)
+-ros fld 36-42 eq 0010xxx
+  NAND
+    -ros reg bit[36](RY)
+    +ros reg bits 37-39 0x0(RY)
+    +ros reg bit[38](RY)
+
++gt e11 to lal 0
+  NOT
+    -temp
+      NOR
+        +temp h[19]
+        +temp h[23]
+
+-gt 1 to lal 4
+  NOR
+    +temp h[8..9]
+    +temp h[12..13]
+    +temp h[16]
+    +temp h[18]
+
+; PAGE DR171
+
+; H1
+-select ext reg
+  NOR
+    +temp h[1]
+    +temp h[65]
+
+-write ext reg
+  NAND
+    +write 9020 reg(RY)
+    +temp
+      NOT
+        -select ext reg
+
+NOCLOCK
++write into ls
+  +write local store
++write local store
+  NOT
+    -temp dr171 6e au nor
+-temp dr171 6e au nor
+  NOR
+    AND
+      -temp dr171 7b ch nor
+      -single prec and not mult(DN)
+      +temp h[9]
+    AND
+      -temp dr171 7b ch nor
+      OR
+        +temp h[11]
+        +temp h[13]
+        +temp h[15]
+        +temp h[19]
+        +temp h[27]
+        +temp h[96..127]
+    AND
+      +write local store
+      +clock p0(RY)
+
+CLOCK
+
+-temp dr171 7b ch nor
+  NOR
+    +inhibit local stor write(RX)   
+    +clock p0(RY)       
+-ros field 38-42 eq[4..7]
+  NOT
+    +temp h[4..7]
+
+-gate ros reg 38-42 to lal
+  NOT
+    +ros reg bit[37](RY)
+
+; PAGE DR181
+
+DECODE
+  +temp ros 43-46[0..15]
+  +roslth bit[43..46]
+
+-+3 cycle access
+  AND
+    NAND
+      +d 21 O 22 eq 11(DS)
+      OR
+        +temp ros 43-46[8]
+        +temp ros 43-46[12]
+    NAND
+      -flt inhibit storage field
+      -block i fetch tgr
+      OR
+        +temp ros 43-46[8]
+        +temp ros 43-46[10]
+
+NOCLOCK
+
+-roslth bit[43..46]
+  -ros sense lth bit[43..46](EF)
++roslth bit[43..46]
+  NOT
+    -ros sense lth bit[43..46](EF)
+-req logout of storage
+  NAND
+    -flt inhibit storage field
+    +temp ros 43-46[3]
+
+CLOCK
+
++sample stop clock triggers
+  ANDNOT
+    +roslth bit[43]
+    +roslth bit[44]
+    -clock p1 to bcu(KC)
+
+-flt inhibit storage field
+  NOT
+    +flt inhibit storage field(KU)
++flt inhibit storage field
+  +flt inhibit storage field(KU)
++turn i fetch request tgr
+  NOT
+    -ic request storage
+-ic request storage
+  NAND
+    OR
+      +temp ros 43-46[12]
+      +temp ros 43-46[14]
+    +d 21 O 22 eq 11(DS)
+    -flt inhibit storage field
+-d req storage
+  NAND
+    OR
+      +temp ros 43-46[10]
+      +temp ros 43-46[11]
+    -flt inhibit storage field
+-scan req storage
+  NAND    
+    +temp ros 43-46[13]
+    -ros test
+-ic req storage
+  NAND
+    -flt inhibit storage field
+    OR
+      +temp ros 43-46[8]
+      +temp ros 43-46[9]
+
+; PAGE DR185
+
+-set marks 4-7
+  NAND
+    -flt inhibit storage field
+    +temp ros 43-46[4]
+
+-store on d request
+  NAND
+    -reset store tgr(CT)
+    +store on d request
++store on d request
+  ANDNOT
+    AND
+      -clock p1(RX)
+      -temp
+        NOT
+          +scan set marks(CT)
+      -store on d request
+    AND
+      -set marks 0-3
+      -set marks per pal 61
+      -set marks per stc
+      -store on d request
+      -temp
+        NOT
+          +scan set marks(CT)
+-ros bit[43..46]
+  -roslth bit[43..46]
+-set marks 0-3
+  NAND
+    OR
+      +temp ros 43-46[4]
+      +temp ros 43-46[5]
+    -flt inhibit storage field
+-set marks per stc
+  NAND
+    +temp ros 43-46[6]
+    -temp dr185 4g db and
+-temp dr185 4g db and
+  NOR
+    AND
+      +dec compare(KS)
+      +lth i-fetch reset
+    AND
+      -manual trigger(KW)
+      -eop reset
+      -mach reset O not log reset
+      +temp
+        NOT
+          -temp dr185 4g db and
+    +flt inhibit storage field
+-set marks per pal 61
+  NAND
+    -flt inhibit storage field
+    +temp ros 43-46[7]
+
+; PAGE DR191
++set ic[21..22]
+  NOT
+    -ros data lth bit[34..35](RY)
+-adj parity ic 16-23
+  NOT
+    +temp dr191 6d ca not
++temp dr191 6d ca not
+  NOT
+    -temp dr191 5d bl nor
+-temp dr191 5d bl nor
+  NOR
+    AND
+      -ros data lth bit[34](RY)
+      -ros data lth bit[35](RY)
+      +temp dr191 3d ac not
+      -temp dr191 6e cb nand
+    AND
+      +ros data lth bit[34](RY)
+      -ros data lth bit[35](RY)
+      -temp dr191 2d ab not
+      -temp dr191 6e cb nand
+    AND
+      -ros data lth bit[34](RY)
+      +ros data lth bit[35](RY)
+      -temp dr191 2d ab not
+      -temp dr191 6e cb nand
+    AND
+      +ros data lth bit[34](RY)
+      +ros data lth bit[35](RY)
+      +temp dr191 3d ac not
+      -temp dr191 6e cb nand
+    AND
+      +clock p0 forced(RY)
+      +temp dr191 6d ca not          
++temp dr191 3d ac not
+  NOT
+    -temp dr191 2d ab not
+-temp dr191 2d ab not
+  NOT
+    +par adjust ic 16-20O23(CA)
+-temp dr191 6e cb nand
+  NAND
+    -temp dr191 5d bl nor
+    +clock p0 forced(RY)
+
+-ind roslth[43..46]
+  NOT
+    +temp dr191 6g dx nor[43..46]
++temp dr191 6g dx nor[43..46]
+  NOR
+    AND
+      -roslth bit[43..46]
+      +temp dr191 3n dp not
+    AND
+      -temp dr191 2n dk not
+      -ind roslth[43..46]
++temp dr191 3n dp not
+  NOT
+    -temp dr191 2n dk not
+-temp dr191 2n dk not
+  NOT
+    +ros back up reg 43-46 sample(DS)
++bits 43-46 odd
+  XOR
+    +temp dr191 6g dx nor[43]
+    +temp dr191 6g dx nor[44]
+    +temp dr191 6g dx nor[45]
+    +temp dr191 6g dx nor[46]
+
+; PAGE DR201
+
+DECODE
+  +temp dr201 sd[0..7]
+    +ros data lth bit[17..19](RY)
+    +gt scan field 17-19 rosl
+DECODE
+  +temp dr201 sg[0..31]
+    +ros data lth bit[31..35](RY)
+    +gt scan field 31-35 rosl
++temp dr201 2e ak not
+  NOT
+    -temp
+      NAND
+        +scan control field 25-30 ros
+        -ros data lth bit[25](RY)
+        -ros data lth bit[26](RY)
+DECODE
+  +temp dr201 sf[0..15]
+    +ros data lth bit[27..30](RY)
+    +temp dr201 2e ak not
+ 
+-scan sub 1 addr seq reg ros
+  NOT
+    +temp dr201 sd[2];
+-scan set addr seq eq 16
+  NOT
+    +temp dr201 sd[3];
+-scan set addr seq reg eq 15
+  NOT
+    +temp dr201 sd[4];
+-scan gate mask addr to sab
+  NOT
+    +temp dr201 sd[5];
+-scan out s reg ros
+  NOT
+    +temp dr201 sd[6];
+
+-set scan ctr cntr ros
+  NOT
+    +temp dr201 sf[1]; 
+-scan rst tic and gap lth ros
+  NOT
+    +temp dr201 sf[5]; 
+-scan set mach chk trap ros
+  NOT
+    +temp dr201 sf[6]; 
+-scan out t reg ros
+  NOT
+    +temp dr201 sf[7]; 
+-scan reset pass and fail ros
+  NOT
+    +temp dr201 sf[8]; 
+   
+-scan out right word ros
+  NOT
+    +temp dr201 sg[1];
+-scan out left word ros
+  NOT
+    +temp dr201 sg[4];
+-set pass+fail tgr ros
+  NOT
+    +temp dr201 sg[8];
+-invert bfr tgr ros
+  NOT
+    +temp dr201 sg[9];
+-flt initialize ros
+  NOT
+    +temp dr201 sg[10];
+-scan set addr seq reg eq 7
+  NOT
+    +temp dr201 sg[11];
+-scan machine rst ros
+  NOT
+    +temp dr201 sg[12];
+-rst scan mode tgr ros
+  NOT
+    +temp dr201 sg[13];
+-scan in ros
+  NOT
+    +temp dr201 sg[14];
+-set addr seq to 23 ros
+  NOT
+    +temp dr201 sg[15];
+
+NOCLOCK
+
+; PAGE DR211
+
++scan mode lth
+  NOT
+    -scan blk field 17-19 rosl
++gt scan field 17-19 rosl
+  NOT
+    -scan blk field 17-19 rosl
++scan control field 25-30 ros
+  NOT
+    -scan blk field 17-19 rosl
++gt scan field 31-35 rosl
+  NOT
+    -scan blk field 17-19 rosl
+-scan blk field 17-19 rosl
+  NOR
+    AND
+      +gate scan fields rosr
+      -clock p0-1 ry015(RY)
+    AND
+      +clock p0-2(RY)
+      -soros tgr O sync lth
+      +gt scan field 31-35 rosl
++gate scan fields rosr
+  NOT
+    -scan blk fields rosr
++gt scan field 25-30 rosr      
+  NOT
+    -scan blk fields rosr
++scan blk field 25-30 rosr   
+  NOT
+    -scan blk fields rosr
+-scan mode tgr
+  NOT
+    +gate scan fields rosr
+-scan blk field 31-35 rosl
+  NOT
+    +scan control field 25-30 ros
+-scan blk fields rosr
+  NOR
+    AND
+      +ton scan mode tgr(KU)
+      -temp dr211 2m dt not
+    AND
+      -temp dr211 2m dt not
+      +set scan mode tgr
+      +clock p0 forced(RY)
+    AND
+      -temp
+        NAND
+          +clock p0 forced(RY)
+          +temp
+            NOT
+              -rst scan mode tgr ros
+      +gate scan fields rosr
+      -temp
+        NOR
+          +temp
+            NOT
+              -soros tgr O sync lth
+          +machine resetOnot log reset
+-temp dr211 2m dt not
+  NOT
+    +block scan mode tgr(KU)
+-soros tgr O sync lth
+  NOT
+    +soros O sync lth(KU)
++machine resetOnot log reset
+  NOT
+    -mach reset O not log reset
+
+-inhibit ingating
+  NOR
+    AND
+      -ab 8-11 eq zero(DS)
+      +inh reg ingate a8-11 not eq 0
+      -temp dr211 2j ak not
+    AND
+      +inh reg ingating if a07 eq 0
+      -ab bit 07 eq one(DN)
+      -temp dr211 2j ak not
+    AND
+      +clock p0 forced(RY)
+      +temp
+        NOT
+          -inhibit ingating
++inhibit ingating bus
+  NOT
+    -inhibit ingating
+-mach reset O not log reset
+  NOT
+    +mach reset O not log reset(KC)
++ros test
+  +block scan mode tgr(KU)
+-temp dr211 2j ak not
+  NOT
+    +clock p0 forced(RY)
+      

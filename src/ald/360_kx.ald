@@ -1,0 +1,624 @@
+SECTION KX
+
+; PAGE KX091
+
++stat a for ioce satr sel
+  NOT
+    -stat a for ioce satr sel(KS)
+-stat a for ioce satr sel
+  -stat a for ioce satr sel(KS)
+
+-stat b for i-o inst sel
+  -stat b for ioce i-o inst sel(KS)
+-stat b for ioce io inst sel
+  -stat b for ioce i-o inst sel(KS)
+-stat b for ioce i-o inst sel
+  -stat b for ioce i-o inst sel(KS)
++stat b for ioce i-o inst sel
+  NOT
+    -stat b for ioce i-o inst sel(KS)
+
+-stat g for scon sel
+  -stat g not test for scon sel(KS)
+
++stat g for scon sel
+  NOT
+    -stat g not test for scon sel(KS)
+
+; PAGE KX101
+
+-siop
+  -siop(JA)
+
++decode ioce 1 write direct
+  +ioce + ce 1(JA)
+
++valid write direct i-o op
+  +write direct ioce operation(JA)
+
++ioce stop
+  NOT
+    -wrd ioce stop(JA)
+
++ioce start
+  NOT
+    -wrd ioce start(JA)
+
++ioce interrupt
+  NOT
+    -wrd ioce interrupt(JA)
+
++ioce logout
+  NOT
+    -wrd ioce logout(JA)
+-wrd ioce logout
+  -wrd ioce logout(JA)
+
+-val wrt dir i-o opOnot logout
+  NAND
+    -wrd ioce logout(JA)
+    +write direct ioce operation(JA)
+
+; PAGE KX111
+
++d bus powered[12..13]
+  NOT
+    -d bus powered[12..13]
+-d bus powered[12..13]
+  NOT
+    +d bit[12..13](RD)
+
++gate sel i-o inst
+  NOT
+    -temp
+      NAND
+        -ipl status(KW)
+        +stat b for ioce i-o inst sel
+
++ipl status
+  NOT
+    -ipl status(KW)
+
++timing gate trig
+  +timing gate tgr
+
+-ind ioce 1 select
+  NOT
+    +select ioce 1 to drivers
++select ioce 1 to drivers
+  NOT
+    -temp
+      NAND
+        +decode ioce 1
+        +timing gate tgr
+
++decode ioce 1
+  NOT
+    -temp
+      NOR
+        AND
+          +decode ioce 1 write direct
+          +valid write direct i-o op
+        AND
+          -d bus powered[12]
+          -d bus powered[13]
+          +gate sel i-o inst
+          -siop
+          +timing gate trigger cj4
+        AND
+          +gate sel reg to ioce decode
+;          +sel reg bit[29](FS)
+
++permit ioce 1 int
+  NOT
+    -permit int ioce 1
+-permit int ioce 1
+  NAND
+    +temp
+      NOT
+        -temp
+          NOR
+            +temp
+              NOT
+                -ioce 1 mck int reqOprior(KM)
+            AND
+              +i-o int req ioce 1 trig(KM)
+              +i-o interrupt priority(KN)
+    +int gate trig(KM)
+
++gate sel reg to ioce decode
+  ORNOT
+    -ipl status(KW)
+    -stat g for scon sel
+    -siop
+    -stat a for ioce satr sel
+
+; PAGE KX129
+
+-ipl status
+  NOT
+    +ipl status
+
++flt decode ioce 1
+  NOT
+    -flt ioce 1(KU)
+
++ipl ioce 1
+  NOT
+    -temp
+      NOR
+        AND
+          +temp
+            NOT
+              -ipl status
+          +temp
+            NOT
+              -stat b for ioce io inst sel
+          +select ioce 1 to drivers
+        AND
+          +flt decode ioce 1
+          +temp
+            ANDNOT
+              +subsystem reset(KU)
+              -flt ipl lth ak4(KW)
+
+-flt ipl lth
+  -flt ipl lth ak4(KW)
+
+-gate check response flt+satr
+  NOT
+    +temp
+      ORNOT
+        -satr(DN)
+        -ros test + flt lth(KU)
++ros test + flt lth
+  NOT
+    -ros test + flt lth(KU)
+
+; PAGE KX131
+
++sys mask[0]
+  NOT
+    -temp
+      NOT
+        +mask a(RW)
++sys mask[1]
+  NOT
+    -temp
+      NOT
+        +mask 1a(RW)
++sys mask[2]
+  NOT
+    -temp
+      NOT
+        +mask 2a(RW)
++sys mask[3]
+  NOT
+    -temp
+      NOT
+        +mask 3a(RW)
++sys mask[4]
+  NOT
+    -temp
+      NOT
+        +mask b(RW)
++sys mask[5]
+  NOT
+    -temp
+      NOT
+        +mask 1b(RW)
++sys mask[6]
+  NOT
+    -temp
+      NOT
+        +mask 2b(RW)
+
++flt back space ioce 1
+  NOT
+    -temp
+      NOT
+        AND
+          +flt decode ioce 1
+          +flt backspace
++flt backspace
+  NOT
+    -flt backspace to ioce(KU)
+
++flt load ioce 1
+  +flt back space ioce 1
+
++initial program load ioce 1
+  NOT
+    -temp
+      NOT
+        AND
+          +decode ioce 1
+          +ipl ioce 1
+
++i-o instruction ioce 1
+  NOT
+    -temp
+      NOT
+        AND
+          +select ioce 1 to drivers
+          +stat b for ioce i-o inst sel
+          -ipl status
+
+; PAGE KX132
+
+-scon select ioce 1
+  NOT
+    +temp
+      NOT
+        -temp
+          NAND
+            +stat g for scon sel
+            +select ioce 1 to drivers
+
++permit i-o interrupt ioce 1
+  NOT
+    -temp
+      NAND
+        +ioce 1 i-o int req O priority(KM)
+        +permit ioce 1 int
+
++ioce logout ioce 1
+  NOT
+    -temp
+      NAND
+        +ioce logout
+        +select ioce 1 to drivers
+
+-proc start ioce 1
+  NOT
+    +temp
+      NOT
+        -temp
+          NAND
+            +ioce start
+            +select ioce 1 to drivers
+
+-proc stop ioce 1
+  NOT
+    +temp
+      NOT
+        -temp
+          NAND
+            +ioce stop
+            +select ioce 1 to drivers
+
+-proc interrupt ioce 1
+  NOT
+    +temp
+      NOT
+        -temp
+          NAND
+            +ioce interrupt
+            +select ioce 1 to drivers
+
++permit mck intrpt ioce 1
+  NOT
+    -temp
+      NAND
+        +ioce 1 mck int reqOprior(KM)
+        +permit ioce 1 int
+
+-satr sel ioce 1
+  NOT
+    +temp
+      NOT
+        -temp
+          NAND
+            +stat a for ioce satr sel
+            -stat g for scon sel
+            +select ioce 1 to drivers
+
+; PAGE KX161
+
++check response
+  NOT
+    -temp
+      NOR
+        AND
+          +temp
+            NOT
+              -check response ioce 1(FX)
+          +gate response ioce 1
++temp resp ioce 1
+  NOT
+    -response ioce 1(FX)
++ioce response set release i-o
+  ORNOT
+    -temp
+      NAND
+        +temp resp ioce 1
+        +gate response ioce 1
+        -temp inh resp 1
+-temp inh resp 1
+  NOR
+    AND
+      -clock p1
+      +temp resp ioce 1
+      +temp
+        NOT
+          -release cpu latch
+    AND
+      +temp resp ioce 1
+      +temp
+        NOT
+          -temp inh resp 1
+
+; PAGE KX162
+
++gate any ioce resp
+  ORNOT
+    -temp
+      NOT
+        +gate response ioce 1
++gate response ioce 1
+  ORNOT
+    -permit int ioce 1
+    -gate check response flt+satr
+    -temp
+      NAND
+        +select ioce 1 to drivers
+        -stat g for scon sel
+
+; PAGE KX181
+
+-flt inhibit ioce sel O int
+  NOT
+    +flt inhibit ioce sel and intr(KU)
+
++machine reset
+  +machine reset gate d O e(KC)
+-machine reset
+  NOT
+    +machine reset gate d O e(KC)
+
+-scan in word 5
+  -scan in word[5](KU)
++scan in word 5
+  NOT
+    -scan in word[5](KU)
+
++interrupt gate trig
+  NOT
+    -temp
+      NAND
+        -flt inhibit ioce sel O int
+        +stat h
+        +temp ig trig
+        
+-interrupt gate trig
+  NAND
+    -flt inhibit ioce sel O int
+    -stat h
+    +temp ig trig
+-ind interrupt gate trig
+  NOT
+    +temp ig trig
++temp ig trig
+  NOT
+    -temp
+      NOR
+        AND
+          +set interrupt gate tgr(DR)
+          +clock p0
+        AND
+          +st bus[46](RS_RT)
+          +scan in word 5
+        AND
+          -temp
+            NAND
+              +reset interrupt gate tgr(DR)
+              +clock p0
+          -machine reset
+          -ce hardstop
+          +temp ig trig
+
+CLOCK
+
++clock p0-2Onot p1
+  ANDNOT
+    -clock p0-3(KM)
+    +clock p0
++clock p4
+  NOT
+    -clock p3
+-clock p3
+  NOT
+    +clock p2
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -clock p0-1
+-clock p0-1
+  NOT
+    +clock p0-2
++clock p0-2
+  NOT
+    -clock p0-3(KM)
+-clock p0-3
+  -clock p0-3(KM)
+
+NOCLOCK
+
+; PAGE KX191
+
++hard stop reset
+  +hard stop reset(KM)
+-reset psa lockout
+  NOR
+    +reset psa lockout(KM)
+    AND
+      +hard stop reset(KM)
+
+-error reset gate bOe
+  NOT
+    +error reset gate e(KC)
++error reset gate e
+  +error reset gate e(KC)
+
++scan in word 8
+  NOT
+    -scan in word[8](KU)
+
++scan in word 7
+  NOT
+    -scan in word[7](KU)
+
+-scan in word 7
+  -scan in word[7](KU)
+
+-stat h
+  NOT
+    +stat h bus(RW)
++stat h
+  +stat h bus(RW)
+
+; PAGE KX311
+
++set tim gate tgr
+  +set timing gate tgr(DR)
+
+-ind timing gate tgr
+  NOT
+    +timing gate trigger cj4
+
++timing gate trigger ap4
+  +timing gate tgr
++timing gate tgr
+  NOT
+    -temp tg trig
+-temp tg trig
+  NAND
+    +timing gate trigger cj4
+    -flt inhibit ioce sel O int
++timing gate trigger cj4
+  NOT
+    -temp
+      NOR
+        AND
+          +set timing gate tgr(DR)
+          +clock p0
+        AND
+          -temp
+            NAND
+              +clock p0
+              +reset timing gate tgr(DR)
+          -hard stop condition kw071(KW)
+          +timing gate trigger cj4
+
+-ce hardstop
+  -hard stop condition kw071(KW)
+
+-ind check resp trig
+  NOT
+    +ioce check response trig
++ioce check response trig
+  NOT
+    -ioce check response trig
+-ioce check response trig
+  NOR
+    AND
+      +clock p0
+      +check response
+    AND
+      +st bus[41](RS_RT)
+      +scan in word 7
+    AND
+      -error reset gate bOe
+      +ioce check response trig
+
+; PAGE KX411
+
+-i-o condition code 01
+  NOR
+    AND
+      +gate any ioce resp
+      +i-o error release force cc 3
+    AND
+      +temp
+        NOT
+          -cond code pos 1 ioce 1(FX)
+      +gate response ioce 1
+
+-i-o condition code 10
+  NOR
+    AND
+      +gate any ioce resp
+      +i-o error release force cc 3
+    AND
+      +temp
+        NOT
+          -cond code pos 0 ioce 1(FX)
+      +gate response ioce 1
+
+-flt inhibit sequence tgrs
+  NOT
+    +flt inhibit sequence tgrs(KU)
++inhibit sequence tgrs
+  +flt inhibit sequence tgrs(KU)
+
++release cpu latch
+  ANDNOT
+    +set tim gate tgr
+    -release cpu latch
+-release cpu latch
+  NOR
+    AND
+      +ioce response set release i-o
+      -clock p1
+    AND
+      -clock p1
+      -ipl status(KW)
+      +i-o error release force cc 3
+    AND
+      +temp
+        NOT
+          -release cpu latch
+      OR
+        +interrupt gate trig
+        AND
+          -machine reset
+          +timing gate trigger ap4
+
+; PAGE KX421
+
+-set stat e i-o error
+  NOR
+    AND
+      +i-o int req ioce 1 trig(KM)
+      +temp kx421 1f ab
++temp kx421 1f ab
+  ORNOT
+    -elc ioce 1(KM)
+    -ioce 1 mck req trig(KM)
+    -psa lockout ioce 1(KM)
+
++i-o error release force cc 3
+  NOT
+    -temp
+      NOR
+        AND
+          +temp kx421 1f ab
+          +temp
+            ORNOT
+              -i-o int req ioce 1 trig(KM)
+              -temp
+                NAND
+                  +decode ioce 1
+                  +temp
+                    ORNOT
+                      -val wrt dir i-o opOnot logout
+                      -stat b for ioce i-o inst sel
+
+
+
+

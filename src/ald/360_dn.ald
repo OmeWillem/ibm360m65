@@ -1,0 +1,680 @@
+SECTION DN
+
+-satr
+  1
+
+; PAGE DN001
+
+DECODE
+  +temp e0-1[0..3]
+  +e bit[0..1](RE)
++rr format
+  NOT
+    -rr format
+-rr format
+  NOT
+    +temp e0-1[0]
+
++rx format
+  NOT
+    -rx format
+-rx format
+  NOT
+    +temp e0-1[1]
+
++rs format
+  NOT
+    -rs format
+-rs format
+  NOT
+    +temp e0-1[2]
+
++ss format
+  NOT
+    -ss format
+-ss format
+  NOT
+    +temp e0-1[3]
+
++floating point rx sp+dp
+  NOT
+    -temp
+      NAND
+        +rx format
+        +floating point
++floating point
+  NOT
+    -floating point
+-floating point
+  NAND
+    -e bit[0](RE)
+    +e bit[2](RE)
+
+-floating point rx dp
+  NAND
+    +rx format
+    +floating point
+    -e bit[3](RE)
+
++vfl decimal
+  NOT
+    -vfl decimal
+-vfl decimal
+  NAND
+    +e bit[0..3](RE)
+-rs fx pt logical
+  NAND
+    +rs format
+    -e bit[2](RE)
+    +e bit[3](RE)
+
++fixed point
+  ANDNOT
+    +e bit[0](RE)
+    +e bit[2](RE)
+
++floating point rr sp+dp
+  NOT
+    -temp
+      NAND
+        +rr format
+        +floating point
+-fx pt rr mult + divide + sco
+  NOT
+    +temp
+      ORNOT
+        -temp
+          NAND
+            -e bit[0..2](RE)
+            +e bit[3](RE)
+
+DECODE
+  +temp e2-3[0..3]
+  +e bit[2..3](RE)
+-e2e3 eq[0..3]
+  NOT
+    +temp e2-3[0..3]
+
++e0e3 eq[0]
+  NOT
+    -temp
+      NAND
+        -e bit[0](RE)
+        -e bit[3](RE)
++e0e3 eq[1]
+  NOT
+    -temp
+      NAND
+        -e bit[0](RE)
+        +e bit[3](RE)
++e0e3 eq[2]
+  NOT
+    -temp
+      NAND
+        +e bit[0](RE)
+        -e bit[3](RE)
++e0e3 eq[3]
+  NOT
+    -temp
+      NAND
+        +e bit[0](RE)
+        +e bit[3](RE)
+-e0e3 eq[0..3]
+  NOT
+    +e0e3 eq[0..3]
+; PAGE DN011
+
+DECODE
+  +e4e5 eq[0..3]
+  +e bit[4..5](RE)
+-e4e5 eq[0..3]
+  NOT
+    +e4e5 eq[0..3]
+
+DECODE
+  +temp e6-7[0..3]
+  +e bit[6..7](RE)
+-e6e7 eq[0..3]
+  NOT
+    +temp e6-7[0..3]
+
++branch on condition bn4
+  NOT
+    -temp
+      NOT
+        +branch on condition ar4
++branch on condition ar4
+  ANDNOT 
+    +e bit[0](RE)
+    -e2e3 eq[0]
+    -e4e5 eq[1]
+    -e6e7 eq[3]
+-all branch instructions
+  NOR
+    AND
+      -e bit[0](RE)
+      -e bit[2..4](RE)
+      +temp
+        ANDNOT
+          -e bit[5](RE)
+          AND
+            -e bit[6..7](RE)
+    AND
+      -e bit[1..4](RE)
+      +temp
+        ANDNOT
+          -e bit[0](RE)
+          -e bit[5..6](RE)
+-op decode test and set instr
+  NAND
+    +e bit[0](RE)
+    +temp
+      NOT
+        -e4e5 eq[0]
+    +e bit[6](RE)
+-logical compare rr+rx
+  NAND
+    +e0e3 eq[1]
+    +compare logical
++compare logical
+  ANDNOT
+    -e4e5 eq[1]
+    -e6e7 eq[1]
+-logical compare si + ss
+  NAND
+    +compare logical
+    +e0e3 eq[3]
+    -e bit[2](RE)
+
+-rr Oe12-15 eq 0
+  NAND
+    -e bit[12..15](RE)
+    +rr format
+
+; PAGE DN021
+
+-ops inhibiting operand req
+  NOR
+    AND
+      -e6e7 eq[1]
+      +temp
+        ANDNOT
+          -rs fx pt logical
+          -e4e5 eq[0]
+    AND
+      -e6e7 eq[3]
+      +temp
+        ANDNOT
+          -rx format
+          -e2e3 eq[0]
+          -e4e5 eq[0]
+
++dbl cycle inst
+  ANDNOT
+    -rs format
+    -e2e3 eq[1]
+    -temp
+      NOT
+        +and+or+exclusive or insts
+
++translate + edit
+  ANDNOT
+    -ss format
+    -e2e3 eq[1]
+    -e4e5 eq[3]
+
++execute
+  ANDNOT
+    -rx format
+    -e2e3 eq[0]
+    -e4e5 eq[1]
+    -e6e7 eq[0]
+
++and+or+exclusive or insts
+  ANDNOT
+    +compare logical
+    -e4e5 eq[1]
+
+; PAGE DN031
+
+-diagnose
+  NOT
+    +diagnose
++diagnose
+  ANDNOT
+    -rs format
+    -e2e3 eq[0]
+    -e4e5 eq[0]
+    -e6e7 eq[3]
+
++floating point divide
+  ANDNOT
+    -floating point
+    -e4e5 eq[3]
+    -e6e7 eq[1]
+
+-siop instruction
+  NOT
+    +siop instruction
++siop instruction
+  ANDNOT
+    -rs format
+    -e2e3 eq[1]
+    -e4e5 eq[2]
+    -e6e7 eq[2]
+
++dec divide
+  ANDNOT
+    -vfl decimal
+    -e4e5 eq[3]
+    -e6e7 eq[1]
+
++dec multiply
+  ANDNOT
+    -vfl decimal
+    -e4e5 eq[3]
+    -e6e7 eq[0]
+
+; PAGE DN041
+
+-divide
+  NAND
+    +multiply + divide
+    +e bit[7](RE)
+
+-fixed point multiply am4
+  NOT
+    -e bit[7](RE)
+
+-fixed point multiply bb4
+  NAND
+    +multiply
+    +e0e2 eq[0]
+    -temp
+      NAND
+        -e bit[1](RE)
+        -e bit[3](RE)
+
++e0e2 eq[0]
+  NOT
+    -temp
+      NAND
+        -e bit[0](RE)
+        -e bit[2](RE)
++e0e2 eq[1]
+  NOT
+    -temp
+      NAND
+        -e bit[0](RE)
+        +e bit[2](RE)
++e0e2 eq[2]
+  NOT
+    -temp
+      NAND
+        +e bit[0](RE)
+        -e bit[2](RE)
++e0e2 eq[3]
+  NOT
+    -temp
+      NAND
+        +e bit[0](RE)
+        +e bit[2](RE)
+
++translate + translateOtest
+  NOT
+    -temp
+      NAND
+        +multiply + divide
+        +e0e3 eq[3]
+
++rx or rs format
+  ORNOT
+    -rx format
+    -rs format
+
+-subtract or compare
+  NOR
+    AND
+      +e bit[4..5](RE)
+      +e bit[7](RE)
+    AND
+      +unnormalized flt pt op
+      +e bit[7](RE)
+
++fx pt mult + divide
+  ANDNOT
+    -rx format
+    -e2e3 eq[1]
+    -multiply + divide
+
+; PAGE DN051
+
+-stm or lm or sps or lps or lc
+  NOR
+    +temp
+      ANDNOT
+        -rs format
+        -e bit[3](RE)
+        +e bit[5](RE)
+        -e6e7 eq[0]
+
++compare
+  ANDNOT
+    -e4e5 eq[2]
+    -e6e7 eq[1]
+
++test under mask
+  ANDNOT
+    -rs fx pt logical
+    -e4e5 eq[0]
+    -e6e7 eq[1]
+
++rs fx pt logical
+  NOT
+    -rs fx pt logical
+
+; PAGE DN061
+
+-write direct
+  NOT
+    +temp
+      ANDNOT
+        -rs format
+        -temp dn061 2h be not
+        -e4e5 eq[1]
+        -e6e7 eq[0]
+
+-read direct
+  NOT
+    +temp
+      ANDNOT
+        -rs format
+        -temp dn061 2h be not
+        -e4e5 eq[1]
+        -e6e7 eq[1]
+
+-temp dn061 2h be not
+  NOT
+    +temp
+      NOT
+        -e2e3 eq[0]
+
++supervisor call
+  ANDNOT
+    -rr format
+    -temp dn061 2h be not
+    -e4e5 eq[2]
+    -e bit[6](RE)
+
+-shift instructions
+  NOT
+    +shift instructions
+
++shift instructions
+  ANDNOT
+    -rs format
+    -temp dn061 2h be not
+    -e bit[4](RE)
+
++set key
+  ANDNOT
+    -rr format
+    -temp dn061 2h be not
+    -e4e5 eq[2]
+
+; PAGE DN071
+
+-fx pt half word + execute
+  NOT
+    +temp
+      ANDNOT
+        -rx format
+        -e2e3 eq[0]
+        +temp dn071 4c av andnot
++temp dn071 4c av andnot
+  ANDNOT
+    -rx format
+    -e2e3 eq[0]
+    -temp dn071 2d ar nand
+-temp dn071 2d ar nand
+  NAND
+    +e4e5 eq[3]
+    +e bit[6](RE)
+
++unnormalized flt pt op
+  NOT
+    -temp dn071 2d ar nand
+
++conv to dec + conv to bin
+  NOT
+    -temp
+      NOT
+        +temp dn071 4c av andnot
+
++fx pt rx dvd+full mult
+  NOT
+    -temp
+      NOT
+        +fx pt mult + divide
+
++i-o instructions
+  NOT
+    -i-o instructions
+-i-o instructions
+  NAND
+    +rs fx pt logical
+    +e bit[4](RE)
+    +temp
+      ORNOT
+        -e bit[5..6](RE)
+
+-fx pt rx full wd not mult+dvd
+  NOT
+    +temp
+      ANDNOT
+        -rx format
+        -e2e3 eq[1]
+        +fx pt mult + divide
+
++privileged operations
+  ORNOT
+    -i-o instructions
+    -insert key + set storage key
+    -temp
+      NAND
+        +e bit[0](RE)
+        -e bit[3..4](RE)
+
+-insert key + set storage key
+  NAND
+    +set key
+    +e bit[4](RE)
+    -e bit[6](RE)
+
+; PAGE DN081
+
++dec add + sub +zeroOadd
+  ANDNOT
+    -vfl decimal
+    -e4e5 eq[2]
+    +decimal compare
+
++decimal compare
+  ANDNOT
+    -vfl decimal
+    -e4e5 eq[2]
+    -e6e7 eq[1]
+
++decimal zero and add
+  ANDNOT
+    -vfl decimal
+    -e4e5 eq[2]
+    -e6e7 eq[0]
+
++move
+  NOT
+    -temp
+      NAND
+        -e bit[2](RE)
+        +e bit[3](RE)
+        +load + test
+
++load + test
+  ANDNOT
+    -e4e5 eq[0]
+    -e6e7 eq[2]
+
++load negative
+  NAND
+    -e4e5 eq[0]
+    -e6e7 eq[1]
+
++load complement
+  NAND
+    -e4e5 eq[0]
+    -e6e7 eq[3]
+
+; PAGE DN091
+
+-multiply + divide
+  NOT
+    +multiply + divide
++multiply + divide
+  ANDNOT
+    -e4e5 eq[3]
+    +e bit[6](RE)
+
++multiply
+  NOT
+    -temp dn091 5e ak nand
+-temp dn091 5e ak nand
+  NAND
+    +multiply + divide
+    -e bit[7](RE)
+
++add + sub + compare
+  NOT
+    -temp
+      NAND
+        -multiply + divide
+        -e bit[0](RE)
+        +e bit[4](RE)
+
+-single prec and not mult
+  NAND
+    -temp dn091 5e ak nand
+    +e bit[3](RE)
+
++fixed or floating pt mult
+  ANDNOT
+    -temp dn091 5e ak nand
+    +e bit[0](RE)
+
+-add + sub logical
+  NAND
+    +unnormalized flt pt op
+    +e0e2 eq[0]
+    +e0e3 eq[1]
+
+-fixed point compare
+  NAND
+    -insert key + set storage key
+    +compare
+    +e0e2 eq[0]
+
++fp add+sub+compare
+  NOT
+    -temp
+      NAND
+        +add + sub + compare
+        +e bit[2](RE)
+
+; PAGE DN095
+
++set sys mask
+  ANDNOT
+    -rs format
+    -e2e3 eq[0]
+    -e4e5 eq[0]
+    -e6e7 eq[0]
+
+-e3e6 eq 01
+  NAND
+    -e bit[3](RE)
+    +e bit[6](RE)
+
++lpsw + diagnose + siop
+  ANDNOT
+    AND
+      -rs format
+      -temp dn031 2b au not
+    AND
+      -e2e3 eq[0]
+      -temp dn031 2b au not
+    AND
+      -e3e6 eq 01
+      -temp dn031 2b au not
+    AND
+      -e4e5 eq[0]
+      -temp dn031 2b au not
+-temp dn031 2b au not
+  NOT
+    +siop instruction
+
+; PAGE DN101
+
++result sign minus
+  ORNOT
+    -temp
+      NOR
+        AND
+          -e bit[0](RE)
+          +multiply + divide
+          XOR
+            +stat c bus(RW)
+            +stat f bus(RW)
+        AND
+          -floating point
+          +e bit[6](RE)
+          +stat c bus(RW)
+        AND
+          +load complement
+          -temp
+            NOT
+              +stat c bus(RW)
+    -temp
+      NAND
+        +floating point rr sp+dp
+        +e4e5 eq[1]
+        -e bit[6](RE)
+        +stat c bus(RW)
+    -temp
+      NOR
+        AND
+          +load + test
+          +stat c bus(RW)
+        AND
+          +add + sub + compare
+          +temp
+            NOT
+              -ab bit[7](RA_RB)
+          +stat c bus(RW)
+        AND
+          +add + sub + compare
+          -ab bit[7](RA_RB)
+          +stat f bus(RW)
+        +load negative
+
+-ab bit 07 eq one
+  -ab bit[7](RA_RB)
+
+; PAGE DN111
+
+; mostly 9020
+
+-exceptional cond to i-fetch
+  -exceptional cond to i fetch(DR)
+
+; PAGE DN121
+
+; 9020

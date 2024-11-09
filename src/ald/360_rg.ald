@@ -1,0 +1,45 @@
+SECTION RG
+
+; PAGE RG001
+
+-ind g reg[0..7]
+  NOT
+    +dir out data bit[0..7]
++dir out data bit[0..7]
+  NOT
+    -g reg bit[0..7]
+-g reg bit[0..7]
+  NOR
+    AND
+      +saddl[0..7](AS)
+      +set g reg
+    AND
+      -reset g reg
+      +dir out data bit[0..7]
+
+; PAGERG051
+
+-ind g reg p0-7
+  NOT
+    +dir out data bit p
++dir out data bit p
+  NOT
+    -g reg bit p0-7
+-g reg bit p0-7
+  NOR
+    AND
+      +saddl parity(AS)
+      +set g reg
+    AND
+      -reset g reg
+      +dir out data bit p
+
++set g reg
+  NOT
+    -reset g reg
+-reset g reg
+  NAND
+    +clock p0(AS)
+    +temp
+      NOT
+        -gt sal 00-07 to g 00-07(DR)

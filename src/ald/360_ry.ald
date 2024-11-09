@@ -1,0 +1,222 @@
+SECTION RY
+
+; PAGE RY011
+
+CLOCK
+
++clock p0
+  NOT
+    -clock p0-1 ry011
++clock p0 forced
+  ORNOT
+    -clock p0-1 ry011
+    -scan inhibit reg ingating
+-clock p0-1 ry011
+  -clock p0-1Onot block
+-clock p0-1Onot block
+  NAND
+    -temp ry011 6e fc nand
+    +clock p0-2
+
+NOCLOCK
+
+-temp ry011 6e fc nand
+  NAND
+    -disable+scan block errors a
+    +ros error 2-42 block rosar
+-scan inhibit reg ingating
+  NOT
+    +inh reg ingating(KU)
+-scan inh reg ingate
+  NOT
+    +inh reg ingating(KU)
+
+CLOCK
+
+;-clock gate c bottom
+;  -clock gate c bottom(KC)
++clock p0-2
+  +clock p0-2 from gate(KC)
+;  TD
+;    NOT
+;      -clock gate c bottom(KC)
+-block clock ros bits 2-42
+  NAND
+    -disable+scan block errors a
+    +ros error 2-42 block rosar
+
+NOCLOCK
+
++ros error 2-42 block rosar
+  ANDNOT
+    AND
+      +temp
+        XOR
+          -ros reg bit[2..42]
+      -ros parity error bits 2-42
+    AND
+      +clock p2 forced
+      -ros parity error bits 2-42
+-ros parity error bits 2-42
+  NAND
+    +clock p0 forced
+    +ros error 2-42 block rosar
+
+; PAGE RY015
+
+CLOCK
+
+-clock p0-1 ry015
+  NOT
+    +clock p0-2
+
+
+-ros reg bit[0..42]
+  NOT
+    +ros reg bit[0..42]
++ros reg bit[0..42]
+  NOR
+    AND
+      -ros sense lth bit[0..42](EF)
+      +clock p0 forced
+    AND
+      -clock p0-1Onot block
+      -ros reg bit[0..42]
+
+NOCLOCK
+
+-ind rosdr bit[0..42]
+  NOT
+    +ros reg bit[0..42]
+
+-ros data lth bit[2..42]
+  NOR
+    AND
+      +ros reg bit[2..42]
+      -clock p0-1 ry015
+    +ros data lth bit[2..42]
++ros data lth bit[2..42]
+  ANDNOT
+    -ros data lth bit[2..42]
+    AND
+      -clock p0-1 ry015
+      -ros reg bit[2..42]
+
+; PAGE RY031
+
+-ros data lth 10 or 11
+  NOT
+    +temp
+      ORNOT
+        -ros data lth bit[10..11]
+
+;PAGE RY065
+
++emit[0..3]
+  NOT
+    -ros reg bit[21..24]
++emit pty bit
+  XOR
+    -ros reg bit[21..24]
+
+; PAGE RY067
+
+-block e field reg decodes
+  NOT
+    +rosdr bit[81](AP)
+-block e field lth decodes
+  NOR
+    AND
+      +rosdr bit[81](AP)
+      -clock p0-1 ry015
+    +temp
+      ANDNOT
+        -block e field lth decodes
+        AND
+          -clock p0-1 ry015
+          -block e field reg decodes
++rosdr bit[81]
+  +rosdr bit[81](AP)
+-ros data lth bit 21Onot 81
+  NOR
+    AND
+      +ros reg bit[21]
+      -block e field lth decodes
+      -clock p0-1 ry015
+    AND
+      -block e field lth decodes
+      +ros data lth bit 21Onot 81
++ros data lth bit 21Onot 81
+  ANDNOT
+    -ros data lth bit 21Onot 81
+    AND
+      +rosdr bit[81](AP)
+      -ros reg bit[21]
+
+; PAGE RY081
+
+-scan block errors
+  -inhibit ros error sample(KU)
+-disable+scan block errors a
+  NOT
+    +temp ry081 4m em ornot
+-disable+scan block errors b
+  NOT
+    +temp ry081 4m em ornot
++temp ry081 4m em ornot
+  ORNOT
+    -inhibit ros error sample(KU)
+    -temp
+      NOT
+        +error reset(KC)
+    -disable check(KW)
+
+; PAGE RY091
+
+CLOCK
+
++clock p2 forced
+  NOT
+    -temp
+      NOT
+        +clock p0 forced
+
+NOCLOCK
+
+; PAGE RY131
+
++ros reg bits 37O38 00
+  ANDNOT
+    +ros reg bit[37..38]
++ros reg bits 37-39 0x0
+  ANDNOT
+    +ros reg bit[37]
+    +ros reg bit[39]
++ros reg bits 37-40 0xx0
+  ANDNOT
+    +ros reg bit[37]
+    +ros reg bit[40]
++ros reg bits 37O38 01
+  ANDNOT
+    +ros reg bit[37]
+    -ros reg bit[38]
+
+-+9020 regs to ls bus out
+  NOT
+    +temp
+      NOT
+        +write 9020 reg
++write 9020 reg
+  NAND
+    +ros reg bit[36]
+    +temp
+      NOT
+        -ros reg bit[36]
+    -ros reg bit[37]
+
+      
+        
+
+
+            
+      

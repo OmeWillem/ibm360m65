@@ -1,0 +1,1777 @@
+SECTION RS_RT
+
+; PAGE RS001
+
+-ind st bit[0..63]
+  NOT
+    +st bit[0..63]
++st bit[0..63]
+  ANDNOT
+    AND
+      -key to st[0..63](PX)
+      +data keys to st
+    -st bit[0..63]
++st bus[0..63]
+  NOT
+    -st bit[0..63]
+
+-st bit[0..7]
+  NOR
+    AND
+      +psw to st reg bit[0..7](RW)
+      +gt psw-s00-15t32-39
+    AND
+      +ls bus--[0..7](LS)
+      +gt ls-s
+    AND
+      +sdbo[0..7](WA)
+      +gt sdbo00-31-s
+    AND
+      +saddl[0..7](AS)
+      +gt saddl-st byte[0]
+    AND
+      +st bit[0..7]
+      -rst psw-s00-15t32-39
+      -rst ls-s
+      -rst sdbo00-31-s
+      -rst saddl-st byte[0]
+
+; PAGE RS081
+
+-st bit[8..15]
+  NOR
+    AND
+      +psw to st reg bit[8..15](RW)
+      +gt psw-s00-15t32-39
+    AND
+      +ls bus--[8..15](LS)
+      +gt ls-s
+    AND
+      +sdbo[8..15](WA)
+      +gt sdbo00-31-s
+    AND
+      +saddl[0..7](AS)
+      +gt saddl-st byte[1]
+    AND
+      +st bit[8..15]
+      -rst psw-s00-15t32-39
+      -rst ls-s
+      -rst sdbo00-31-s
+      -rst saddl-st byte[1]
+
+; PAGE RS161
+
+-st bit[16..23]
+  NOR
+    AND
+      +psw to st reg bit[16..23](RW)
+      +gt psw-s16-31
+    AND
+      +ls bus--[16..23](LS)
+      +gt ls-s
+    AND
+      +sdbo[16..23](WA)
+      +gt sdbo00-31-s
+    AND
+      +saddl[0..7](AS)
+      +gt saddl-st byte[2]
+    AND
+      +st bit[16..23]
+      -rst psw-s16-31
+      -rst ls-s
+      -rst sdbo00-31-s
+      -rst saddl-st byte[2]
+
+; PAGE RS241
+
+-st bit[24..31]
+  NOR
+    AND
+      +psw to st reg bit[24..31](RW)
+      +gt psw-s16-31
+    AND
+      +ls bus--[24..31](LS)
+      +gt ls-s
+    AND
+      +sdbo[24..31](WA)
+      +gt sdbo00-31-s
+    AND
+      +saddl[0..7](AS)
+      +gt saddl-st byte[3]
+    AND
+      +st bit[24..31]
+      -rst psw-s16-31
+      -rst ls-s
+      -rst sdbo00-31-s
+      -rst saddl-st byte[3]
+
+; PAGE RS281
+
++st bit 28+29+30+31 is a one
+  ORNOT
+    -st bit[28..31]
+
+; PAGE RS305
+
+-ind st parity 00-07
+  NOT
+    +st parity 00-07
++st parity 00-07
+  ANDNOT
+    AND
+      -key to st p00-07(PX)
+      +data keys to st
+    -st parity 00-07
++st bus parity 00-07
+  NOT
+    -st parity 00-07
+-st parity 00-07
+  NOR
+    AND
+      +psw to st reg parity 0-7(RW)
+      +gt psw-s00-15t32-39
+    AND
+      +ls bus--parity 00-07(LS)
+      +gt ls-s
+    AND
+      +sdbo parity[0](WA)
+      +gt sdbo00-31-s
+    AND
+      +saddl parity(AS)
+      +gt saddl-st byte[0]
+    AND
+      +st parity 00-07
+      -rst psw-s00-15t32-39
+      -rst ls-s
+      -rst sdbo00-31-s
+      -rst saddl-st byte[0]
+
+-ind st parity 08-15
+  NOT
+    +st parity 08-15
++st parity 08-15
+  ANDNOT
+    AND
+      -key to st p08-15(PX)
+      +data keys to st
+    -st parity 08-15
++st bus parity 08-15
+  NOT
+    -st parity 08-15
+-st parity 08-15
+  NOR
+    AND
+      +psw to st reg parity 8-15(RW)
+      +gt psw-s00-15t32-39
+    AND
+      +ls bus--parity 08-15(LS)
+      +gt ls-s
+    AND
+      +sdbo parity[1](WA)
+      +gt sdbo00-31-s
+    AND
+      +saddl parity(AS)
+      +gt saddl-st byte[1]
+    AND
+      +st parity 08-15
+      -rst psw-s00-15t32-39
+      -rst ls-s
+      -rst sdbo00-31-s
+      -rst saddl-st byte[1]
+
+; PAGE RS315
+
+-ind st parity 16-23
+  NOT
+    +st parity 16-23
++st parity 16-23
+  ANDNOT
+    AND
+      -key to st p16-23(PX)
+      +data keys to st
+    -st parity 16-23
++st bus parity 16-23
+  NOT
+    -st parity 16-23
+-st parity 16-23
+  NOR
+    AND
+      +psw to st reg parity 16-23(RW)
+      +gt psw-s16-31
+    AND
+      +ls bus--parity 16-23(LS)
+      +gt ls-s
+    AND
+      +sdbo parity[2](WA)
+      +gt sdbo00-31-s
+    AND
+      +saddl parity(AS)
+      +gt saddl-st byte[2]
+    AND
+      +st parity 16-23
+      -rst psw-s16-31
+      -rst ls-s
+      -rst sdbo00-31-s
+      -rst saddl-st byte[2]
+
+-ind st parity 24-31
+  NOT
+    +st parity 24-31
++st parity 24-31
+  ANDNOT
+    AND
+      -key to st p24-31(PX)
+      +data keys to st
+    -st parity 24-31
++st bus parity 24-31
+  NOT
+    -st parity 24-31
+-st parity 24-31
+  NOR
+    AND
+      +psw to st reg parity 24-31(RW)
+      +gt psw-s16-31
+    AND
+      +ls bus--parity 24-31(LS)
+      +gt ls-s
+    AND
+      +sdbo parity[3](WA)
+      +gt sdbo00-31-s
+    AND
+      +saddl parity(AS)
+      +gt saddl-st byte[3]
+    AND
+      +st parity 24-31
+      -rst psw-s16-31
+      -rst ls-s
+      -rst sdbo00-31-s
+      -rst saddl-st byte[3]
+
+; PAGE RT321
+
+-st bit[32..39]
+  NOR
+    AND
+      +psw to st reg bit[32..39](RW)
+      +gt psw-s00-15t32-39
+    AND
+      +ls bus--[0..7](LS)
+      +gt ls-t
+    AND
+      +sdbo[0..7](WA)
+      +gt sdbo00-31-t
+    AND
+      +sdbo[32..39](WA)
+      +gt sdbo32-63-t
+    AND
+      +saddl[0..7](AS)
+      +gt saddl-st byte[4]
+    AND
+      +paddl[32..39](AP)
+      +gt paddl-t32-39
+    AND
+      +st bit[32..39]
+      -rst psw-s00-15t32-39
+      -rst ls-t
+      -rst sdbo00-31-t
+      -rst sdbo32-63-t
+      -rst paddl-t32-39
+      -rst saddl-st byte[4]
+-st bus[32]
+  NOR
+    AND
+      +insert sign
+      +result sign minus
+    AND
+      -insert sign
+      +st bit[32]
+
+-st bus[33..63]
+  NOT
+    +st bit[33..63]
+
+; PAGE RT401
+
+-st bit[40..47]
+  NOR
+    AND
+      +ls bus--[8..15](LS)
+      +gt ls-t
+    AND
+      +sdbo[8..15](WA)
+      +gt sdbo00-31-t
+    AND
+      +sdbo[40..47](WA)
+      +gt sdbo32-63-t
+    AND
+      +saddl[0..7](AS)
+      +gt saddl-st byte[5]
+    AND
+      +paddl[40..47](AP)
+      +gt paddl-t40-63
+    AND
+      +st bit[40..47]
+      -rst ls-t
+      -rst sdbo00-31-t
+      -rst sdbo32-63-t
+      -rst paddl-t40-63
+      -rst saddl-st byte[5]
+
+; PAGE RT481
+
+-t reg bit 48
+  NOT
+    +st bit[48]
+
+-st bit[48..55]
+  NOR
+    AND
+      +ls bus--[16..23](LS)
+      +gt ls-t
+    AND
+      +sdbo[16..23](WA)
+      +gt sdbo00-31-t
+    AND
+      +sdbo[48..55](WA)
+      +gt sdbo32-63-t
+    AND
+      +saddl[0..7](AS)
+      +gt saddl-st byte[6]
+    AND
+      +paddl[48..55](AP)
+      +gt paddl-t40-63
+    AND
+      +st bit[48..55]
+      -rst ls-t
+      -rst sdbo00-31-t
+      -rst sdbo32-63-t
+      -rst paddl-t40-63
+      -rst saddl-st byte[6]
+
+; PAGE RT561
+
+-st bit[56..63]
+  NOR
+    AND
+      +ls bus--[24..31](LS)
+      +gt ls-t
+    AND
+      +sdbo[24..31](WA)
+      +gt sdbo00-31-t
+    AND
+      +sdbo[56..63](WA)
+      +gt sdbo32-63-t
+    AND
+      +saddl[0..7](AS)
+      +gt saddl-st byte[7]
+    AND
+      +paddl[56..63](AP)
+      +gt paddl-t40-63
+    AND
+      +st bit[56..63]
+      -rst ls-t
+      -rst sdbo00-31-t
+      -rst sdbo32-63-t
+      -rst paddl-t40-63
+      -rst saddl-st byte[7]
+
+; PAGE RT625
+
+-ind st parity 32-39
+  NOT
+    +st parity 32-39
++st parity 32-39
+  ANDNOT
+    AND
+      -key to st p32-39(PX)
+      +data keys to st
+    -st parity 32-39
++st bus parity 32-39
+  NOT
+    -st parity 32-39
+-st parity 32-39
+  NOR
+    AND
+      +psw to st reg parity 32-39(RW)
+      +gt psw-s00-15t32-39
+    AND
+      +ls bus--parity 00-07(LS)
+      +gt ls-t
+    AND
+      +sdbo parity[0](WA)
+      +gt sdbo00-31-t
+    AND
+      +sdbo parity[4](WA)
+      +gt sdbo32-63-t
+    AND
+      +saddl parity(AS)
+      +gt saddl-st byte[4]
+    AND
+      +paddl parity 32-39(AP)
+      +gt paddl-t32-39
+    AND
+      +st parity 32-39
+      -rst psw-s00-15t32-39
+      -rst ls-t
+      -rst sdbo00-31-t
+      -rst sdbo32-63-t
+      -rst saddl-st byte[4]
+      -rst paddl-t32-39
+
+-st bus parity 40-47
+  NOT
+    +st parity 40-47
+-ind st parity 40-47
+  NOT
+    +st parity 40-47
++st parity 40-47
+  ANDNOT
+    AND
+      -key to st p40-47(PX)
+      +data keys to st
+    -st parity 40-47
++st bus parity 40-47
+  NOT
+    -st parity 40-47
+-st parity 40-47
+  NOR
+    AND
+      +ls bus--parity 08-15(LS)
+      +gt ls-t
+    AND
+      +sdbo parity[1](WA)
+      +gt sdbo00-31-t
+    AND
+      +sdbo parity[5](WA)
+      +gt sdbo32-63-t
+    AND
+      +saddl parity(AS)
+      +gt saddl-st byte[5]
+    AND
+      +paddl parity 40-47(AP)
+      +gt paddl-t40-63
+    AND
+      +st parity 40-47
+      -rst ls-t
+      -rst sdbo00-31-t
+      -rst sdbo32-63-t
+      -rst saddl-st byte[5]
+      -rst paddl-t40-63
+
+; PAGE RT627
+
++result sign minus
+  NOT
+    -result sign minus
+-result sign minus
+  NOT
+    +result sign minus(DN)
+
+-ind insert ls sign
+  NOT
+    +insert sign
++insert sign
+  NOT
+    -insert sign
+-insert sign
+  NOR
+    AND
+      +insert result sign(DR)
+      -inh result sign on log shift(AP)
+      +clock p2 inh
+    AND
+      -clock p1 inh
+      -err reset+logout(AS)
+      +insert sign
+
+-st bus parity 32-39
+  NOR
+    AND
+      +insert sign
+      XOR
+        +result sign minus
+        +st parity 32-39
+        +st bit[32]
+    AND
+      -insert sign
+      +st parity 32-39
+
+; PAGE RT635
+
+-st bus parity 48-55
+  NOT
+    +st parity 48-55
+-ind st parity 48-55
+  NOT
+    +st parity 48-55
++st parity 48-55
+  ANDNOT
+    AND
+      -key to st p48-55(PX)
+      +data keys to st
+    -st parity 48-55
++st bus parity 48-55
+  NOT
+    -st parity 48-55
+-st parity 48-55
+  NOR
+    AND
+      +ls bus--parity 16-23(LS)
+      +gt ls-t
+    AND
+      +sdbo parity[2](WA)
+      +gt sdbo00-31-t
+    AND
+      +sdbo parity[6](WA)
+      +gt sdbo32-63-t
+    AND
+      +saddl parity(AS)
+      +gt saddl-st byte[6]
+    AND
+      +paddl parity 48-55(AP)
+      +gt paddl-t40-63
+    AND
+      +st parity 48-55
+      -rst ls-t
+      -rst sdbo00-31-t
+      -rst sdbo32-63-t
+      -rst saddl-st byte[6]
+      -rst paddl-t40-63
+
+-st bus parity 56-63
+  NOT
+    +st parity 56-63
+-ind st parity 56-63
+  NOT
+    +st parity 56-63
++st parity 56-63
+  ANDNOT
+    AND
+      -key to st p56-63(PX)
+      +data keys to st
+    -st parity 56-63
++st bus parity 56-63
+  NOT
+    -st parity 56-63
+-st parity 56-63
+  NOR
+    AND
+      +ls bus--parity 24-31(LS)
+      +gt ls-t
+    AND
+      +sdbo parity[3](WA)
+      +gt sdbo00-31-t
+    AND
+      +sdbo parity[7](WA)
+      +gt sdbo32-63-t
+    AND
+      +saddl parity(AS)
+      +gt saddl-st byte[7]
+    AND
+      +paddl parity 56-63(AP)
+      +gt paddl-t40-63
+    AND
+      +st parity 56-63
+      -rst ls-t
+      -rst sdbo00-31-t
+      -rst sdbo32-63-t
+      -rst saddl-st byte[7]
+      -rst paddl-t40-63
+
+; PAGE RT661
+
++psw[32..39]
+  +psw to st reg bit[32..39](RW)
++psw parity 32-39
+  +psw to st reg parity 32-39(RW)
+
+; PAGE RT701
+
+-d padda bus ov[4..6]
+  NOT
+    +temp
+      ORNOT
+        -gt ones--padda 04-06 c-l0
+        -gt ones--padda 04-06 c-l1
+
+-d padda bus ov[7]
+  NOR
+    +gt d padda 08-31 t-l0
+    +gt d padda 08-31 c-l0
+    AND
+      +d bit[0](RD)
+      +gt d padda 07-30 t-l1
+    AND
+      -d bit[0](RD)
+      +gt d padda 07-30 c-l1
+
+-d padda bus[8..30]
+  NOR
+    AND
+      +d bit[0..22](RD)
+      +gt d padda 08-31 t-l0
+    AND
+      -d bit[0..22](RD)
+      +gt d padda 08-31 c-l0
+    AND
+      +d bit[1..23](RD)
+      +gt d padda 07-30 t-l1
+    AND
+      -d bit[1..23](RD)
+      +gt d padda 07-30 c-l1
+
+-d padda bus[31]
+  NOR
+    AND
+      +d bit[23](RD)
+      +gt d padda 08-31 t-l0
+    AND
+      -d bit[23](RD)
+      +gt d padda 08-31 c-l0
+    AND
+      +st bit[32]
+      +gt t padda 31-62 t-l1
+    AND
+      -st bit[32]
+      +gt t padda 31-62 c-l1
+
+; PAGE RT715
+
+-st padda bus[32..39]
+  NOR
+    AND
+      +st bit[0..7]
+      +gt s 00-31 padda 32-63
+    AND
+      +st bit[32..39]
+      +gt t padda 32-63 t-l0
+    AND
+      -st bit[32..39]
+      +gt t padda 32-63 c-l0
+    AND
+      +st bit[33..40]
+      +gt t padda 31-62 t-l1
+    AND
+      -st bit[33..40]
+      +gt t padda 31-62 c-l1
+
+; PAGE RT721
+
+-st d padda bus[40..46]
+  NOR
+    AND
+      +st bit[8..14]
+      +gt s 00-31 padda 32-63
+    AND
+      +st bit[40..46]
+      +gt t padda 32-63 t-l0
+    AND
+      -st bit[40..46]
+      +gt t padda 32-63 c-l0
+    AND
+      +st bit[41..47]
+      +gt t padda 31-62 t-l1
+    AND
+      -st bit[41..47]
+      +gt t padda 31-62 c-l1
+    AND
+      +d bit[0..6](RD)
+      +gt d padda 40-63 t
+    AND
+      -d bit[0..6](RD)
+      +gt d padda 40-63 c
+
+; PAGE RT727
+
+-st d padda bus[47]
+  NOR
+    AND
+      +st bit[15]
+      +gt s 00-31 padda 32-63
+    AND
+      +st bit[47]
+      +gt t padda 32-63 t-l0
+    AND
+      -st bit[47]
+      +gt t padda 32-63 c-l0
+    AND
+      +st bit[48]
+      +gt t padda 31-62 t-l1
+    AND
+      -st bit[48]
+      +gt t padda 31-62 c-l1
+    AND
+      +d bit[7](RD)
+      +gt d padda 40-63 t
+    AND
+      -d bit[7](RD)
+      +gt d padda 40-63 c
+    AND
+      -st bus[32]
+      +gt not t 32--padda 47
+    AND
+      -st bit[48]
+      +gt not t 48--padda 47
+
+; PAGE RT731
+
+-st d padda bus[48..60]
+  NOR
+    AND
+      +st bit[16..28]
+      +gt s 00-31 padda 32-63
+    AND
+      +st bit[48..60]
+      OR
+        +gt t padda 32-63 t-l0
+        +gt t 48-63 padda 48-63
+    AND
+      -st bit[48..60]
+      +gt t padda 32-63 c-l0
+    AND
+      +st bit[49..61]
+      +gt t padda 31-62 t-l1
+    AND
+      -st bit[49..61]
+      +gt t padda 31-62 c-l1
+    AND
+      +st bus[32..44]
+      +gt t 32-47 padda 48-63
+    AND
+      +d bit[8..20](RD)
+      +gt d padda 40-63 t
+    AND
+      -d bit[8..20](RD)
+      +gt d padda 40-63 c
+
+; PAGE RT745
+
+-st d padda bus[61..62]
+  NOR
+    AND
+      +st bit[29..30]
+      +gt s 00-31 padda 32-63
+    AND
+      +st bit[61..62]
+      OR
+        +gt t padda 32-63 t-l0
+        +gt t 48-63 padda 48-63
+    AND
+      -st bit[61..62]
+      +gt t padda 32-63 c-l0
+    AND
+      +st bit[62..63]
+      +gt t padda 31-62 t-l1
+    AND
+      -st bit[62..63]
+      +gt t padda 31-62 c-l1
+    AND
+      +st bus[45..46]
+      +gt t 32-47 padda 48-63
+    AND
+      +d bit[21..22](RD)
+      +gt d padda 40-63 t
+    AND
+      -d bit[21..22](RD)
+      +gt d padda 40-63 c
+    +gt ones--padda 61-63
+
+; PAGE RT747
+
+-st d padda bus[63]
+  NOR
+    AND
+      +st bit[31]
+      +gt s 00-31 padda 32-63
+    AND
+      +st bit[63]
+      OR
+        +gt t padda 32-63 t-l0
+        +gt t 48-63 padda 48-63
+    AND
+      -st bit[63]
+      +gt t padda 32-63 c-l0
+    AND
+      +st bus[47]
+      +gt t 32-47 padda 48-63
+    AND
+      +d bit[23](RD)
+      +gt d padda 40-63 t
+    AND
+      -d bit[23](RD)
+      +gt d padda 40-63 c
+    +gt ones--padda 61-63
+    +gt t padda 31-62 c-l1
+;    +gt t padda 31-62 t-l1
+
+; PAGE RT751
+
+-st sibb[0..7]
+  NOR
+    AND
+      +st bit[0..7]
+      +gt st byte to sibb[0]
+    AND
+      +st bit[8..15]
+      +gt st byte to sibb[1]
+    AND
+      +st bit[16..23]
+      +gt st byte to sibb[2]
+    AND
+      +st bit[24..31]
+      +gt st byte to sibb[3]
+    AND
+      +st bit[32..39]
+      +gt st byte to sibb[4]
+    AND
+      +st bit[40..47]
+      +gt st byte to sibb[5]
+    AND
+      +st bit[48..55]
+      +gt st byte to sibb[6]
+    AND
+      +st bit[56..63]
+      +gt st byte to sibb[7]
+
+; PAGE RT753
+
+-st sibb parity
+  NOR
+    AND
+      +st parity 00-07
+      +gt st byte to sibb[0]
+    AND
+      +st parity 08-15
+      +gt st byte to sibb[1]
+    AND
+      +st parity 16-23
+      +gt st byte to sibb[2]
+    AND
+      +st parity 24-31
+      +gt st byte to sibb[3]
+    AND
+      +st parity 32-39
+      +gt st byte to sibb[4]
+    AND
+      +st parity 40-47
+      +gt st byte to sibb[5]
+    AND
+      +st parity 48-55
+      +gt st byte to sibb[6]
+    AND
+      +st parity 56-63
+      +gt st byte to sibb[7]
+
+; PAGE RT771
+
+-d padda bus parity 04-07
+  NOT
+    -gt ones--padda 04-06 c-l1    
+
+-st padda bus parity 32-39
+  NOR
+    AND
+      +st parity 00-07
+      +gt s 00-31 padda 32-63
+    AND
+      +st bit[32..39]
+      OR
+        +gt t padda 32-63 t-l0
+        +gt t padda 32-63 c-l0
+        +gt t padda 31-62 t-l1
+        +gt t padda 31-62 c-l1
+    ANDNOT
+      +gt s 00-31 padda 32-63
+      +gt t padda 32-63 t-l0
+      +gt t padda 32-63 c-l0
+      +gt t padda 31-62 t-l1
+      +gt t padda 31-62 c-l1      
+
+; PAGE RT773
+
+-d padda bus parity 08-15
+  NOR
+    +d parity 00-07(RD)
+    ANDNOT
+      +gt d padda 08-31 t-l0
+      +gt d padda 08-31 c-l0
+      +gt d padda 07-30 t-l1
+      +gt d padda 07-30 c-l1
+
+-st padda bus parity 40-47
+  NOR
+    AND
+      +st parity 08-15
+      +gt s 00-31 padda 32-63
+    AND
+      +st parity 40-47
+      OR
+        +gt t padda 32-63 t-l0
+        +gt t padda 32-63 c-l0
+        +gt t padda 31-62 t-l1
+        +gt t padda 31-62 c-l1
+    AND
+      +d parity 00-07(RD)
+      OR
+        +gt d padda 40-63 t
+        +gt d padda 40-63 c
+    AND
+      +temp
+        NOT
+          -st bus[32]
+      +gt not t 32--padda 47
+    AND
+      +st bus[48]
+      +gt not t 48--padda 47
+    ANDNOT
+      +gt s 00-31 padda 32-63
+      +gt t padda 32-63 t-l0
+      +gt t padda 32-63 c-l0
+      +gt t padda 31-62 t-l1
+      +gt t padda 31-62 c-l1
+      +gt d padda 40-63 t
+      +gt d padda 40-63 c
+      +gt not t 32--padda 47
+      +gt not t 48--padda 47
+
+; PAGE RT775
+
+-d padda bus parity 16-23
+  NOR
+    +d parity 08-15(RD)
+    ANDNOT
+      +gt d padda 08-31 t-l0
+      +gt d padda 08-31 c-l0
+      +gt d padda 07-30 t-l1
+      +gt d padda 07-30 c-l1
+
+-st padda bus parity 48-55
+  NOR
+    AND
+      +st parity 16-23
+      +gt s 00-31 padda 32-63
+    AND
+      +st parity 48-55
+      OR
+        +gt t padda 32-63 t-l0
+        +gt t padda 32-63 c-l0
+        +gt t padda 31-62 t-l1
+        +gt t padda 31-62 c-l1
+        +gt t 48-63 padda 48-63
+    AND
+      +st parity 32-39
+      +gt t 32-47 padda 48-63
+    AND
+      +d parity 08-15(RD)
+      OR
+        +gt d padda 40-63 t
+        +gt d padda 40-63 c
+    ANDNOT
+      +gt s 00-31 padda 32-63
+      +gt t padda 32-63 t-l0
+      +gt t padda 32-63 c-l0
+      +gt t padda 31-62 t-l1
+      +gt t padda 31-62 c-l1
+      +gt d padda 40-63 t
+      +gt d padda 40-63 c
+      +gt t 48-63 padda 48-63
+      +gt t 32-47 padda 48-63
+
+; PAGE RT777
+
+-d padda bus parity 24-31
+  NOR
+    +d parity 16-23(RD)
+    ANDNOT
+      +gt d padda 08-31 t-l0
+      +gt d padda 08-31 c-l0
+      +gt d padda 07-30 t-l1
+      +gt d padda 07-30 c-l1
+
+-st padda bus parity 56-63
+  NOR
+    AND
+      +st parity 24-31
+      +gt s 00-31 padda 32-63
+    AND
+      +st parity 56-63
+      OR
+        +gt t padda 32-63 t-l0
+        +gt t padda 32-63 c-l0
+        +gt t padda 31-62 t-l1
+        +gt t padda 31-62 c-l1
+        +gt t 48-63 padda 48-63
+    AND
+      +d parity 16-23(RD)
+      -block padda bus pty 56-63
+      -gt ones--padda 61-63
+      OR
+        +gt d padda 40-63 t
+        +gt d padda 40-63 c
+    AND
+      +st parity 40-47
+      -block padda bus pty 56-63
+      +gt t 32-47 padda 48-63
+    AND
+      +gt ones--padda 61-63
+      XOR
+        +d bit[16..20](RD)
+    AND
+      -block padda bus pty 56-63
+      ANDNOT
+        +gt s 00-31 padda 32-63
+        +gt t padda 32-63 t-l0
+        +gt t padda 32-63 c-l0
+        +gt t padda 31-62 t-l1
+        +gt t padda 31-62 c-l1
+        +gt d padda 40-63 t
+        +gt d padda 40-63 c
+        +gt t 48-63 padda 48-63
+        +gt t 32-47 padda 48-63
+     
+; PAGE RT801
+
+-ind d00-23-padda 40-63 t
+  NOT
+    +gt d padda 40-63 t
++gt d padda 40-63 t
+  NOT
+    -temp
+      NOR
+        AND
+          +temp u[3]
+          +clock p2 inh
+        AND
+          -clock p1 inh
+          +gt d padda 40-63 t
+
+-ind d00-23-padda 40-63 c
+  NOT
+    +gt d padda 40-63 c
++gt d padda 40-63 c
+  NOT
+    -gt ones--padda 32-39 c
+-gt ones--padda 32-39 c
+  NOR
+    AND
+      OR
+        +temp u[2]
+        +temp u[10]
+      +clock p2 inh
+    AND
+      -clock p1 inh
+      +gt d padda 40-63 c
+
+; PAGE RT803
+
+-ind d00-23-padda 08-31 t-l0
+  NOT
+    +gt d padda 08-31 t-l0
++gt d padda 08-31 t-l0
+  NOT
+    -temp
+      AND
+        NAND
+          +ton gct d O t--pa 08-63 t
+          -inhibit ton t O d gcts
+          +clock p2 O flt pt
+        NOR
+          AND
+            OR
+              +temp u[11]
+              +temp u[15]
+            +clock p2 inh
+          AND
+            -clock p1 inh
+            +gt d padda 08-31 t-l0
+
+-ind d00-23-padda 08-31 c-l0
+  NOT
+    +gt d padda 08-31 c-l0
++gt d padda 08-31 c-l0
+  NOT
+    -gt ones--padda 04-06 c-l0
+-gt ones--padda 04-06 c-l0
+  AND
+    NAND
+      +ton gct d O t--pa 08-63 c
+      -inhibit ton t O d gcts
+      +clock p2 O flt pt
+    NOR
+      AND
+        +temp u[12]
+        +clock p2 inh
+      AND
+        -clock p1 inh
+        +gt d padda 08-31 c-l0
+
+; PAGE RT805
+
+DECODE
+  +temp u[0..15]
+  +ros bit[92..95]
+
+-ind d00-23-padda 07-30 t-l1
+  NOT
+    +gt d padda 07-30 t-l1
++gt d padda 07-30 t-l1
+  NOT
+    -temp
+      AND
+        NAND
+          +ton gct d O t--pa 07-62 t-l1
+          -inhibit ton t O d gcts
+          +clock p2 O flt pt
+        NOR
+          AND
+            +temp u[7]
+            +clock p2 inh
+          AND
+            -clock p1 inh
+            +gt d padda 07-30 t-l1
+
+-ind d00-23-padda 07-30 c-l1
+  NOT
+    +gt d padda 07-30 c-l1
++gt d padda 07-30 c-l1
+  NOT
+    -gt ones--padda 04-06 c-l1
+-gt ones--padda 04-06 c-l1
+  AND
+    NAND
+      +ton gct d O t--pa 07-62 c-l1
+      -inhibit ton t O d gcts
+      +clock p2 O flt pt
+    NOR
+      AND
+        -ros bit[96]
+        +temp u[5]
+        +clock p2 inh
+      AND
+        -clock p1 inh
+        +gt d padda 07-30 c-l1
+
+; PAGE RT807
+
+-ind t 32-63--padda 32-63 t-l0
+  NOT
+    +gt t padda 32-63 t-l0
++gt t padda 32-63 t-l0
+  NOT
+    -gt st 32-63--padda 32-63 t-l0
+-gt st 32-63--padda 32-63 t-l0
+  AND
+    NAND
+      +ton gct d O t--pa 08-63 t
+      -inhibit ton t O d gcts
+      +clock p2 inh
+    NOR
+      AND
+        OR
+          +temp u[14]
+          +temp u[15]
+        +clock p2 inh
+      AND
+        -clock p1 inh
+        +gt t padda 32-63 t-l0
+
+-ind t 32-63--padda 32-63 c-l0
+  NOT
+    +gt t padda 32-63 c-l0
++gt t padda 32-63 c-l0
+  NOT
+    -gt st 32-63--padda 32-63 c-l0
+-gt st 32-63--padda 32-63 c-l0
+  AND
+    NAND
+      +ton gct d O t--pa 08-63 c
+      -inhibit ton t O d gcts
+      +clock p2 inh
+    NOR
+      AND
+        OR
+          +temp u[12]
+          +temp u[13]
+        +clock p2 inh
+      AND
+        -clock p1 inh
+        +gt t padda 32-63 c-l0
+
+; PAGE RT811
+
+-ind t 32-63--padda 31-62 t-l1
+  NOT
+    +gt t padda 31-62 t-l1
++gt t padda 31-62 t-l1
+  NOT
+    -gt st 32-63--padda 31-62 t-l1
+-gt st 32-63--padda 31-62 t-l1
+  AND
+    NAND
+      +ton gct d O t--pa 07-62 t-l1
+      -inhibit ton t O d gcts
+      +clock p2 inh
+    NOR
+      AND
+        OR
+          +temp u[6]
+          +temp u[7]
+        +clock p2 inh
+      AND
+        -clock p1 inh
+        +gt t padda 31-62 t-l1
+
+-ind t 32-63--padda 31-62 c-l1
+  NOT
+    +gt t padda 31-62 c-l1
++gt t padda 31-62 c-l1
+  NOT
+    -gt st 32-63--padda 31-62 c-l1
+-gt st 32-63--padda 31-62 c-l1
+  AND
+    NAND
+      +ton gct d O t--pa 07-62 c-l1
+      -inhibit ton t O d gcts
+      +clock p2 inh
+    NOR
+      AND
+        -ros bit[96]
+        OR
+          +temp u[1]
+          +temp u[5]
+        +clock p2 inh
+      AND
+        -clock p1 inh
+        +gt t padda 31-62 c-l1
+
+-ind t 32-47--padda 48-63
+  NOT
+    +gt t 32-47 padda 48-63
++gt t 32-47 padda 48-63
+  NOT
+    -temp
+      NOR
+        AND
+          +temp u[8]
+          +clock p2 inh
+        AND
+          -clock p1 inh
+          +gt t 32-47 padda 48-63
+
+-st to padda 40-63
+  NOR
+    +gt t 32-47 padda 48-63
+    +gt s 00-31 padda 32-63
+    +gt t 48-63 padda 48-63
+
++gt ones--padda 61-63
+  NOT
+    -gt ones--padda 61-63
+-gt ones--padda 61-63
+  NOR
+    AND
+      +temp u[10]
+      +clock p2 inh
+    AND
+      -clock p1 inh
+      +gt ones--padda 61-63
+
+; PAGE RT815
+
+-ind s 00-31--padda 32-63
+  NOT
+    +gt s 00-31 padda 32-63
++gt s 00-31 padda 32-63
+  NOT
+    -temp
+      NOR
+        AND
+          -ros bit[96]
+          +temp u[4]
+          +clock p2 inh
+        AND
+          -clock p1 inh
+          +gt s 00-31 padda 32-63
+
+
+-ind t 48-63--padda 48-63
+  NOT
+    +gt t 48-63 padda 48-63
++gt t 48-63 padda 48-63
+  NOT
+    -temp
+      NOR
+        AND
+          +temp u[9]
+          +clock p2 inh
+        AND
+          -clock p1 inh
+          +gt t 48-63 padda 48-63
+
+; PAGE RT817
+
+-ind ros bit[92..96]
+  -ros reg bit[92..96]
+-ros reg bit[92..96]
+  NOT
+    +ros reg bit[92..96]
++ros reg bit[92..96]
+  NOR
+    AND
+      -ros bit[92..96]
+      +clock p4
+    AND
+      -clock p3
+      -ind ros bit[92..96]
+
+; PAGE RT821
+
+-ros bit[92..96]
+  -cros bit[92..96](EF)
++ros bit[92..96]
+  NOT
+    -cros bit[92..96](EF)
+
++roslth 92-96 odd
+  NOR
+    AND
+      NOT
+        XOR
+          +ros bit[92..96]
+      +clock p2 inh
+    AND
+      -clock p1 inh
+      +temp
+        NOT
+          +roslth 92-96 odd
+
+; PAGE RT823
+
+CLOCK
+
+-temp flt pt
+  NOT
+    +floating point(DN)
++floating point
+  +floating point(DN)
+
++clock p2 O flt pt
+  ANDNOT
+    -temp flt pt
+    -clock p1 inh
+
+; CAVA HACK - delay this signal
+
+-inhibit ton t O d gcts
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            AND
+              +temp rt823 5c cc
+              +dvd mpl sel l0-ins(DR)
+            AND
+              +temp rt823 5c cc
+              -temp flt pt
+              +dvd mpl sel l1-ins(DR)
+
+NOCLOCK
+
++temp rt823 5c cc
+  NOT
+    -temp
+      NOR
+        AND
+          +e12-15 eq 0000(RE)
+          -clock p3
+        AND
+          +clock p2 inh
+          +temp rt823 5c cc
+
+CLOCK
+
++pal 4 carry
+  +paddl carry fl pt(AP)
+
++pal carry 28
+  +pal carry 28(AP)
+
+-temp dvd l0
+  NOT
+    +dvd mpl sel l0-ins(DR)
+-temp dvd l1
+  NOT
+    +dvd mpl sel l1-ins(DR)
+
++ton gct d O t--pa 08-63 c
+  ANDNOT
+    AND
+      -temp dvd l0
+      -mpy sel 1x comp(DP)
+    AND
+      -mpy sel 1x comp(DP)
+      -temp rt823 4d af
+
++ton gct d O t--pa 08-63 t
+  ANDNOT
+    AND
+      -temp dvd l0
+      -mpy sel 1x true(DP)
+    AND
+      -mpy sel 1x true(DP)
+      +temp rt823 5e ag
+
++ton gct d O t--pa 07-62 c-l1
+  ANDNOT
+    AND
+      -temp dvd l1
+      -mpy sel 2x comp(DP)
+    AND
+      -mpy sel 2x comp(DP)
+      -temp rt823 4d af
+
++ton gct d O t--pa 07-62 t-l1
+  ANDNOT
+    AND
+      -temp dvd l1
+      -mpy sel 2x true(DP)
+    AND
+      -mpy sel 2x true(DP)
+      +temp rt823 5e ag
+
++temp rt823 5e ag
+  NOT
+    -temp rt823 4d af
+-temp rt823 4d af
+  NOR
+    AND
+      +paddl carry fl pt(AP)
+      +floating point(DN)
+    AND
+      +pal carry 28(AP)
+      -temp
+        NOT
+          +st bit[32]
+      -temp flt pt
+    AND
+      +temp
+        NOT
+          +pal carry 28(AP)
+      +st bit[32]
+      -temp flt pt
+
+; PAGE RT831
+
++gt st byte to sibb[0..7]
+  ANDNOT
+    +inhibit st to sibb(AP)
+    AND
+      -stc incr equal[0..7](CS)
+      +clock p2 uninh
+    AND
+      -temp[0..7]
+        NOT
+          +gt st byte to sibb[0..7]
+      -clock p1 uninh
+
+; PAGE RT841
+
++hot one to pa 62
+  NOT
+    -temp
+      NOR
+        AND
+          +ros bit[96]
+          +temp u[4]
+          +clock p2 inh
+        AND
+          -clock p1 inh
+          +hot one to pa 62
+
++hot one to pa 58
+  NOT
+    -temp
+      NOR
+        AND
+          +ros bit[96]
+          +temp u[5]
+          +clock p2 inh
+        AND
+          -clock p1 inh
+          +hot one to pa 58
+
+-block padda bus pty 56-63
+  NOT
+    +temp
+      NOT
+        -temp
+          NOR
+            +hot one to pa 62
+            +hot one to pa 58
+
+; PAGE RT845
+
+-one to padda 58
+  NOR
+    +ones to padda 53O56-59(AP)
+    +hot one to pa 58
+
+-one to padda 62
+  NOR
+    +ones to padda 61-63(AP)
+    +hot one to pa 62
+
++gt not t 32--padda 47
+  AND
+    +gt t 32-47 padda 48-63
+    -temp
+      NOR
+        +ros bit[96]
+        +ros reg bit[96]
+
++gt not t 48--padda 47
+  AND
+    +gt t 48-63 padda 48-63
+    -temp
+      NOR
+        +ros bit[96]
+        +ros reg bit[96]
+
+; PAGE RT901
+
++gt ls-s
+  NOT
+    -rst ls-s
+-rst ls-s
+  NAND
+    +gt ls to s 00-31(DR)
+    +clock p0
+
++gt ls-t
+  NOT
+    -rst ls-t
+-rst ls-t
+  NAND
+    +gt ls to t 32-63(DR)
+    +clock p0
+
+; PAGE RT903
+
++gt sdbo00-31-s
+  NOT
+    -rst sdbo00-31-s
+-rst sdbo00-31-s
+  NAND
+    +temp
+      ORNOT
+        -gt sdbo 00-31 to s 00-31(DR)
+        -mdbo to s(KU)
+    +clock p0
+
++gt sdbo32-63-t
+  NOT
+    -rst sdbo32-63-t
+-rst sdbo32-63-t
+  NAND
+    +temp
+      ORNOT
+        -gt sdbo 32-63 to t 32-63(DR)
+        -mdbo to t(KU)
+    +clock p0
+
+; PAGE RT905
+
++gt sdbo00-31-t
+  NOT
+    -rst sdbo00-31-t
+-rst sdbo00-31-t
+  NAND
+    +gt sdbo 00-31 to t 32-63(DR)
+    +clock p0
+
++gt paddl-t32-39
+  NOT
+    -rst paddl-t32-39
+-rst paddl-t32-39
+  NOR
+    AND
+      +gt pal 32-63 to t 32-63(DR)
+      +clock p0
+      -temp
+        NOT
+          +temp
+            NOT
+              -gt sal 00-07 to t 32-39(DR)
+    +scan gate paddl to t(KU)
+
++gt paddl-t40-63
+  NOT
+    -rst paddl-t40-63
+-rst paddl-t40-63
+  NOR
+    AND
+      +gt pal 32-63 to t 32-63(DR)
+      +clock p0
+    +scan gate paddl to t(KU)
+
+; PAGE RT907
+
++gt saddl-st byte[0..7]
+  NOT
+    -rst saddl-st byte[0..7]
+-rst saddl-st byte[0..3]
+  NAND
+    +stc equal[0..3](CS)
+    +gt sal to st per stc(DR)
+    +clock p0
+-rst saddl-st byte[4]
+  NOR
+    AND
+      +stc equal[4](CS)
+      +gt sal to st per stc(DR)
+      +clock p0
+    AND
+      +temp
+        NOT
+          -gt sal 00-07 to t 32-39(DR)
+      +clock p0
+-rst saddl-st byte[5..7]
+  NAND
+    +stc equal[5..7](CS)
+    +gt sal to st per stc(DR)
+    +clock p0
+
+; PAGE RT911
+
++gt psw-d 17-20+p
+  NOT
+    -temp
+      NAND
+        +clock p0
+        +gate timer+psw addr to d reg(KM)
++gt one d parity 00-07
+  +gt psw-d 17-20+p
++gt one d parity 08-15
+  +gt psw-d 17-20+p
+
+;+gate new address
+;  NOT
+;    -temp
+;      NOT
+;        +gate page address to d(MC)
+
+-rst d
+  NOR
+    AND
+      +gt pal 08-31 to d(DR)
+      +clock p0
+    AND
+      +gt pal 40-63 to d00-23(DR)
+      +clock p0
+    AND
+      +gate timer+psw addr to d reg(KM)
+      +clock p0
+;    +gate page address to d(MC)
+
+; PAGE RT913
+
++gt paddl 08-31 to d
+  NOT
+    -temp
+      NAND
+        +gt pal 08-31 to d(DR)
+        +clock p0
+
++gt paddl 40-63 to d
+  NOT
+    -temp
+      NAND
+        +gt pal 40-63 to d00-23(DR)
+        +clock p0
+
+; PAGE RT913
+
++gt psw-s00-15t32-39
+  NOT
+    -rst psw-s00-15t32-39
+-rst psw-s00-15t32-39
+  NAND
+    +psw to s 00-15 t 32-39(DR)
+    +clock p0
+
++gt psw-s16-31
+  NOT
+    -rst psw-s16-31
+-rst psw-s16-31
+  NAND
+    +gt old psw to s 16-31(DR)
+    +clock p0
+
+; PAGE RT917
+
++data keys to st
+  NOT
+    -temp
+      NAND
+        +gt data keys to st(DR)
+        +clock p0
+
++addr keys to d
+  NOT
+    -temp
+      NAND
+        +gt adr keys to d 00-23(DR)
+        +clock p0
+
++gt addr keys to d
+  +gt adr keys to d 00-23(DR)
+
+; PAGE RT919
+
+-inhibit local clock
+  -inhibit local clock p0(AP)
+
++clock p6
+  NOT
+    -clock p5
+-clock p5
+  NOT
+    +clock p4
++clock p4
+  NOT
+    -clock p3
+-clock p3
+  NOT
+    +clock p2 inh
++clock p2 inh
+  NOT
+    -clock p1 inh
+-clock p1 inh
+  NAND
+    +clock p0
+    -inhibit local clock p0(AP)
++clock p2 uninh
+  NOT
+    -clock p1 uninh
+-clock p1 uninh
+  NOT
+    +clock p0
++clock p0
+  +clock p0 from gate(KC)
+;  NOT
+;    -temp
+;      NOT
+;        +temp
+;          TD
+;            +temp
+;              NOT
+;                -master clock(RQ)
+
+NOCLOCK
+
+; ADDT'L
+
+-st bus[28..31]
+  NOT
+    +st bit[28..31]

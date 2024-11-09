@@ -1,0 +1,212 @@
+SECTION CA
+
+; PAGE CA001
+-ind ic bit[0..23]
+  NOT
+    +ic[0..23]
+
++sdbo[40..63]
+  +sdbo[40..63](WA)
+
+; CAVA HACK eliminate rst
+
++ic[0..23]
+  NOT
+    -ic[0..23]
+-ic[0..20]
+  NOR
+    AND
+      +paddl[40..60](AP)
+      +gt pal to ic
+    AND
+      +ic[0..20]
+      NOT
+        +gt pal to ic
+;      -rst ic for pal
+
+; PAGE CA211
+
+; CAVA HACK eliminate rst
+
+-ic[21..22]
+  NOR
+    AND
+      +set ic 21-22+par
+      +set ic[21..22](DR)
+    AND
+      +paddl[61..62](AP)
+      +gt pal to ic
+    AND
+      +ic[21..22]
+      NOT
+        +gt pal to ic
+      NOT
+        +set ic 21-22+par
+;      -rst ic for pal
+;      -rst ic 21-22+par
+ 
+DECODE
+  +temp ic21-22[0..3]
+  +ic[21..22]
+-ic 21-22 eq[0..3]
+  NOT
+    +temp ic21-22[0..3]
+
++set ic 21-22+par
+  NOT
+    -rst ic 21-22+par
+-rst ic 21-22+par
+  AND
+    NAND    
+      +set ic 21-22(DR)
+      +clock p0 minus 2(RQ)
+;    -rst ic for new address
+
+; PAGE CA215
+
+-ic[23]
+  NOR
+    AND
+      +paddl[63](AP)
+      +gt pal to ic
+    AND
+      -rst ic for pal
+      +ic[23]
+;      -rst ic for new address
+
+; PAGE CA221
+
+-ic to branches[21..22]
+  NOR
+    AND
+      +ic[21..22]
+      NOT
+        +gt pal 40-63 to ic(DR)
+      NOT
+        +set ic 21-22(DR)
+    AND
+      +paddl[61..62](AP)
+      +gt pal 40-63 to ic(DR)
+    AND
+      +set ic[21..22](DR)
+      +set ic 21-22(DR)
+
+; PAGE CA231
+
++sdbo parity 40-47
+  +sdbo parity[5](WA)
+-ind ic p00-07
+  NOT
+    +ic parity 00-07
++ic parity 00-07
+  NOT
+    -temp
+      NOR
+        AND
+          +paddl parity 40-47(AP)
+          +gt pal to ic
+        AND
+          -rst ic for pal
+          +ic parity 00-07
+;          -rst ic for new address
+;        AND
+;          +sdbo parity[5](WA)
+;          +gate new address
++sdbo parity 48-55
+  +sdbo parity[6](WA)
+-ind ic p08-15
+  NOT
+    +ic parity 08-15
++ic parity 08-15
+  NOT
+    -temp
+      NOR
+        AND
+          +paddl parity 48-55(AP)
+          +gt pal to ic
+        AND
+          -rst ic for pal
+          +ic parity 08-15
+;          -rst ic for new address
+;        AND
+;          +sdbo parity[6](WA)
+;          +gate new address
+
+; PAGE CA241
+
++pty 16-23 required
+  +parity 16-23 required(MB)
+;-temp ca241 4k as nand
+;  NAND
+;    +gate new address
+;    -temp
+;      NOT
+;        +parity 16-23 required(MB)
++ic parity 16-23
+  NOT
+    -temp
+      NOR
+        AND
+          +paddl parity 56-63(AP)
+          +gt pal to ic
+        AND
+          -rst ic for pal
+          -rst ic 21-22+par
+          +ic parity 16-23
+;          -temp ca241 4k as nand
+;        AND
+;          -adj parity ic 16-23(DR)
+;          +set ic 21-22+par
+;          -temp ca241 4k as nand
+-ind ic p16-23
+  NOT
+    +ic parity 16-23
++par adjust ic 16-20O23
+  XOR
+    +ic parity 16-23
+    +ic[21..22]
+
+; PAGE CA701
+
+-ic paddb bus[40..51]
+  NAND
+    +ic[0..11]
+    +gt ic 08-15+p to pb 48-55+p
++gt ic 08-15+p to pb 48-55+p
+  NOT
+    -gt ic paddb 40-63(RA_RB)
+-ic paddb bus p40-47
+  NAND
+    +ic parity 00-07
+    +gt ic 08-15+p to pb 48-55+p
+
+; PAGE CA901
+
+CLOCK
+
++gt pal to ic
+  NOT
+    -rst ic for pal
+-rst ic for pal
+  NAND
+    +gt pal 40-63 to ic(DR)
+    +temp
+      NOT
+        -temp
+          NOT
+            +clock p0(RQ)
+
+NOCLOCK
+
+; PAGE CA911
+
+;+gate new address
+;  NOT
+;    -rst ic for new address
+;-rst ic for new address
+;  NOT
+;    +temp
+;      NOT
+;        -temp
+;          NOT
+;            +gate page address to ic(MC)

@@ -1,0 +1,251 @@
+SECTION CS
+
+; PAGE CS011
+
+-i fetch reset
+  NOT
+    +rosr dec i ftch rst(RE)
+
+-i fet resetOrr format
+  NAND
+    +rosr dec i ftch rst(RE)
+    +temp
+      NOT
+        -rr format(DN)
+
++st bit[54..56]
+  +st bus[54..56](KD)
+
+CLOCK
+
++stc incr lth to stc
+  ANDNOT
+    +temp
+      NOT
+        -pal 61-63 to stc(DR)
+    -clock p1
+
++paddl 61-63 to stc
+  ANDNOT
+    -pal 61-63 to stc(DR)
+    -clock p1
+
+NOCLOCK
+
+-ind stc[0..2]
+  NOT
+    +stc tgr[0..2]
+
+CLOCK
+
++stc tgr[0..2]
+  NOT
+    -stc tgr[0..2]
+-stc tgr[0..2]
+  NOR
+    AND
+      +st bus[54..56](KD)
+      +scan in word 4
+    AND
+      +stc incr lth to stc
+      +stc incr lth[0..2]
+    AND
+      +paddl bit[61..63](CW)
+      +paddl 61-63 to stc
+    AND
+      -clock p1
+      +stc tgr[0..2]
+
+NOCLOCK
+
+-stc lth[0..2]
+  NOR
+    AND
+      +stc tgr[0..2]
+      -clock p1
+    AND
+      +stc lth[0..2]
++stc lth[0..2]
+  ANDNOT
+    AND
+      -stc tgr[0..2]
+      -clock p1
+    AND
+      -stc lth[0..2]
+
+; PAGE CS031
+
+CLOCK
+
++one to stc[2]
+  NOT
+    -+011 to stc(DR)
++one to stc[1]
+  NOT
+    -+011 to stc(DR)
++stc to stc incr[0]
+  NOR
+    +one to stc[2]
+    -temp cs031 sc aq ornot
+-temp cs031 sc aq ornot
+  ORNOT
+    -d 21-23 to stc(DR)
+    -stc-1 to stc(DR)
+    -l2 to stc(DR)
+    -stc+1 to stc(DR)
+    -i fetch reset
+    -temp
+      NOT
+        ++000 to stc(DR)
++stc to stc incr[1..2]
+  NOT
+    -temp cs031 sc aq ornot
+
++sub 1 to stc
+  NOT
+    -stc-1 to stc(DR)
+
+NOCLOCK
+
++scan in word 4
+  NOT
+    -scan in word 4(KM)
+
+CLOCK
+
++add 1 to stc
+  NOT
+    -stc+1 to stc(DR)
++one to stc[0]
+  ORNOT
+    -+1 to stc bit 0(DR)
+    -i fet resetOrr format
++e reg 13-15 to stc
+  NOT
+    -l2 to stc(DR)
++d reg 21-23 to stc
+  NOT
+    -d 21-23 to stc(DR)
+
+-clock p3
+  NOT
+    +clock p2
++clock p2
+  NOT
+    -clock p1
+-clock p1
+  NOT
+    +clock p0
++clock p0
+  NOT
+    -clock p0 minus 1
+-clock p0 minus 1
+  -clock p0-1 from gate(KC)
+;  NOT
+;    +temp
+;      TD
+;        +temp
+;          NOT
+;            -clock gate a top(KC)
+
+NOCLOCK
+
++stc 1 exclusive stc 2
+  NOT
+    +stc 1 not exclusive stc 2
++stc 1 not exclusive stc 2
+  NOT
+    XOR
+      +stc tgr[1..2]
+-scan in word 4
+  -scan in word 4(KM)
+
+; PAGE CS041
+
++stc incr lth[0..2]
+  NOT
+    -stc incr lth[0..2]
++stc greater than 3
+  NOT
+    -stc incr lth[0]
+  
+-stc incr lth[0..2]
+  NOR
+    AND
+      +d bit[21..23](RD)
+      +d reg 21-23 to stc
+      -clock p3
+    AND
+      +e reg bus[13..15](CW)
+      +e reg 13-15 to stc
+      -clock p3
+    AND
+      +temp stc plus one[0..2]
+      +add 1 to stc
+      -clock p3
+    AND
+      +stc tgr[0..2]
+      +stc to stc incr[0..2]
+      -clock p3
+    AND
+      +sub 1 to stc
+      +temp stc minus one[0..2]
+      -clock p3
+    AND
+      +one to stc[0..2]
+      -clock p3
+    AND
+      +stc incr lth[0..2]
+      +clock p2
+
+CLOCK
+
++temp stc plus one[0]
+  NOR
+    AND
+      +stc tgr[0..2]
+    AND
+      -stc tgr[0]
+      -stc tgr[2]
+    AND
+      -stc tgr[0..1]
++temp stc plus one[1]
+  +stc 1 exclusive stc 2
++temp stc plus one[2]
+  -stc tgr[2]
+
++temp stc minus one[0]
+  NOR
+    AND
+      +stc tgr[0]
+      -stc tgr[1..2]
+    AND
+      -stc tgr[0]
+      +stc tgr[2]
+    AND
+      -stc tgr[0]
+      +stc tgr[1]
++temp stc minus one[1]
+  +stc 1 not exclusive stc 2
++temp stc minus one[2]
+  -stc tgr[2]
+
+NOCLOCK
+
+; PAGE CS061
+
+DECODE
+  +stc incr equal[0..7]
+  +stc incr lth[0..2]
+-stc incr equal[0..7]
+  NOT
+    +stc incr equal[0..7]
++stc incr not eq[0..7]
+  -stc incr equal[0..7]
+
+DECODE
+  +stc equal[0..7]
+  +stc lth[0..2]
+-stc equal[0..7]
+  NOT
+    +stc equal[0..7]

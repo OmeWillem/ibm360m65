@@ -1,0 +1,258 @@
+SECTION PX
+
+; PAGE PX111
+
+-addr key[8..31]
+  NOT
+    +addr key[8..31]
++addr key[8..31]
+  NOT
+    -ce address key[8..31](PK_PL)
+
++addr key p08-15
+  NOT
+    -ce address key parity 08-15(PK_PL)
+
+; PAGE PX121
+
++addr key p16-23
+  NOT
+    -ce address key parity 16-23(PK_PL)
+
+; PAGE PX131
+
++addr key p24-31
+  NOT
+    -ce address key parity 24-31(PK_PL)
+
+; PAGE PX141
+
+-key to st[0..63]
+  NOT
+    +data key to d[0..63]
++data key to d[0..63]
+  NOT
+    -ce data key[0..63](PK_PL)
+
+-key to st p00-07
+  NOT
+    +temp
+      NOT
+        -ce data key parity 00-07(PK_PL)
+
+; PAGE PX151
+
+-key to st p08-15
+  NOT
+    +temp
+      NOT
+        -ce data key parity 08-15(PK_PL)
+
+-key to st p16-23
+  NOT
+    +temp
+      NOT
+        -ce data key parity 16-23(PK_PL)
+
+; PAGE PX155
+
+-key to st p24-31
+  NOT
+    +temp
+      NOT
+        -ce data key parity 24-31(PK_PL)
+
+-key to st p32-39
+  NOT
+    +temp
+      NOT
+        -ce data key parity 32-39(PK_PL)
+
+; PAGE PX161
+
+-key to st p40-47
+  NOT
+    +data key p40-47 to d
++data key p40-47 to d
+  NOT
+    -ce data key parity 40-47(PK_PL)
+
+; PAGE PX171
+
+-key to st p48-55
+  NOT
+    +data key p48-55 to d
++data key p48-55 to d
+  NOT
+    -ce data key parity 48-55(PK_PL)
+
+-key to st p56-63
+  NOT
+    +data key p56-63 to d
++data key p56-63 to d
+  NOT
+    -ce data key parity 56-63(PK_PL)
+
+
+; PAGE PX221
+
+-key to d[8..31]
+  AND
+    NAND
+      +loop tgr
+      +data key to d[40..63]
+    NAND
+      -loop tgr
+      +addr key[8..31]
+
+-key p08-15 to d
+  AND
+    NAND
+      +loop tgr
+      +data key p40-47 to d
+    NAND
+      -loop tgr
+      +addr key p08-15
+
+; PAGE PX231
+
+-key p16-23 to d
+  AND
+    NAND
+      +loop tgr
+      +data key p48-55 to d
+    NAND
+      -loop tgr
+      +addr key p16-23
+
+; PAGE PX241
+
+-key p24-31 to d
+  AND
+    NAND
+      +loop tgr
+      +data key p56-63 to d
+    NAND
+      -loop tgr
+      +addr key p24-31
+
+; PAGE PX301
+
++enable power off
+  NOT
+    -temp
+      NOT
+        +temp
+          NOT
+            -temp
+              NOT
+                +temp px301 5f aq not
+
++test switch reset state bits
+  ORNOT
+    -temp px301 ss out
+    -temp px301 4h ak nand
+
+CLOCK
+
+SPECIAL
+  NSSN30MS
+    -temp px301 ss in
+    OUT
+    -temp px301 ss out
+
+NOCLOCK
+
+-temp px301 ss in
+  NOT
+    +temp
+      AND
+        +temp px301 5f aq not
+        -temp
+          NOT
+            +test switch on(PK_PL)
+
+-test on latched px301ay4
+  NOT
+    +temp px301 5f aq not
++temp px301 5f aq not
+  NOT
+    -test on latched px301am4
+-test on latched px301am4
+  NOR
+    +test switch on(PK_PL)
+    AND
+      -temp
+        NOT
+          +test switch reset state bits
+      +temp px301 5f aq not
+
++power on reset px301
+  NOT
+    -temp px301 4h ak nand
+-temp px301 4h ak nand
+  NOT
+    +power on reset(*)
+
+; PAGE PX311
+
++power on reset px311
+  ORNOT
+    -temp
+      NAND
+        +power on reset px311
+        -temp
+          NAND
+            -temp por
+            +temp
+              NOT
+                -sample manual lines(KC)
+    -temp por
+-temp por
+  NOT
+    +power on reset px301
+
+; PAGE PX331
+
+-test on latched px331
+  NOT
+    +test lthd
++test lthd
+  NOT
+    -test on latched px301ay4
+-test lthd
+  -test on latched px331
+
+; PAGE PX341
+
+-loop tgr
+  NOT
+    +loop tgr
++loop tgr
+  NOT
+    -temp
+      NOT
+        +temp
+          NOT
+            -temp
+              NOT
+                +loop tgr(KW)
+
+; PAGE PX411
+
++load unit addr bit[0..7]
+  +ce load unit addr bit[0..7](PK_PL)
++load unit addr bit p00-07
+  +ce load unit addr bit p00-07(PK_PL)
+
+; PAGE PX431
+
++load chan addr bit[4..7]
+  +ce load chan addr bit[4..7](PK_PL)
++load chan addr bit p04-07
+  +ce load chan addr bit p04-07(PK_PL)
+
++decode ioce 1
+  1
+-decode ioce 1
+  0
