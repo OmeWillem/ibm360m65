@@ -84,8 +84,10 @@ void write_h_file(std::string sec) {
 	sections[sec].c_file << "}\n";
 }
 
-void write_top_h_file() {
-	std::ofstream of("ald.h");
+void write_top_h_file(std::string outdir) {
+	std::filesystem::path pp("ald.h");
+	pp = outdir / pp.filename();
+	std::ofstream of(pp);
 
 	of << "/* ALD top include file */\n\n";
 	of << "#include \"ald_types.h\"\n";
@@ -138,7 +140,9 @@ void write_top_h_file() {
 	for (auto& s : sections)
 		of << "#define " << s.first << "_INT ald_int.ald_" << s.first << "_INT\n";
 
-	std::ofstream of2("ald_types.h");
+	std::filesystem::path pp2("ald_types.h");
+	pp2 = outdir / pp2.filename();
+	std::ofstream of2(pp2);
 
 	for (auto& a : bit_ranges) {
 		for (auto& b : a.second) {

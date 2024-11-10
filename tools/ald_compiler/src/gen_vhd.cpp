@@ -501,8 +501,10 @@ void write_vhd_file(std::string sec) {
 
 }
 
-void write_top_vhd_file() {
-	std::ofstream vhd_file("ald.vhd");
+void write_top_vhd_file(std::string outdir) {
+	std::filesystem::path pp("ald.vhd");
+	pp = outdir / pp.filename();
+	std::ofstream vhd_file(pp);
 
 	vhd_file << "library IEEE; \n";
 	vhd_file << "use IEEE.STD_LOGIC_1164.ALL;\n";

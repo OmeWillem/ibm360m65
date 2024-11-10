@@ -101,9 +101,9 @@ void add_ext_signal(std::string sec, SIG1 s, std::vector<LINE> lines);
 
 void write_c_file(std::string sec);
 void write_h_file(std::string sec);
-void write_top_h_file();
+void write_top_h_file(std::string outdir);
 void write_vhd_file(std::string sec);
-void write_top_vhd_file();
+void write_top_vhd_file(std::string outdir);
 
 
 inline bool is_known_word(std::string s) {

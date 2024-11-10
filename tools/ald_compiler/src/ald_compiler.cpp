@@ -22,16 +22,18 @@ bool eliminate = false;
 
 void usage() {
 	std::cout << "Usage:\n"
-		<< "  ald_compiler [-O<n>] [filename [filename...]]\n"
+		<< "  ald_compiler [-O<n>] <indir> <outdir>\n"
 		<< "  where:\n"
 		<< "     -O0 : no optimizations\n"
 		<< "     -O1 : collapse identical signals into a single signal\n"
 		<< "     -O2 : eliminate unused signals\n"
-		<< "     -O3 : both optimizations\n";
+		<< "     -O3 : both optimizations\n"
+		<< "     <indir> : Directory containing ALD files\n"
+		<< "     <outdir> : Directory for generated files\n";
 	exit(1);
 }
 
-void add_file(std::filesystem::path fn) {
+void add_file(std::filesystem::path fn, std::string outdir) {
 	std::ifstream fi;
 	std::string line, rest;
 
@@ -56,6 +58,7 @@ void add_file(std::filesystem::path fn) {
 	sections[rest].ald_file.open(fn);
 	if (!sections[rest].ald_file.is_open())
 		error_exit(rest, "Can't open file " + fn.string() + " for reading.", "");
+	fn = outdir / fn.filename();
 	fn.replace_extension(".cpp");
 	sections[rest].c_file.open(fn);
 	if (!sections[rest].c_file.is_open())
@@ -80,7 +83,8 @@ void add_file(std::filesystem::path fn) {
 
 int main(int argc, char** argv)
 {
-	bool have_file = false;
+	std::string p1 = "";
+	std::string p2 = "";
 
 	std::cout << "VAXbarn ALD Compiler version 1.00\n";
 	std::cout << "Copyright (C) 2020 by Camiel Vanderhoeven\n\n";
@@ -94,16 +98,26 @@ int main(int argc, char** argv)
 				eliminate = true;
 		}
 		else {
-			have_file = true;
-			add_file(std::filesystem::path(argv[i]));
+			if (p1 == "") {
+				p1 = std::string(argv[i]);
+			}
+			else if (p2 == "") {
+				p2 = std::string(argv[i]);
+			}
+			else {
+				usage();
+				return 0;
+			}
 		}
 	}
-
-	if (!have_file) {
-		for (const auto& p : std::filesystem::directory_iterator("."))
-			if (p.path().extension() == ".ald" || p.path().extension() == ".ALD")
-				add_file(p.path());
+	if (p1 == "" || p2 == "") {
+		usage();
+		return 0;
 	}
+
+	for (const auto& p : std::filesystem::directory_iterator(p1))
+		if (p.path().extension() == ".ald" || p.path().extension() == ".ALD")
+			add_file(p.path(), p2);
 
 	for (auto& s : sections) {
 		ingest_signals(s.first);
@@ -116,13 +130,13 @@ int main(int argc, char** argv)
 		write_h_file(s.first);
 	}
 
-	write_top_h_file();
+	write_top_h_file(p2);
 
 	for (auto& s : sections) {
 		write_vhd_file(s.first);
 	}
 
-	write_top_vhd_file();
+	write_top_vhd_file(p2);
 
 	for (auto& s : sections) {
 		std::cout << s.first << "\t" << std::to_string(s.second.log_cnt) << " warnings\t" << std::to_string(s.second.inf_cnt) << " informationals\n";
