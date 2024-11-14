@@ -31,47 +31,8 @@
 
 // #define INLINE_STORE_FETCH_ADDR_CHECK
 
-#if defined(FEATURE_DUAL_ADDRESS_SPACE)
-_DAT_C_STATIC U16 ARCH_DEP(translate_asn) (U16 asn, REGS *regs,
-        U32 *asteo, U32 aste[]);
-_DAT_C_STATIC int ARCH_DEP(authorize_asn) (U16 ax, U32 aste[],
-        int atemask, REGS *regs);
-#endif
-#if defined(FEATURE_ACCESS_REGISTERS)
-_DAT_C_STATIC U16 ARCH_DEP(translate_alet) (U32 alet, U16 eax,
-        int acctype, REGS *regs, U32 *asteo, U32 aste[]);
-_DAT_C_STATIC void ARCH_DEP(purge_alb_all) ();
-_DAT_C_STATIC void ARCH_DEP(purge_alb) (REGS *regs);
-#endif
-_DAT_C_STATIC int ARCH_DEP(translate_addr) (VADR vaddr, int arn,
-        REGS *regs, int acctype);
-_DAT_C_STATIC void ARCH_DEP(purge_tlb_all) ();
-_DAT_C_STATIC void ARCH_DEP(purge_tlb) (REGS *regs);
-_DAT_C_STATIC void ARCH_DEP(purge_tlbe_all) (RADR pfra);
-_DAT_C_STATIC void ARCH_DEP(purge_tlbe) (REGS *regs, RADR pfra);
-_DAT_C_STATIC void ARCH_DEP(invalidate_tlb) (REGS *regs, BYTE mask);
-#if ARCH_MODE == ARCH_390 && defined(_900)
-_DAT_C_STATIC void z900_invalidate_tlb (REGS *regs, BYTE mask);
-#endif
-_DAT_C_STATIC void ARCH_DEP(invalidate_tlbe) (REGS *regs, BYTE *main);
-_DAT_C_STATIC void ARCH_DEP(invalidate_pte) (BYTE ibyte, int r1,
-        int r2, REGS *regs);
 _LOGICAL_C_STATIC BYTE *ARCH_DEP(logical_to_main) (VADR addr, int arn,
         REGS *regs, int acctype, BYTE akey);
-
-#if defined(_FEATURE_SIE) && ARCH_MODE != ARCH_900
-_LOGICAL_C_STATIC BYTE *s390_logical_to_main (U32 addr, int arn, REGS *regs,
-        int acctype, BYTE akey);
-_DAT_C_STATIC int s390_translate_addr (U32 vaddr, int arn, REGS *regs,
-        int acctype);
-#endif /*defined(_FEATURE_SIE)*/
-
-#if defined(_FEATURE_ZSIE)
-_LOGICAL_C_STATIC BYTE *z900_logical_to_main (U64 addr, int arn, REGS *regs,
-        int acctype, BYTE akey);
-_DAT_C_STATIC int z900_translate_addr (U64 vaddr, int arn, REGS *regs,
-        int acctype);
-#endif /*defined(_FEATURE_ZSIE)*/
 
 _VSTORE_C_STATIC void ARCH_DEP(vstorec) (void *src, BYTE len,
         VADR addr, int arn, REGS *regs);
@@ -98,14 +59,6 @@ _VSTORE_C_STATIC void ARCH_DEP(move_chars) (VADR addr1, int arn1,
 _VSTORE_C_STATIC void ARCH_DEP(validate_operand) (VADR addr, int arn,
         int len, int acctype, REGS *regs);
 _VFETCH_C_STATIC BYTE * ARCH_DEP(instfetch) (REGS *regs, int exec);
-
-#if defined(_FEATURE_SIE) && defined(_370) && !defined(_IEEE_C_)
-_VFETCH_C_STATIC BYTE * s370_instfetch (REGS *regs, int exec);
-#endif /*defined(_FEATURE_SIE)*/
-
-#if defined(_FEATURE_ZSIE) && defined(_900)
-_VFETCH_C_STATIC BYTE * s390_instfetch (REGS *regs, int exec);
-#endif /*defined(_FEATURE_ZSIE)*/
 
 #if !defined(_INLINE_H)
 
@@ -354,24 +307,6 @@ static inline int ARCH_DEP(is_fetch_protected) (VADR addr, BYTE skey,
     || !(skey & STORKEY_FETCH)))
     return 0;
 
-#ifdef FEATURE_FETCH_PROTECTION_OVERRIDE
-    /* [3.4.1.2] Fetch protection override allows fetch from first
-       2K of non-private address spaces if CR0 bit 6 is set */
-    if (addr < 2048
-    && (regs->CR(0) & CR0_FETCH_OVRD)
-    && regs->dat.private == 0)
-    return 0;
-#endif /*FEATURE_FETCH_PROTECTION_OVERRIDE*/
-
-#ifdef FEATURE_STORAGE_PROTECTION_OVERRIDE
-    /* [3.4.1.1] Storage protection override allows access to
-       locations with storage key 9, regardless of the access key,
-       provided that CR0 bit 7 is set */
-    if ((skey & STORKEY_KEY) == 0x90
-    && (regs->CR(0) & CR0_STORE_OVRD))
-    return 0;
-#endif /*FEATURE_STORAGE_PROTECTION_OVERRIDE*/
-
     /* Return one if location is fetch protected */
     return 1;
 
@@ -390,32 +325,14 @@ static inline int ARCH_DEP(is_fetch_protected) (VADR addr, BYTE skey,
 static inline int ARCH_DEP(is_low_address_protected) (VADR addr,
                                               REGS *regs)
 {
-#if defined (FEATURE_ESAME)
-    /* For ESAME, low-address protection applies to locations
-       0-511 (0000-01FF) and 4096-4607 (1000-11FF) */
-    if (addr & 0xFFFFFFFFFFFFEE00ULL)
-#else /*!defined(FEATURE_ESAME)*/
     /* For S/370 and ESA/390, low-address protection applies
        to locations 0-511 only */
     if (addr > 511)
-#endif /*!defined(FEATURE_ESAME)*/
         return 0;
 
     /* Low-address protection applies only if the low-address
        protection control bit in control register 0 is set */
     if ((regs->CR(0) & CR0_LOW_PROT) == 0)
-        return 0;
-
-#if defined(_FEATURE_SIE)
-    /* Host low-address protection is not applied to guest
-       references to guest storage */
-    if (regs->sie_active)
-        return 0;
-#endif /*defined(_FEATURE_SIE)*/
-
-    /* Low-address protection does not apply to private address
-       spaces */
-    if (regs->dat.private)
         return 0;
 
     /* Return one if location is low-address protected */
@@ -447,29 +364,10 @@ static inline int ARCH_DEP(is_store_protected) (VADR addr, BYTE skey,
     if (ARCH_DEP(is_low_address_protected) (addr, regs))
         return 1;
 
-    /* Access-list controlled protection prohibits all stores into
-       the address space, and page protection prohibits all stores
-       into the page, regardless of the access key and storage key */
-    if (regs->dat.protect)
-        return 1;
-#if defined(_FEATURE_SIE)
-    if(SIE_MODE(regs) && regs->hostregs->dat.protect)
-        return 1;
-#endif
-
     /* [3.4.1] Store is allowed if access key is zero, regardless
        of the storage key */
     if (akey == 0)
         return 0;
-
-#ifdef FEATURE_STORAGE_PROTECTION_OVERRIDE
-    /* [3.4.1.1] Storage protection override allows access to
-       locations with storage key 9, regardless of the access key,
-       provided that CR0 bit 7 is set */
-    if ((skey & STORKEY_KEY) == 0x90
-        && (regs->CR(0) & CR0_STORE_OVRD))
-        return 0;
-#endif /*FEATURE_STORAGE_PROTECTION_OVERRIDE*/
 
     /* [3.4.1] Store protection prohibits stores if the access
        key does not match the storage key */
@@ -500,8 +398,6 @@ static inline BYTE *ARCH_DEP(fetch_main_absolute) (RADR addr,
         regs->program_interrupt (regs, PGM_ADDRESSING_EXCEPTION);
 #endif /*defined(INLINE_STORE_FETCH_ADDR_CHECK)*/
 
-    SIE_TRANSLATE(&addr, ACCTYPE_READ, regs);
-
     /* Set the main storage reference bit */
     STORAGE_KEY(addr, regs) |= STORKEY_REF;
 
@@ -509,245 +405,6 @@ static inline BYTE *ARCH_DEP(fetch_main_absolute) (RADR addr,
     return (regs->mainstor + addr);
 
 } /* end function fetch_main_absolute */
-
-
-/*-------------------------------------------------------------------*/
-/* Fetch a doubleword from absolute storage.                         */
-/* The caller is assumed to have already checked that the absolute   */
-/* address is within the limit of main storage.                      */
-/* All bytes of the word are fetched concurrently as observed by     */
-/* other CPUs.  The doubleword is first fetched as an integer, then  */
-/* the bytes are reversed into host byte order if necessary.         */
-/*-------------------------------------------------------------------*/
-static inline U64 ARCH_DEP(fetch_doubleword_absolute) (RADR addr,
-                                REGS *regs)
-{
- // The change below affects 32 bit hosts that use something like
- // cmpxchg8b to fetch the doubleword concurrently.
- // This routine is mainly called by DAT in 64 bit guest mode
- // to access DAT-related values.  In most `well-behaved' OS's,
- // other CPUs should not be interfering with these values
- #if !defined(OPTION_STRICT_ALIGNMENT)
-    return CSWAP64(*(U64 *)FETCH_MAIN_ABSOLUTE(addr, regs, 8));
- #else
-    return fetch_dw(FETCH_MAIN_ABSOLUTE(addr, regs, 8));
- #endif
-} /* end function fetch_doubleword_absolute */
-
-
-/*-------------------------------------------------------------------*/
-/* Fetch a fullword from absolute storage.                           */
-/* The caller is assumed to have already checked that the absolute   */
-/* address is within the limit of main storage.                      */
-/* All bytes of the word are fetched concurrently as observed by     */
-/* other CPUs.  The fullword is first fetched as an integer, then    */
-/* the bytes are reversed into host byte order if necessary.         */
-/*-------------------------------------------------------------------*/
-static inline U32 ARCH_DEP(fetch_fullword_absolute) (RADR addr,
-                                REGS *regs)
-{
-    return fetch_fw(FETCH_MAIN_ABSOLUTE(addr, regs, 4));
-} /* end function fetch_fullword_absolute */
-
-
-/*-------------------------------------------------------------------*/
-/* Fetch a halfword from absolute storage.                           */
-/* The caller is assumed to have already checked that the absolute   */
-/* address is within the limit of main storage.                      */
-/* All bytes of the halfword are fetched concurrently as observed by */
-/* other CPUs.  The halfword is first fetched as an integer, then    */
-/* the bytes are reversed into host byte order if necessary.         */
-/*-------------------------------------------------------------------*/
-static inline U16 ARCH_DEP(fetch_halfword_absolute) (RADR addr,
-                                REGS *regs)
-{
-    return fetch_hw(FETCH_MAIN_ABSOLUTE(addr, regs, 2));
-} /* end function fetch_halfword_absolute */
-
-
-/*-------------------------------------------------------------------*/
-/* Store doubleword into absolute storage.                           */
-/* All bytes of the word are stored concurrently as observed by      */
-/* other CPUs.  The bytes of the word are reversed if necessary      */
-/* and the word is then stored as an integer in absolute storage.    */
-/*-------------------------------------------------------------------*/
-static inline void ARCH_DEP(store_doubleword_absolute) (U64 value,
-                          RADR addr, REGS *regs)
-{
-#if defined(INLINE_STORE_FETCH_ADDR_CHECK)
-    if(addr > regs->mainlim - 8)
-        regs->program_interrupt (regs, PGM_ADDRESSING_EXCEPTION);
-#endif /*defined(INLINE_STORE_FETCH_ADDR_CHECK)*/
-
-    SIE_TRANSLATE(&addr, ACCTYPE_WRITE, regs);
-
-    /* Set the main storage reference and change bits */
-    STORAGE_KEY(addr, regs) |= (STORKEY_REF | STORKEY_CHANGE);
-
-    /* Store the doubleword into absolute storage */
-    store_dw(regs->mainstor + addr, value);
-
-} /* end function store_doubleword_absolute */
-
-
-/*-------------------------------------------------------------------*/
-/* Store a fullword into absolute storage.                           */
-/* All bytes of the word are stored concurrently as observed by      */
-/* other CPUs.  The bytes of the word are reversed if necessary      */
-/* and the word is then stored as an integer in absolute storage.    */
-/*-------------------------------------------------------------------*/
-static inline void ARCH_DEP(store_fullword_absolute) (U32 value,
-                          RADR addr, REGS *regs)
-{
-#if defined(INLINE_STORE_FETCH_ADDR_CHECK)
-    if(addr > regs->mainlim - 4)
-        regs->program_interrupt (regs, PGM_ADDRESSING_EXCEPTION);
-#endif /*defined(INLINE_STORE_FETCH_ADDR_CHECK)*/
-
-    SIE_TRANSLATE(&addr, ACCTYPE_WRITE, regs);
-
-    /* Set the main storage reference and change bits */
-    STORAGE_KEY(addr, regs) |= (STORKEY_REF | STORKEY_CHANGE);
-
-    /* Store the fullword into absolute storage */
-    store_fw(regs->mainstor + addr, value);
-
-} /* end function store_fullword_absolute */
-
-
-/*-------------------------------------------------------------------*/
-/* Perform subspace replacement                                      */
-/*                                                                   */
-/* Input:                                                            */
-/*      std     Original segment table designation (STD) or ASCE     */
-/*      asteo   ASTE origin obtained by ASN translation              */
-/*      xcode   Pointer to field to receive exception code, or NULL  */
-/*      regs    Pointer to the CPU register context                  */
-/*                                                                   */
-/* Output:                                                           */
-/*      xcode   Exception code or zero (if xcode is not NULL)        */
-/*                                                                   */
-/* Return value:                                                     */
-/*      On successful completion, the exception code field (if not   */
-/*      NULL) is set to zero, and the function return value is the   */
-/*      STD resulting from subspace replacement, or is the original  */
-/*      STD if subspace replacement is not applicable.               */
-/*                                                                   */
-/* Operation:                                                        */
-/*      If the ASF control is enabled, and the STD or ASCE is a      */
-/*      member of a subspace-group (bit 22 is one), and the          */
-/*      dispatchable unit is subspace active (DUCT word 1 bit 0 is   */
-/*      one), and the ASTE obtained by ASN translation is the ASTE   */
-/*      for the base space of the dispatchable unit, then the STD    */
-/*      or ASCE is replaced (except for the event control bits) by   */
-/*      the STD or ASCE from the ASTE for the subspace in which the  */
-/*      dispatchable unit last had control; otherwise the STD or     */
-/*      ASCE remains unchanged.                                      */
-/*                                                                   */
-/* Error conditions:                                                 */
-/*      If an ASTE validity exception or ASTE sequence exception     */
-/*      occurs, and the xcode parameter is a non-NULL pointer,       */
-/*      then the exception code is returned in the xcode field       */
-/*      and the function return value is zero.                       */
-/*      For all other error conditions a program check is generated  */
-/*      and the function does not return.                            */
-/*                                                                   */
-/*-------------------------------------------------------------------*/
-static inline RADR ARCH_DEP(subspace_replace) (RADR std, U32 asteo,
-                        U16 *xcode, REGS *regs)
-{
-U32     ducto;                          /* DUCT origin               */
-U32     duct0;                          /* DUCT word 0               */
-U32     duct1;                          /* DUCT word 1               */
-U32     duct3;                          /* DUCT word 3               */
-U32     ssasteo;                        /* Subspace ASTE origin      */
-U32     ssaste[16];                     /* Subspace ASTE             */
-BYTE    *p;                             /* Mainstor pointer          */
-
-    /* Clear the exception code field, if provided */
-    if (xcode != NULL) *xcode = 0;
-
-    /* Return the original STD unchanged if the address-space function
-       control (CR0 bit 15) is zero, or if the subspace-group control
-       (bit 22 of the STD) is zero */
-    if (!ASF_ENABLED(regs)
-        || (std & SSGROUP_BIT) == 0)
-        return std;
-
-    /* Load the DUCT origin address */
-    ducto = regs->CR(2) & CR2_DUCTO;
-    ducto = APPLY_PREFIXING (ducto, regs->PX);
-
-    /* Program check if DUCT origin address is invalid */
-    if (ducto > regs->mainlim)
-        regs->program_interrupt (regs, PGM_ADDRESSING_EXCEPTION);
-
-    /* Fetch DUCT words 0, 1, and 3 from absolute storage
-       (note: the DUCT cannot cross a page boundary) */
-    p = FETCH_MAIN_ABSOLUTE(ducto, regs, 16);
-    duct0 = fetch_fw(p);
-    duct1 = fetch_fw(p+4);
-    duct3 = fetch_fw(p+12);
-
-    /* Return the original STD unchanged if the dispatchable unit is
-       not subspace active or if the ASTE obtained by ASN translation
-       is not the same as the base ASTE for the dispatchable unit */
-    if ((duct1 & DUCT1_SA) == 0
-        || asteo != (duct0 & DUCT0_BASTEO))
-        return std;
-
-    /* Load the subspace ASTE origin from the DUCT */
-    ssasteo = duct1 & DUCT1_SSASTEO;
-    ssasteo = APPLY_PREFIXING (ssasteo, regs->PX);
-
-    /* Program check if ASTE origin address is invalid */
-    if (ssasteo > regs->mainlim)
-        regs->program_interrupt (regs, PGM_ADDRESSING_EXCEPTION);
-
-    /* Fetch subspace ASTE words 0, 2, 3, and 5 from absolute
-       storage (note: the ASTE cannot cross a page boundary) */
-    p = FETCH_MAIN_ABSOLUTE(ssasteo, regs, 24);
-    ssaste[0] = fetch_fw(p);
-    ssaste[2] = fetch_fw(p+8);
-#if defined(FEATURE_ESAME)
-    ssaste[3] = fetch_fw(p+12);
-#endif /*defined(FEATURE_ESAME)*/
-    ssaste[5] = fetch_fw(p+20);
-
-    /* ASTE validity exception if subspace ASTE invalid bit is one */
-    if (ssaste[0] & ASTE0_INVALID)
-    {
-        regs->excarid = 0;
-        if (xcode == NULL)
-            regs->program_interrupt (regs, PGM_ASTE_VALIDITY_EXCEPTION);
-        else
-            *xcode = PGM_ASTE_VALIDITY_EXCEPTION;
-        return 0;
-    }
-
-    /* ASTE sequence exception if the subspace ASTE sequence
-       number does not match the sequence number in the DUCT */
-    if ((ssaste[5] & ASTE5_ASTESN) != (duct3 & DUCT3_SSASTESN))
-    {
-        regs->excarid = 0;
-        if (xcode == NULL)
-            regs->program_interrupt (regs, PGM_ASTE_SEQUENCE_EXCEPTION);
-        else
-            *xcode = PGM_ASTE_SEQUENCE_EXCEPTION;
-        return 0;
-    }
-
-    /* Replace the STD or ASCE with the subspace ASTE STD or ASCE,
-       except for the space switch event bit and the storage
-       alteration event bit, which remain unchanged */
-    std &= (SSEVENT_BIT | SAEVENT_BIT);
-    std |= (ASTE_AS_DESIGNATOR(ssaste)
-                & ~((RADR)(SSEVENT_BIT | SAEVENT_BIT)));
-
-    /* Return the STD resulting from subspace replacement */
-    return std;
-
-} /* end function subspace_replace */
 
 
 #include "dat.h"

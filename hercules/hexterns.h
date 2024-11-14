@@ -283,30 +283,6 @@ void panel_display (void);
 #define debug_watchdog_signal           NULL
 #endif
 
-/* Functions in module loadparm.c */
-void set_loadparm(char *name);
-void get_loadparm(BYTE *dest);
-char *str_loadparm();
-void set_lparname(char *name);
-void get_lparname(BYTE *dest);
-LOADPARM_DLL_IMPORT char *str_lparname();
-void set_manufacturer(char *name);
-void set_plant(char *name);
-void set_model(int argc, char *m1, char* m2, char* m3, char* m4);
-void get_manufacturer(BYTE *name);
-void get_plant(BYTE *name);
-void get_model(BYTE *name);
-void get_modelcapa(BYTE *name);
-void get_modelperm(BYTE *name);
-void get_modeltemp(BYTE *name);
-void get_sysname(BYTE *name);
-void get_systype(BYTE *name);
-void get_sysplex(BYTE *name);
-void set_sysname(BYTE *name);
-void set_systype(BYTE *name);
-void set_sysplex(BYTE *name);
-void get_mpfactors(BYTE *dest);
-
 /* Functions in module impl.c */
 IMPL_DLL_IMPORT void system_cleanup(void);
 
@@ -323,13 +299,9 @@ void *timer_update_thread (void *argp);
 
 /* Functions in module service.c */
 void scp_command (char *command, int priomsg);
-int can_signal_quiesce ();
-int signal_quiesce (U16 count, BYTE unit);
 void sclp_attention(U16 type);
 void sclp_reset();
 SERV_DLL_IMPORT void sclp_sysg_attention();
-int servc_hsuspend(void *file);
-int servc_hresume(void *file);
 
 /* Functions in module ckddasd.c */
 void ckd_build_sense ( DEVBLK *, BYTE, BYTE, BYTE, BYTE, BYTE);
@@ -407,23 +379,6 @@ int drop_privileges(int capa);
 /* Functions in module sr.c */
 int suspend_cmd(int argc, char *argv[],char *cmdline);
 int resume_cmd(int argc, char *argv[],char *cmdline);
-
-/* Functions in ecpsvm.c that are not *direct* instructions */
-/* but support functions either used by other instruction   */
-/* functions or from somewhere else                         */
-#ifdef FEATURE_ECPSVM
-int  ecpsvm_dosvc(REGS *regs, int svccode);
-int  ecpsvm_dossm(REGS *regs,int b,VADR ea);
-int  ecpsvm_dolpsw(REGS *regs,int b,VADR ea);
-int  ecpsvm_dostnsm(REGS *regs,int b,VADR ea,int imm);
-int  ecpsvm_dostosm(REGS *regs,int b,VADR ea,int imm);
-int  ecpsvm_dosio(REGS *regs,int b,VADR ea);
-int  ecpsvm_dodiag(REGS *regs,int r1,int r3,int b2,VADR effective_addr2);
-int  ecpsvm_dolctl(REGS *regs,int r1,int r3,int b2,VADR effective_addr2);
-int  ecpsvm_dostctl(REGS *regs,int r1,int r3,int b2,VADR effective_addr2);
-int  ecpsvm_doiucv(REGS *regs,int b2,VADR effective_addr2);
-int  ecpsvm_virttmr_ext(REGS *regs);
-#endif
 
 /* Functions in module w32ctca.c */
 #if defined(OPTION_W32_CTCI)

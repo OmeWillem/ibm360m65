@@ -263,11 +263,7 @@ TID tid;
     if(is_wait_sigq_pending())
         cancel_wait_sigq();
     else
-        if(can_signal_quiesce() && !signal_quiesce(0,0))
-            create_thread(&tid, DETACHED, do_shutdown_wait,
-                          NULL, "do_shutdown_wait");
-        else
-            do_shutdown_now();
+        do_shutdown_now();
 }
 /*-------------------------------------------------------------------*/
 /* The following 2 routines display an array of 32/64 registers      */
@@ -306,44 +302,6 @@ static void display_regs32(char *hdr,U16 cpuad,U32 *r,int numcpus)
     logmsg("\n");
 }
 
-#if defined(_900)
-
-static void display_regs64(char *hdr,U16 cpuad,U64 *r,int numcpus)
-{
-    int i;
-    int rpl;
-    if(numcpus>1)
-    {
-        rpl=2;
-    }
-    else
-    {
-        rpl=4;
-    }
-    for(i=0;i<16;i++)
-    {
-        if(!(i%rpl))
-        {
-            if(i)
-            {
-                logmsg("\n");
-            }
-            if(numcpus>1)
-            {
-                logmsg("CPU%4.4X: ",cpuad);
-            }
-        }
-        if(i%rpl)
-        {
-            logmsg(" ");
-        }
-        logmsg("%s%1.1X=%16.16"I64_FMT"X",hdr,i,r[i]);
-    }
-    logmsg("\n");
-}
-
-#endif
-
 /*-------------------------------------------------------------------*/
 /* Display registers for the instruction display                     */
 /*-------------------------------------------------------------------*/
@@ -357,20 +315,6 @@ void display_inst_regs (REGS *regs, BYTE *inst, BYTE opcode)
            )))
     {
         display_regs (regs);
-        if (sysblk.showregsfirst) logmsg("\n");
-    }
-
-    /* Display control registers if appropriate */
-    if (!REAL_MODE(&regs->psw) || opcode == 0xB2)
-    {
-        display_cregs (regs);
-        if (sysblk.showregsfirst) logmsg("\n");
-    }
-
-    /* Display access registers if appropriate */
-    if (!REAL_MODE(&regs->psw) && ACCESS_REGISTER_MODE(&regs->psw))
-    {
-        display_aregs (regs);
         if (sysblk.showregsfirst) logmsg("\n");
     }
 
@@ -396,30 +340,12 @@ void display_regs (REGS *regs)
 {
     int i;
     U32 gprs[16];
-#if defined(_900)
-    U64 ggprs[16];
-#endif
 
-#if defined(_900)
-    if(regs->arch_mode != ARCH_900)
-    {
-#endif
         for(i=0;i<16;i++)
         {
             gprs[i]=regs->GR_L(i);
         }
         display_regs32("GR",regs->cpuad,gprs,sysblk.cpus);
-#if defined(_900)
-    }
-    else
-    {
-        for(i=0;i<16;i++)
-        {
-            ggprs[i]=regs->GR_G(i);
-        }
-        display_regs64("R",regs->cpuad,ggprs,sysblk.cpus);
-    }
-#endif
 
 } /* end function display_regs */
 
@@ -431,30 +357,12 @@ void display_cregs (REGS *regs)
 {
     int i;
     U32 crs[16];
-#if defined(_900)
-    U64 gcrs[16];
-#endif
 
-#if defined(_900)
-    if(regs->arch_mode != ARCH_900)
-    {
-#endif
         for(i=0;i<16;i++)
         {
             crs[i]=regs->CR_L(i);
         }
         display_regs32("CR",regs->cpuad,crs,sysblk.cpus);
-#if defined(_900)
-    }
-    else
-    {
-        for(i=0;i<16;i++)
-        {
-            gcrs[i]=regs->CR_G(i);
-        }
-        display_regs64("C",regs->cpuad,gcrs,sysblk.cpus);
-    }
-#endif
 
 } /* end function display_cregs */
 
@@ -469,7 +377,7 @@ void display_aregs (REGS *regs)
 
     for(i=0;i<16;i++)
     {
-        ars[i]=regs->AR(i);
+        ars[i]=regs->AR_(i);
     }
     display_regs32("AR",regs->cpuad,ars,sysblk.cpus);
 
@@ -525,44 +433,10 @@ void display_subchannel (DEVBLK *dev)
 {
     logmsg ("%4.4X:D/T=%4.4X",
             dev->devnum, dev->devtype);
-    if (ARCH_370 == sysblk.arch_mode)
-    {
         logmsg (" CSW=Flags:%2.2X CCW:%2.2X%2.2X%2.2X "
                 "Stat:%2.2X%2.2X Count:%2.2X%2.2X\n",
                 dev->csw[0], dev->csw[1], dev->csw[2], dev->csw[3],
                 dev->csw[4], dev->csw[5], dev->csw[6], dev->csw[7]);
-    } else {
-        logmsg (" Subchannel_Number=%4.4X\n", dev->subchan);
-        logmsg ("     PMCW=IntParm:%2.2X%2.2X%2.2X%2.2X Flags:%2.2X%2.2X"
-                " Dev:%2.2X%2.2X"
-                " LPM:%2.2X PNOM:%2.2X LPUM:%2.2X PIM:%2.2X\n"
-                "          MBI:%2.2X%2.2X POM:%2.2X PAM:%2.2X"
-                " CHPIDs:%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X"
-                " Misc:%2.2X%2.2X%2.2X%2.2X\n",
-                dev->pmcw.intparm[0], dev->pmcw.intparm[1],
-                dev->pmcw.intparm[2], dev->pmcw.intparm[3],
-                dev->pmcw.flag4, dev->pmcw.flag5,
-                dev->pmcw.devnum[0], dev->pmcw.devnum[1],
-                dev->pmcw.lpm, dev->pmcw.pnom, dev->pmcw.lpum, dev->pmcw.pim,
-                dev->pmcw.mbi[0], dev->pmcw.mbi[1],
-                dev->pmcw.pom, dev->pmcw.pam,
-                dev->pmcw.chpid[0], dev->pmcw.chpid[1],
-                dev->pmcw.chpid[2], dev->pmcw.chpid[3],
-                dev->pmcw.chpid[4], dev->pmcw.chpid[5],
-                dev->pmcw.chpid[6], dev->pmcw.chpid[7],
-                dev->pmcw.zone, dev->pmcw.flag25,
-                dev->pmcw.flag26, dev->pmcw.flag27);
-
-        logmsg ("     SCSW=Flags:%2.2X%2.2X SCHC:%2.2X%2.2X "
-                "Stat:%2.2X%2.2X Count:%2.2X%2.2X "
-                "CCW:%2.2X%2.2X%2.2X%2.2X\n",
-                dev->scsw.flag0, dev->scsw.flag1,
-                dev->scsw.flag2, dev->scsw.flag3,
-                dev->scsw.unitstat, dev->scsw.chanstat,
-                dev->scsw.count[0], dev->scsw.count[1],
-                dev->scsw.ccwaddr[0], dev->scsw.ccwaddr[1],
-                dev->scsw.ccwaddr[2], dev->scsw.ccwaddr[3]);
-    }
 
 } /* end function display_subchannel */
 
@@ -698,7 +572,7 @@ static REGS  *copy_regs (REGS *regs)
  REGS  *newregs, *hostregs;
  size_t size;
 
-    size = SIE_MODE(regs) ? 2*sizeof(REGS) : sizeof(REGS);
+    size = sizeof(REGS);
     newregs = malloc(size);
     if (newregs == NULL)
     {
@@ -709,73 +583,14 @@ static REGS  *copy_regs (REGS *regs)
 
     /* Perform partial copy and clear the TLB */
     memcpy(newregs, regs, sysblk.regs_copy_len);
-    memset(&newregs->tlb.vaddr, 0, TLBN * sizeof(DW));
     newregs->ghostregs = 1;
     newregs->hostregs = newregs;
     newregs->guestregs = NULL;
-
-    /* Copy host regs if in SIE mode */
-    if(SIE_MODE(newregs))
-    {
-        hostregs = newregs + 1;
-        memcpy(hostregs, regs->hostregs, sysblk.regs_copy_len);
-        memset(&hostregs->tlb.vaddr, 0, TLBN * sizeof(DW));
-        hostregs->ghostregs = 1;
-        hostregs->hostregs = hostregs;
-        hostregs->guestregs = newregs;
-        newregs->hostregs = hostregs;
-        newregs->guestregs = newregs;
-    }
 
     return newregs;
 }
 
 #endif /*!defined(_HSCMISC_C)*/
-
-
-/*-------------------------------------------------------------------*/
-/* Convert virtual address to absolute address                       */
-/*                                                                   */
-/* Input:                                                            */
-/*      vaddr   Virtual address to be translated                     */
-/*      arn     Access register number                               */
-/*      regs    CPU register context                                 */
-/*      acctype Type of access (ACCTYPE_INSTFETCH, ACCTYPE_READ,     */
-/*              or ACCTYPE_LRA)                                      */
-/* Output:                                                           */
-/*      aaptr   Points to word in which abs address is returned      */
-/*      siptr   Points to word to receive indication of which        */
-/*              STD or ASCE was used to perform the translation      */
-/* Return value:                                                     */
-/*      0=translation successful, non-zero=exception code            */
-/* Note:                                                             */
-/*      To avoid unwanted alteration of the CPU register context     */
-/*      during translation (for example, the TEA will be updated     */
-/*      if a translation exception occurs), the translation is       */
-/*      performed using a temporary copy of the CPU registers.       */
-/*-------------------------------------------------------------------*/
-static U16 ARCH_DEP(virt_to_abs) (RADR *raptr, int *siptr,
-                        VADR vaddr, int arn, REGS *regs, int acctype)
-{
-int icode;
-
-    if( !(icode = setjmp(regs->progjmp)) )
-    {
-        int temp_arn = arn; // bypass longjmp clobber warning
-        if (acctype == ACCTYPE_INSTFETCH)
-            temp_arn = USE_INST_SPACE;
-        if (SIE_MODE(regs))
-            memcpy(regs->hostregs->progjmp, regs->progjmp,
-                   sizeof(jmp_buf));
-        ARCH_DEP(logical_to_main) (vaddr, temp_arn, regs, acctype, 0);
-    }
-
-    *siptr = regs->dat.stid;
-    *raptr = regs->hostregs->dat.raddr;
-
-    return icode;
-
-} /* end function virt_to_abs */
 
 
 /*-------------------------------------------------------------------*/
@@ -803,7 +618,7 @@ BYTE    c;                              /* Character work area       */
         n = sprintf (buf, "R:"F_RADR":", raddr);
     }
 
-    aaddr = APPLY_PREFIXING (raddr, regs->PX);
+    aaddr = raddr;
     if (aaddr > regs->mainlim)
     {
         n += sprintf (buf+n, " Real address is not valid");
@@ -839,27 +654,20 @@ BYTE    c;                              /* Character work area       */
 static int ARCH_DEP(display_virt) (REGS *regs, VADR vaddr, char *buf,
                                     int ar, int acctype)
 {
-RADR    raddr;                          /* Real address              */
 int     n;                              /* Number of bytes in buffer */
 int     stid;                           /* Segment table indication  */
 U16     xcode;                          /* Exception code            */
 
-    n = sprintf (buf, "%c:"F_VADR":", ar == USE_REAL_ADDR ? 'R' : 'V',
+    n = sprintf (buf, "%c:"F_VADR":", 'R',
                              vaddr);
-    xcode = ARCH_DEP(virt_to_abs) (&raddr, &stid,
-                                    vaddr, ar, regs, acctype);
-    if (xcode == 0)
-    {
-        n += ARCH_DEP(display_real) (regs, raddr, buf+n, 0);
-    }
-    else
-        n += sprintf (buf+n," Translation exception %4.4hX",xcode);
+        n += ARCH_DEP(display_real) (regs, vaddr, buf+n, 0);
 
     return n;
 
 } /* end function display_virt */
 
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
 /*-------------------------------------------------------------------*/
 /* Disassemble real                                                  */
 /*-------------------------------------------------------------------*/
@@ -879,20 +687,13 @@ U16     xcode;
 char    type;
 
     /* Set limit for address range */
-  #if defined(FEATURE_ESAME)
-    maxadr = 0xFFFFFFFFFFFFFFFFULL;
-  #else /*!defined(FEATURE_ESAME)*/
     maxadr = 0x7FFFFFFF;
-  #endif /*!defined(FEATURE_ESAME)*/
 
     while((opnd && *opnd != '\0') &&
       (*opnd == ' ' || *opnd == '\t'))
         opnd++;
 
-    if(REAL_MODE(&regs->psw))
         type = 'R';
-    else
-        type = 'V';
 
     switch(toupper(*opnd)) {
         case 'R': /* real */
@@ -911,18 +712,9 @@ char    type;
     for (i = 0; i < 999 && saddr <= eaddr; i++)
     {
 
-        if(type == 'R')
             raddr = saddr;
-        else
-        {
-            if((xcode = ARCH_DEP(virt_to_abs) (&raddr, &stid, saddr, 0, regs, ACCTYPE_INSTFETCH) ))
-            {
-                logmsg(_("Storage not accessible code = %4.4X\n"), xcode);
-                return;
-            }
-        }
 
-        aaddr = APPLY_PREFIXING (raddr, regs->PX);
+        aaddr = raddr;
         if (aaddr > regs->mainlim)
         {
             logmsg(_("Addressing exception\n"));
@@ -959,7 +751,7 @@ char    type;
     } /* end for(i) */
 
 } /* end function disasm_stor */
-
+#endif
 
 /*-------------------------------------------------------------------*/
 /* Process real storage alter/display command                        */
@@ -976,11 +768,7 @@ BYTE    newval[32];                     /* Storage alteration value  */
 char    buf[100];                       /* Message buffer            */
 
     /* Set limit for address range */
-  #if defined(FEATURE_ESAME)
-    maxadr = 0xFFFFFFFFFFFFFFFFULL;
-  #else /*!defined(FEATURE_ESAME)*/
     maxadr = 0x7FFFFFFF;
-  #endif /*!defined(FEATURE_ESAME)*/
 
     /* Parse the range or alteration operand */
     len = parse_range (opnd, maxadr, &saddr, &eaddr, newval);
@@ -993,7 +781,6 @@ char    buf[100];                       /* Message buffer            */
         for (i = 0; i < len && raddr+i <= regs->mainlim; i++)
         {
             aaddr = raddr + i;
-            aaddr = APPLY_PREFIXING (aaddr, regs->PX);
             regs->mainstor[aaddr] = newval[i];
             STORAGE_KEY(aaddr, regs) |= (STORKEY_REF | STORKEY_CHANGE);
         } /* end for(i) */
@@ -1031,11 +818,7 @@ BYTE    newval[32];                     /* Storage alteration value  */
 char    buf[100];                       /* Message buffer            */
 
     /* Set limit for address range */
-  #if defined(FEATURE_ESAME)
-    maxadr = 0xFFFFFFFFFFFFFFFFULL;
-  #else /*!defined(FEATURE_ESAME)*/
     maxadr = 0x7FFFFFFF;
-  #endif /*!defined(FEATURE_ESAME)*/
 
     while((opnd && *opnd != '\0') &&
       (*opnd == ' ' || *opnd == '\t'))
@@ -1063,17 +846,13 @@ char    buf[100];                       /* Message buffer            */
     vaddr = saddr;
 
     /* Alter virtual storage */
-    if (len > 0
-        && ARCH_DEP(virt_to_abs) (&raddr, &stid, vaddr, arn,
-                                   regs, ACCTYPE_LRA) == 0
-        && ARCH_DEP(virt_to_abs) (&raddr, &stid, eaddr, arn,
-                                   regs, ACCTYPE_LRA) == 0)
+    if (len > 0)
     {
+        raddr = vaddr;
         for (i = 0; i < len && raddr+i <= regs->mainlim; i++)
         {
-            ARCH_DEP(virt_to_abs) (&raddr, &stid, vaddr+i, arn,
-                                    regs, ACCTYPE_LRA);
-            aaddr = APPLY_PREFIXING (raddr, regs->PX);
+            raddr = vaddr + i;
+            aaddr = raddr;
             regs->mainstor[aaddr] = newval[i];
             STORAGE_KEY(aaddr, regs) |= (STORKEY_REF | STORKEY_CHANGE);
         } /* end for(i) */
@@ -1084,20 +863,9 @@ char    buf[100];                       /* Message buffer            */
     {
         if (i == 0 || (vaddr & PAGEFRAME_BYTEMASK) < 16)
         {
-            xcode = ARCH_DEP(virt_to_abs) (&raddr, &stid, vaddr, arn,
-                                            regs, ACCTYPE_LRA);
+            raddr = vaddr;
             n = sprintf (buf, "V:"F_VADR" ", vaddr);
-            if (REAL_MODE(&regs->psw))
                 n += sprintf (buf+n, "(dat off)");
-            else if (stid == TEA_ST_PRIMARY)
-                n += sprintf (buf+n, "(primary)");
-            else if (stid == TEA_ST_SECNDRY)
-                n += sprintf (buf+n, "(secondary)");
-            else if (stid == TEA_ST_HOME)
-                n += sprintf (buf+n, "(home)");
-            else
-                n += sprintf (buf+n, "(AR%2.2d)", arn);
-            if (xcode == 0)
                 n += sprintf (buf+n, " R:"F_RADR, raddr);
             logmsg ("%s\n", buf);
         }
@@ -1109,6 +877,7 @@ char    buf[100];                       /* Message buffer            */
 } /* end function alter_display_virt */
 
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
 /*-------------------------------------------------------------------*/
 /* Display instruction                                               */
 /*-------------------------------------------------------------------*/
@@ -1130,21 +899,6 @@ REGS   *regs;                           /* Copied regs               */
     else if ((regs = copy_regs(iregs)) == NULL)
         return;
 
-  #if defined(_FEATURE_SIE)
-    if(SIE_MODE(regs))
-        logmsg(_("SIE: "));
-  #endif /*defined(_FEATURE_SIE)*/
-
-#if 0
-#if _GEN_ARCH == 370
-    logmsg("S/370 ");
-#elif _GEN_ARCH == 390
-    logmsg("ESA/390 ");
-#else
-    logmsg("Z/Arch ");
-#endif
-#endif
-
     /* Display the PSW */
     memset (qword, 0x00, sizeof(qword));
     copy_psw (regs, qword);
@@ -1160,13 +914,6 @@ REGS   *regs;                           /* Copied regs               */
                 "PSW=%2.2X%2.2X%2.2X%2.2X %2.2X%2.2X%2.2X%2.2X ",
                 qword[0], qword[1], qword[2], qword[3],
                 qword[4], qword[5], qword[6], qword[7]);
-  #if defined(FEATURE_ESAME)
-        n += sprintf (buf + n,
-                "%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X ",
-                qword[8], qword[9], qword[10], qword[11],
-                qword[12], qword[13], qword[14], qword[15]);
-  #endif /*defined(FEATURE_ESAME)*/
-
     /* Exit if instruction is not valid */
     if (inst == NULL)
     {
@@ -1287,18 +1034,8 @@ REGS   *regs;                           /* Copied regs               */
     /* Display storage at first storage operand location */
     if (b1 >= 0)
     {
-        if(REAL_MODE(&regs->psw))
             n = ARCH_DEP(display_virt) (regs, addr1, buf, USE_REAL_ADDR,
                                                 ACCTYPE_READ);
-        else
-            n = ARCH_DEP(display_virt) (regs, addr1, buf, b1,
-                                (opcode == 0x44 
-#if defined(FEATURE_EXECUTE_EXTENSIONS_FACILITY)
-                                 || (opcode == 0xc6 && !(inst[1] & 0x0f))
-#endif /*defined(FEATURE_EXECUTE_EXTENSIONS_FACILITY)*/
-                                                ? ACCTYPE_INSTFETCH :
-                                 opcode == 0xB1 ? ACCTYPE_LRA :
-                                                  ACCTYPE_READ));
         if(sysblk.cpus>1)
         {
             logmsg ("CPU%4.4X:  ", regs->cpuad);
@@ -1309,17 +1046,8 @@ REGS   *regs;                           /* Copied regs               */
     /* Display storage at second storage operand location */
     if (b2 >= 0)
     {
-        if(
-            (REAL_MODE(&regs->psw)
-            || (opcode == 0xB2 && inst[1] == 0x4B) /*LURA*/
-            || (opcode == 0xB2 && inst[1] == 0x46) /*STURA*/
-            || (opcode == 0xB9 && inst[1] == 0x05) /*LURAG*/
-            || (opcode == 0xB9 && inst[1] == 0x25))) /*STURG*/
             n = ARCH_DEP(display_virt) (regs, addr2, buf, USE_REAL_ADDR,
                                                 ACCTYPE_READ);
-        else
-            n = ARCH_DEP(display_virt) (regs, addr2, buf, b2,
-                                        ACCTYPE_READ);
 
         if(sysblk.cpus>1)
         {
@@ -1338,7 +1066,7 @@ REGS   *regs;                           /* Copied regs               */
         free (regs);
 
 } /* end function display_inst */
-
+#endif
 
 #if !defined(_GEN_ARCH)
 
@@ -1359,21 +1087,7 @@ REGS   *regs;                           /* Copied regs               */
 /*-------------------------------------------------------------------*/
 void alter_display_real (char *opnd, REGS *regs)
 {
-    switch(sysblk.arch_mode) {
-#if defined(_370)
-        case ARCH_370:
-            s370_alter_display_real (opnd, regs); break;
-#endif
-#if defined(_390)
-        case ARCH_390:
-            s390_alter_display_real (opnd, regs); break;
-#endif
-#if defined(_900)
-        case ARCH_900:
-            z900_alter_display_real (opnd, regs); break;
-#endif
-    }
-
+            s370_alter_display_real (opnd, regs);
 } /* end function alter_display_real */
 
 
@@ -1386,25 +1100,13 @@ void alter_display_virt (char *opnd, REGS *iregs)
     else if ((regs = copy_regs(iregs)) == NULL)
         return;
 
-    switch(sysblk.arch_mode) {
-#if defined(_370)
-        case ARCH_370:
-            s370_alter_display_virt (opnd, regs); break;
-#endif
-#if defined(_390)
-        case ARCH_390:
-            s390_alter_display_virt (opnd, regs); break;
-#endif
-#if defined(_900)
-        case ARCH_900:
-            z900_alter_display_virt (opnd, regs); break;
-#endif
-    }
+            s370_alter_display_virt (opnd, regs);
 
     if (!iregs->ghostregs)
         free(regs);
 } /* end function alter_display_virt */
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
 
 void display_inst(REGS *iregs, BYTE *inst)
 {
@@ -1415,28 +1117,11 @@ void display_inst(REGS *iregs, BYTE *inst)
     else if ((regs = copy_regs(iregs)) == NULL)
         return;
 
-    switch(regs->arch_mode) {
-#if defined(_370)
-        case ARCH_370:
             s370_display_inst(regs,inst);
-            break;
-#endif
-#if defined(_390)
-        case ARCH_390:
-            s390_display_inst(regs,inst);
-            break;
-#endif
-#if defined(_900)
-        case ARCH_900:
-            z900_display_inst(regs,inst);
-            break;
-#endif
-    }
 
     if (!iregs->ghostregs)
         free (regs);
 }
-
 
 void disasm_stor(REGS *iregs, char *opnd)
 {
@@ -1447,27 +1132,12 @@ void disasm_stor(REGS *iregs, char *opnd)
     else if ((regs = copy_regs(iregs)) == NULL)
         return;
 
-    switch(regs->arch_mode) {
-#if defined(_370)
-        case ARCH_370:
             s370_disasm_stor(regs,opnd);
-            break;
-#endif
-#if defined(_390)
-        case ARCH_390:
-            s390_disasm_stor(regs,opnd);
-            break;
-#endif
-#if defined(_900)
-        case ARCH_900:
-            z900_disasm_stor(regs,opnd);
-            break;
-#endif
-    }
 
     if (!iregs->ghostregs)
         free(regs);
 }
+#endif
 
 /*-------------------------------------------------------------------*/
 /* Execute a Unix or Windows command                                 */

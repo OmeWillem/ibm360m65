@@ -368,7 +368,7 @@ void *panel_command (void *cmdline)
     /* Ignore null commands (just pressing enter)
        unless instruction stepping is enabled or
        commands are being sent to the SCP by default. */
-    if (!sysblk.inststep && (sysblk.cmdtgt == 0) && (0 == cmd[0]))
+    if (!sysblk.inststep && (0 == cmd[0]))
         return NULL;
 
     /* Echo the command to the control panel */
@@ -377,70 +377,7 @@ void *panel_command (void *cmdline)
         logmsg( "%s\n", cmd);
     }
 
-#ifdef OPTION_CMDTGT
-    /* check for herc, scp or pscp command */
-    /* Please note that cmdtgt is a hercules command! */
-    /* Changing the target to her in scp mode is done by using herc cmdtgt herc */
-    if(!strncasecmp(cmd, "herc ", 5) || !strncasecmp(cmd, "scp ", 4) || !strncasecmp(cmd, "pscp ", 5))
-    {
-      ProcessPanelCommand(cmd);
-      return NULL;
-    }
-
-    /* Send command to the selected command target */
-    switch(sysblk.cmdtgt)
-    {
-      case 0: // cmdtgt herc
-      {
-        /* Stay compatible */
-#ifdef _FEATURE_SYSTEM_CONSOLE
-        if(cmd[0] == '.' || cmd[0] == '!')
-        {
-          if(!cmd[1])
-          {
-            cmd[1] = ' ';
-            cmd[2] = 0;
-          }
-          scp_command(cmd + 1, cmd[0] == '!');
-        }
-        else
-#endif /*_FEATURE_SYSTEM_CONSOLE*/
-          ProcessPanelCommand(cmd);
-        break;
-      }
-      case 1: // cmdtgt scp
-      {
-        if(!cmd[0])
-        {
-          cmd[0] = ' ';
-          cmd[1] = 0;
-        }
-        scp_command(cmd, 0);
-        break;
-      }
-      case 2: // cmdtgt pscp
-      {
-        if(!cmd[0])
-        {
-          cmd[0] = ' ';
-          cmd[1] = 0;
-        }
-        scp_command(cmd, 1);
-        break;
-      }
-    }
-#else // OPTION_CMDTGT
-#ifdef _FEATURE_SYSTEM_CONSOLE
-    if ('.' == cmd[0] || '!' == cmd[0])
-    {
-        if (!cmd[1]) { cmd[1]=' '; cmd[2]=0; }
-        scp_command (cmd+1, cmd[0] == '!');
-        return NULL;
-    }
-#endif /*_FEATURE_SYSTEM_CONSOLE*/
-
     ProcessPanelCommand(cmd);
-#endif // OPTION_CMDTGT
 
     return NULL;
 }

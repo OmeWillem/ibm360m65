@@ -303,21 +303,6 @@ U64 current_tod;
 #if defined(_FEATURE_INTERVAL_TIMER)
 
 
-#if defined(_FEATURE_ECPSVM)
-static inline S32 ecps_vtimer(REGS *regs)
-{
-    return (S32)TOD_TO_ITIMER((S64)(regs->ecps_vtimer - hw_clock()));
-}
-
-
-static inline void set_ecps_vtimer(REGS *regs, S32 vtimer)
-{
-    regs->ecps_vtimer = (U64)(hw_clock() + ITIMER_TO_TOD(vtimer));
-    regs->ecps_oldtmr = vtimer;
-}
-#endif /*defined(_FEATURE_ECPSVM)*/
-
-
 S32 int_timer(REGS *regs)
 {
     return (S32)TOD_TO_ITIMER((S64)(regs->int_timer - hw_clock()));
@@ -342,18 +327,6 @@ int pending = 0;
         ON_IC_ITIMER(regs);
         pending = 1;
     }
-#if defined(_FEATURE_ECPSVM)
-    if(regs->ecps_vtmrpt)
-    {
-        itimer = ecps_vtimer(regs);
-        if(itimer < 0 && regs->ecps_oldtmr >= 0)
-        {
-            ON_IC_ECPSVTIMER(regs);
-            pending += 2;
-        }
-    }
-#endif /*defined(_FEATURE_ECPSVM)*/
-
     return pending;
 }
 #endif /*defined(_FEATURE_INTERVAL_TIMER)*/
@@ -541,23 +514,6 @@ S32 vtimer=0;
         itimer=int_timer(regs);
     }
     STORE_FW(regs->psa->inttimer, itimer);
-#if defined(FEATURE_ECPSVM)
-    if(regs->ecps_vtmrpt)
-    {
-        FETCH_FW(vtimer, regs->ecps_vtmrpt);
-        if(vtimer != regs->ecps_oldtmr)
-        {
-// ZZ       logmsg(D_("ECPS vtimer out of sync, core=%8.8X, internal=%8.8X\n"), itimer, regs->ecps_vtimer);
-            set_ecps_vtimer(regs, itimer);
-        }
-        else
-        {
-            vtimer=ecps_vtimer(regs);
-        }
-        STORE_FW(regs->ecps_vtmrpt, itimer);
-    }
-#endif /*defined(FEATURE_ECPSVM)*/
-
     /* ISW : Invoke chk_int_timer *before* setting old_timer */
     /*       however, the value must be one fetched *before* */
     /*       chk_int_timer was invoked otherwise a window    */
@@ -566,12 +522,6 @@ S32 vtimer=0;
 
     chk_int_timer(regs);
     regs->old_timer = itimer;
-#if defined(FEATURE_ECPSVM)
-    if(regs->ecps_vtmrpt)
-    {
-        regs->ecps_oldtmr = vtimer;
-    }
-#endif /*defined(FEATURE_ECPSVM)*/
 
     if(getlock)
     {
@@ -598,106 +548,10 @@ S32 itimer;
     FETCH_FW(itimer, regs->psa->inttimer);
     OBTAIN_INTLOCK(regs->hostregs?regs:NULL);
     set_int_timer(regs, itimer);
-#if defined(FEATURE_ECPSVM)
-    if(regs->ecps_vtmrpt)
-    {
-        FETCH_FW(itimer, regs->ecps_vtmrpt);
-        set_ecps_vtimer(regs, itimer);
-    }
-#endif /*defined(FEATURE_ECPSVM)*/
     RELEASE_INTLOCK(regs->hostregs?regs:NULL);
 }
 #endif
 
-
-#if defined(FEATURE_TOD_CLOCK_STEERING)
-
-void ARCH_DEP(set_gross_s_rate) (REGS *regs)
-{
-S32 gsr;
-    gsr = ARCH_DEP(vfetch4) (regs->GR(1) & ADDRESS_MAXWRAP(regs), 1, regs);
-
-    set_gross_steering_rate(gsr);
-}
-
-
-void ARCH_DEP(set_fine_s_rate) (REGS *regs)
-{
-S32 fsr;
-    fsr = ARCH_DEP(vfetch4) (regs->GR(1) & ADDRESS_MAXWRAP(regs), 1, regs);
-
-    set_fine_steering_rate(fsr);
-}
-
-
-void ARCH_DEP(set_tod_offset) (REGS *regs)
-{
-S64 offset;
-    offset = ARCH_DEP(vfetch8) (regs->GR(1) & ADDRESS_MAXWRAP(regs), 1, regs);
-
-    set_tod_offset(offset >> 8);
-}
-
-
-void ARCH_DEP(adjust_tod_offset) (REGS *regs)
-{
-S64 offset;
-    offset = ARCH_DEP(vfetch8) (regs->GR(1) & ADDRESS_MAXWRAP(regs), 1, regs);
-
-    adjust_tod_offset(offset >> 8);
-}
-
-
-void ARCH_DEP(query_physical_clock) (REGS *regs)
-{
-    ARCH_DEP(vstore8) (universal_clock() << 8, regs->GR(1) & ADDRESS_MAXWRAP(regs), 1, regs);
-}
-
-
-void ARCH_DEP(query_steering_information) (REGS *regs)
-{
-PTFFQSI qsi;
-    obtain_lock(&sysblk.todlock);
-    STORE_DW(qsi.physclk, universal_clock() << 8);
-    STORE_DW(qsi.oldestart, old.start_time << 8);
-    STORE_DW(qsi.oldebase, old.base_offset << 8);
-    STORE_FW(qsi.oldfsr, old.fine_s_rate );
-    STORE_FW(qsi.oldgsr, old.gross_s_rate );
-    STORE_DW(qsi.newestart, new.start_time << 8);
-    STORE_DW(qsi.newebase, new.base_offset << 8);
-    STORE_FW(qsi.newfsr, new.fine_s_rate );
-    STORE_FW(qsi.newgsr, new.gross_s_rate );
-    release_lock(&sysblk.todlock);
-
-    ARCH_DEP(vstorec) (&qsi, sizeof(qsi)-1, regs->GR(1) & ADDRESS_MAXWRAP(regs), 1, regs);
-}
-
-
-void ARCH_DEP(query_tod_offset) (REGS *regs)
-{
-PTFFQTO qto;
-    obtain_lock(&sysblk.todlock);
-    STORE_DW(qto.todoff, (hw_clock_l() - universal_tod) << 8);
-    STORE_DW(qto.physclk, universal_tod << 8);
-    STORE_DW(qto.ltodoff, current->base_offset << 8);
-    STORE_DW(qto.todepoch, regs->tod_epoch << 8);
-    release_lock(&sysblk.todlock);
-
-    ARCH_DEP(vstorec) (&qto, sizeof(qto)-1, regs->GR(1) & ADDRESS_MAXWRAP(regs), 1, regs);
-}
-
-
-void ARCH_DEP(query_available_functions) (REGS *regs)
-{
-PTFFQAF qaf;
-    STORE_FW(qaf.sb[0] , 0xF0000000);        /* Functions 0x00..0x1F */
-    STORE_FW(qaf.sb[1] , 0x00000000);        /* Functions 0x20..0x3F */
-    STORE_FW(qaf.sb[2] , 0xF0000000);        /* Functions 0x40..0x5F */
-    STORE_FW(qaf.sb[3] , 0x00000000);        /* Functions 0x60..0x7F */
-
-    ARCH_DEP(vstorec) (&qaf, sizeof(qaf)-1, regs->GR(1) & ADDRESS_MAXWRAP(regs), 1, regs);
-}
-#endif /*defined(FEATURE_TOD_CLOCK_STEERING)*/
 
 #if !defined(_GEN_ARCH)
 

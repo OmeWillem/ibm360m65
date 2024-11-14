@@ -40,7 +40,6 @@ struct REGS {                           /* Processor registers       */
 
         int     arch_mode;              /* Architectural mode        */
 
-        DW      px;                     /* Prefix register           */
         PSW     psw;                    /* Program status word       */
         BYTE   *ip;                     /* Mainstor inst address     */
 
@@ -135,11 +134,9 @@ struct REGS {                           /* Processor registers       */
 #define EA_L      ea.F.L.F
 #define ET_G      et.D
 #define ET_L      et.F.L.F
-#define PX_G      px.D
-#define PX_L      px.F.L.F
 #define AIV_G     aiv.D
 #define AIV_L     aiv.F.L.F
-#define AR(_r)    ar[(_r)]
+#define AR_(_r)    ar[(_r)]
 
         U16     chanset;                /* Connected channel set     */
         U32     todpr;                  /* TOD programmable register */
@@ -155,9 +152,6 @@ struct REGS {                           /* Processor registers       */
         PSA_3XX *psa;                   /* -> PSA for this CPU       */
 
      /*
-      * The fields hostregs and guestregs have been move outside the
-      * scope of _FEATURE_SIE to reduce conditional code.
-      *
       *   sysblk.regs[i] always points to the host regs
       *   flag `host' is always 1 for the host regs
       *   flag `guest' is always 1 for the guest regs
@@ -179,29 +173,10 @@ struct REGS {                           /* Processor registers       */
                                            register context          */
         SYSBLK *sysblk;                 /* Pointer to sysblk         */
 
-#if defined(_FEATURE_SIE)
-        RADR    sie_state;              /* Address of the SIE state
-                                           descriptor block or 0 when
-                                           not running under SIE     */
-        SIEBK  *siebk;                  /* Sie State Desc structure  */
-        RADR    sie_px;                 /* Host address of guest px  */
-        RADR    sie_mso;                /* Main Storage Origin       */
-        RADR    sie_xso;                /* eXpanded Storage Origin   */
-        RADR    sie_xsl;                /* eXpanded Storage Limit    */
-        RADR    sie_rcpo;               /* Ref and Change Preserv.   */
-        RADR    sie_scao;               /* System Contol Area        */
-        S64     sie_epoch;              /* TOD offset in state desc. */
-#endif /*defined(_FEATURE_SIE)*/
         unsigned int
                 sie_active:1,           /* SIE active (host only)    */
                 sie_mode:1,             /* Running under SIE (guest) */
                 sie_pref:1;             /* Preferred-storage mode    */
-
-// #if defined(FEATURE_PER)
-        U16     perc;                   /* PER code                  */
-        RADR    peradr;                 /* PER address               */
-        BYTE    peraid;                 /* PER access id             */
-// #endif /*defined(FEATURE_PER)*/
 
         CPU_BITMAP cpubit;              /* Only this CPU's bit is 1  */
         U32     ints_state;             /* CPU Interrupts Status     */
@@ -226,31 +201,13 @@ struct REGS {                           /* Processor registers       */
                                            boundary                  */
         BYTE    *invalidate_main;       /* Mainstor addr to invalidat*/
         PSW     captured_zpsw;          /* Captured-z/Arch PSW reg   */
-#if defined(_FEATURE_VECTOR_FACILITY)
-        VFREGS *vf;                     /* Vector Facility           */
-#endif /*defined(_FEATURE_VECTOR_FACILITY)*/
 
         jmp_buf progjmp;                /* longjmp destination for
                                            program check return      */
-        jmp_buf archjmp;                /* longjmp destination to
-                                           switch architecture mode  */
         jmp_buf exitjmp;                /* longjmp destination for
                                            CPU thread exit           */
         COND    intcond;                /* CPU interrupt condition   */
         LOCK    *cpulock;               /* CPU lock for this CPU     */
-
-     /* Mainstor address lookup accelerator                          */
-
-        BYTE    aea_mode;               /* aea addressing mode       */
-
-        int     aea_ar[16+5];           /* arn to cr number          */
-                                        /* 5 Special registers       */
-
-        BYTE    aea_common[16+16+1];    /* 1=asd is not private      */
-                                        /* 16 Accesslist lookaside   */
-                                        /*  1 Real asd register      */
-
-        BYTE    aea_aleprot[16];        /* ale protected             */
 
      /* Function pointers */
         pi_func program_interrupt;
@@ -263,126 +220,13 @@ struct REGS {                           /* Processor registers       */
      /* Opcode table pointers                                        */
 
         FUNC    s370_opcode_table[256];
-        FUNC   *s370_opcode_a4xx,
-               *s370_opcode_a5xx,
-               *s370_opcode_a6xx,
- #if defined(MULTI_BYTE_ASSIST)
-                s370_opcode_a7xx[256],
-                s370_opcode_b2xx[256],
-                s370_opcode_b9xx[256],
-                s370_opcode_c0xx[256],                          /*@N3*/
-                s370_opcode_e3xx[256],                          /*@N3*/
-                s370_opcode_ebxx[256],
- #else
-               *s370_opcode_a7xx,
-               *s370_opcode_b2xx,
-               *s370_opcode_b9xx,
-               *s370_opcode_c0xx,                               /*@N3*/
-               *s370_opcode_e3xx,                               /*@N3*/
-               *s370_opcode_ebxx,
- #endif
-               *s370_opcode_b3xx,                               /*FPE*/
-               *s370_opcode_c2xx,                               /*208*/
-               *s370_opcode_c4xx,                               /*208*/
-               *s370_opcode_c6xx,                               /*208*/
-               *s370_opcode_e4xx,
-               *s370_opcode_e5xx,
-               *s370_opcode_e6xx,
-               *s370_opcode_ecxx,                               /*@N3*/
-               *s370_opcode_edxx;
-
-        FUNC    s390_opcode_table[256];
-        FUNC   *s390_opcode_01xx,
-               *s390_opcode_a4xx,
-               *s390_opcode_a5xx,
-               *s390_opcode_a6xx,
- #if defined(MULTI_BYTE_ASSIST)
-                s390_opcode_a7xx[256],
-                s390_opcode_b2xx[256],
-                s390_opcode_b9xx[256],
-                s390_opcode_c0xx[256],
-                s390_opcode_e3xx[256],
-                s390_opcode_ebxx[256],
- #else
-               *s390_opcode_a7xx,
-               *s390_opcode_b2xx,
-               *s390_opcode_b9xx,
-               *s390_opcode_c0xx,
-               *s390_opcode_e3xx,
-               *s390_opcode_ebxx,
- #endif
-               *s390_opcode_b3xx,
-               *s390_opcode_c2xx,
-               *s390_opcode_c4xx,                               /*208*/
-               *s390_opcode_c6xx,                               /*208*/
-               *s390_opcode_e4xx,
-               *s390_opcode_e5xx,
-               *s390_opcode_ecxx,
-               *s390_opcode_edxx;
-
-        FUNC    z900_opcode_table[256];
-        FUNC   *z900_opcode_01xx,
-               *z900_opcode_a5xx,
- #if defined(MULTI_BYTE_ASSIST)
-                z900_opcode_a7xx[256],
-                z900_opcode_b2xx[256],
-                z900_opcode_b9xx[256],
-                z900_opcode_c0xx[256],
-                z900_opcode_e3xx[256],
-                z900_opcode_ebxx[256],
- #else
-               *z900_opcode_a7xx,
-               *z900_opcode_b2xx,
-               *z900_opcode_b9xx,
-               *z900_opcode_c0xx,
-               *z900_opcode_e3xx,
-               *z900_opcode_ebxx,
- #endif
-               *z900_opcode_b3xx,
-               *z900_opcode_c2xx,
-               *z900_opcode_c4xx,                               /*208*/
-               *z900_opcode_c6xx,                               /*208*/
-               *z900_opcode_c8xx,
-               *z900_opcode_e5xx,
-               *z900_opcode_ecxx,
-               *z900_opcode_edxx;
 
      /* TLB - Translation lookaside buffer                           */
 
-        unsigned int tlbID;             /* Validation identifier     */
-        TLB     tlb;                    /* Translation lookaside buf */
+//        unsigned int tlbID;             /* Validation identifier     */
+//        TLB     tlb;                    /* Translation lookaside buf */
 
 };
-
-/*-------------------------------------------------------------------*/
-/* Structure definition for the Vector Facility                      */
-/*-------------------------------------------------------------------*/
-#if defined(_FEATURE_VECTOR_FACILITY)
-struct VFREGS {                          /* Vector Facility Registers*/
-        unsigned int
-                online:1;               /* 1=VF is online            */
-        U64     vsr;                    /* Vector Status Register    */
-        U64     vac;                    /* Vector Activity Count     */
-        BYTE    vmr[VECTOR_SECTION_SIZE/8];  /* Vector Mask Register */
-        U32     vr[16][VECTOR_SECTION_SIZE]; /* Vector Registers     */
-};
-#endif /*defined(_FEATURE_VECTOR_FACILITY)*/
-
-// #if defined(FEATURE_REGION_RELOCATE)
-/*-------------------------------------------------------------------*/
-/* Zone Parameter Block                                              */
-/*-------------------------------------------------------------------*/
-struct ZPBLK {
-        RADR mso;                      /* Main Storage Origin        */
-        RADR msl;                      /* Main Storage Length        */
-        RADR eso;                      /* Expanded Storage Origin    */
-        RADR esl;                      /* Expanded Storage Length    */
-        RADR mbo;                      /* Measurement block origin   */
-        BYTE mbk;                      /* Measurement block key      */
-        int  mbm;                      /* Measurement block mode     */
-        int  mbd;                      /* Device connect time mode   */
-};
-// #endif /*defined(FEATURE_REGION_RELOCATE)*/
 
 /*-------------------------------------------------------------------*/
 /* System configuration block                                        */
@@ -393,8 +237,6 @@ struct SYSBLK {
         time_t  impltime;               /* TOD system was IMPL'ed    */
         int     arch_mode;              /* Architecturual mode       */
                                         /* 0 == S/370   (ARCH_370)   */
-                                        /* 1 == ESA/390 (ARCH_390)   */
-                                        /* 2 == ESAME   (ARCH_900)   */
         int     arch_z900;              /* 1 == ESAME supported      */
         RADR    mainsize;               /* Main storage size (bytes) */
         BYTE   *mainstor;               /* -> Main storage           */
@@ -424,12 +266,6 @@ struct SYSBLK {
         LOCK    todlock;                /* TOD clock update lock     */
         TID     todtid;                 /* Thread-id for TOD update  */
         REGS   *regs[MAX_CPU_ENGINES+1];   /* Registers for each CPU */
-#if defined(_FEATURE_VECTOR_FACILITY)
-        VFREGS  vf[MAX_CPU_ENGINES];    /* Vector Facility           */
-#endif /*defined(_FEATURE_VECTOR_FACILITY)*/
-#if defined(_FEATURE_SIE)
-        ZPBLK   zpb[FEATURE_SIE_MAXZONES];  /* SIE Zone Parameter Blk*/
-#endif /*defined(_FEATURE_SIE)*/
 #if defined(OPTION_FOOTPRINT_BUFFER)
         REGS    footprregs[MAX_CPU_ENGINES][OPTION_FOOTPRINT_BUFFER];
         U32     footprptr[MAX_CPU_ENGINES];
@@ -507,14 +343,6 @@ struct SYSBLK {
         int     devtunavail;            /* Count thread unavailable  */
 #endif // !defined(OPTION_FISHIO)
         RADR    addrlimval;             /* Address limit value (SAL) */
-#if defined(FEATURE_VM_BLOCKIO)
-        U16     servcode;               /* External interrupt code   */
-        BYTE    biosubcd;               /* Block I/O sub int. code   */
-        BYTE    biostat;                /* Block I/O status          */
-        U64     bioparm;                /* Block I/O interrupt parm  */
-        DEVBLK  *biodev;                /* Block I/O device          */
-        /* Note: biodev is only used to detect BIO interrupt tracing */
-#endif /* defined(FEATURE_VM_BLOCKIO) */
         U32     servparm;               /* Service signal parameter  */
         unsigned int                    /* Flags                     */
                 daemon_mode:1,          /* Daemon mode active        */
@@ -546,16 +374,6 @@ struct SYSBLK {
 #if defined(OPTION_IPLPARM)
         BYTE    iplparmstring[64];      /* 64 bytes loadable at IPL  */
 #endif
-#ifdef FEATURE_ECPSVM
-//
-        /* ECPS:VM */
-        struct {
-            u_int level:16;
-            u_int debug:1;
-            u_int available:1;
-        } ecpsvm;                       /* ECPS:VM structure         */
-//
-#endif
         U64     pgminttr;               /* Program int trace mask    */
         int     pcpu;                   /* Tgt CPU panel cmd & displ */
         int     hercprio;               /* Hercules process priority */
@@ -577,9 +395,6 @@ struct SYSBLK {
         CPU_BITMAP sync_mask;           /* CPU mask for syncing CPUs */
         COND    sync_cond;              /* COND for syncing CPU      */
         COND    sync_bc_cond;           /* COND for other CPUs       */
-#if defined(_FEATURE_ASN_AND_LX_REUSE)
-        int     asnandlxreuse;          /* ASN And LX Reuse enable   */
-#endif
 #if defined(OPTION_SHARED_DEVICES)
         TID     shrdtid;                /* Shared device listener    */
         U16     shrdport;               /* Shared device server port */
@@ -662,10 +477,6 @@ struct SYSBLK {
         U32     mipsrate;               /* Instructions per second   */
         U32     siosrate;               /* IOs per second            */
 #endif /*defined(OPTION_MIPS_COUNTING)*/
-
-#ifdef OPTION_CMDTGT
-        int     cmdtgt;                 /* 0=herc,1=scp,2=!scp       */
-#endif // OPTION_CMDTGT
 
         int     regs_copy_len;          /* Length to copy for REGS   */
 
@@ -866,7 +677,7 @@ struct DEVBLK {                         /* Device configuration block*/
                 resumesuspended:1;      /* 1=Hresuming suspended dev */
 #define IOPENDING(_dev) ((_dev)->pending || (_dev)->pcipending || (_dev)->attnpending)
 #define INITIAL_POWERON_370() \
-    ( dev->crwpending && ARCH_370 == sysblk.arch_mode )
+    ( dev->crwpending )
         int     crwpending;             /* 1=CRW pending             */
         int     syncio_active;          /* 1=Synchronous I/O active  */
         int     syncio_retry;           /* 1=Retry I/O asynchronously*/
@@ -884,11 +695,6 @@ struct DEVBLK {                         /* Device configuration block*/
         /*  External GUI fields                                      */
         GUISTAT* pGUIStat;              /* EXTERNALGUI Dev Stat Ctl  */
 #endif
-
-#if defined(FEATURE_VM_BLOCKIO)
-        /* VM DIAGNOSE X'250' Emulation Environment                  */
-        struct VMBIOENV *vmd250env;     /* Established environment   */
-#endif /* defined(FEATURE_VM_BLOCKIO) */
 
         /*  Fields for remote devices                                */
 

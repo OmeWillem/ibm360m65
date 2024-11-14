@@ -61,3 +61,12 @@ xise/ibm360.gise
 xise/IBM360.cmd_log
 xise/ald_summary.html
 /xise/_xmsgs
+/hercules/.vs
+*.bak
+/hercules/Backup
+/hercules/msvc.AMD64.bin
+/hercules/msvc.debug.dllmod.bin
+/hercules/msvc.dllmod.bin
+/os360mvt
+hercules/UpgradeLog.htm
+hercules/Hercules.vcxproj.user

@@ -37,6 +37,11 @@
 #if !defined(_HERCWIND_H)
 #define _HERCWIND_H
 
+#include <stdio.h>
+#include <malloc.h>
+
+#pragma comment(lib, "Ws2_32.lib")
+
 // PROGRAMMING NOTE: Cygwin has a bug in setvbuf requiring us
 // to do an 'fflush()' after each stdout/err write, and it doesn't
 // hurt doing it for the MSVC build either...
@@ -160,7 +165,7 @@ typedef int             mode_t;
 #define HAVE_SYS_MTIO_H         // (ours is called 'w32mtio.h')
 
 #ifndef MAX_CPU_ENGINES
-#define MAX_CPU_ENGINES  8
+#define MAX_CPU_ENGINES  1
 #endif
 
 #define OPTION_CONFIG_SYMBOLS
@@ -239,5 +244,7 @@ inline void DebugTrace(char* fmt, ...)
     free( buffer );
     va_end( args );
 }
+
+#define TIMESPEC_IN_TIME_H 1
 
 #endif /*!defined(_HERCWIND_H)*/

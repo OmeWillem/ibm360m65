@@ -142,47 +142,12 @@ int rc = 0;
     UNREFERENCED_370(xdmg);
     UNREFERENCED_370(fsta);
 
-#ifdef FEATURE_CHANNEL_SUBSYSTEM
-    /* If there is a crw pending and we are enabled for the channel
-       report interrupt subclass then process the interrupt */
-    if( OPEN_IC_CHANRPT(regs) )
-    {
-        *mcic =  MCIC_CP |
-               MCIC_WP |
-               MCIC_MS |
-               MCIC_PM |
-               MCIC_IA |
-#ifdef FEATURE_HEXADECIMAL_FLOATING_POINT
-               MCIC_FP |
-#endif /*FEATURE_HEXADECIMAL_FLOATING_POINT*/
-               MCIC_GR |
-               MCIC_CR |
-               MCIC_ST |
-#ifdef FEATURE_ACCESS_REGISTERS
-               MCIC_AR |
-#endif /*FEATURE_ACCESS_REGISTERS*/
-#if defined(FEATURE_ESAME) && defined(FEATURE_EXTENDED_TOD_CLOCK)
-               MCIC_PR |
-#endif /*defined(FEATURE_ESAME) && defined(FEATURE_EXTENDED_TOD_CLOCK)*/
-#if defined(FEATURE_BINARY_FLOATING_POINT)
-               MCIC_XF |
-#endif /*defined(FEATURE_BINARY_FLOATING_POINT)*/
-               MCIC_AP |
-               MCIC_CT |
-               MCIC_CC ;
-        *xdmg = 0;
-        *fsta = 0;
-        OFF_IC_CHANRPT;
-        rc = 1;
-    }
-
-    if(!IS_IC_CHANRPT)
-#endif /*FEATURE_CHANNEL_SUBSYSTEM*/
-        OFF_IC_CHANRPT;
+    OFF_IC_CHANRPT;
 
     return rc;
 } /* end function present_mck_interrupt */
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
 
 void ARCH_DEP(sync_mck_interrupt) (REGS *regs)
 {
@@ -194,21 +159,10 @@ U64     mcic = MCIC_P  |  /* Instruction processing damage */
                MCIC_MS |
                MCIC_PM |
                MCIC_IA |
-#ifdef FEATURE_HEXADECIMAL_FLOATING_POINT
                MCIC_FP |
-#endif /*FEATURE_HEXADECIMAL_FLOATING_POINT*/
                MCIC_GR |
                MCIC_CR |
                MCIC_ST |
-#ifdef FEATURE_ACCESS_REGISTERS
-               MCIC_AR |
-#endif /*FEATURE_ACCESS_REGISTERS*/
-#if defined(FEATURE_ESAME) && defined(FEATURE_EXTENDED_TOD_CLOCK)
-               MCIC_PR |
-#endif /*defined(FEATURE_ESAME) && defined(FEATURE_EXTENDED_TOD_CLOCK)*/
-#if defined(FEATURE_BINARY_FLOATING_POINT)
-               MCIC_XF |
-#endif /*defined(FEATURE_BINARY_FLOATING_POINT)*/
                MCIC_CT |
                MCIC_CC ;
 U32     xdmg = 0;
@@ -223,27 +177,18 @@ RADR    fsta = 0;
     if (regs->cpuad == sysblk.mainowner)
         RELEASE_MAINLOCK(regs);
 
-    /* Exit SIE when active */
-#if defined(FEATURE_INTERPRETIVE_EXECUTION)
-    if(regs->sie_active)
-        ARCH_DEP(sie_exit) (regs, SIE_HOST_INTERRUPT);
-#endif /*defined(FEATURE_INTERPRETIVE_EXECUTION)*/
-
-
     /* Set the main storage reference and change bits */
-    STORAGE_KEY(regs->PX, regs) |= (STORKEY_REF | STORKEY_CHANGE);
+    STORAGE_KEY(0, regs) |= (STORKEY_REF | STORKEY_CHANGE);
 
     /* Point to the PSA in main storage */
-    psa = (void*)(regs->mainstor + regs->PX);
+    psa = (void*)(regs->mainstor);
 
     /* Store registers in machine check save area */
-    ARCH_DEP(store_status) (regs, regs->PX);
+    ARCH_DEP(store_status) (regs, 0);
 
-#if !defined(FEATURE_ESAME)
 // ZZ
     /* Set the extended logout area to zeros */
     memset(psa->storepsw, 0, 16);
-#endif
 
     /* Store the machine check interrupt code at PSA+232 */
     STORE_DW(psa->mckint, mcic);
@@ -256,13 +201,8 @@ RADR    fsta = 0;
     /* Store the external damage code at PSA+244 */
     STORE_FW(psa->xdmgcode, xdmg);
 
-#if defined(FEATURE_ESAME)
-    /* Store the failing storage address at PSA+248 */
-    STORE_DW(psa->mcstorad, fsta);
-#else /*!defined(FEATURE_ESAME)*/
     /* Store the failing storage address at PSA+248 */
     STORE_FW(psa->mcstorad, fsta);
-#endif /*!defined(FEATURE_ESAME)*/
 
     /* Store current PSW at PSA+X'30' */
     ARCH_DEP(store_psw) ( regs, psa->mckold );
@@ -274,6 +214,7 @@ RADR    fsta = 0;
         ARCH_DEP(program_interrupt) (regs, rc);
 } /* end function sync_mck_interrupt */
 
+#endif
 
 #if !defined(_GEN_ARCH)
 
@@ -339,61 +280,21 @@ int i;
 
     if(MACHMASK(&regs->psw))
     {
-#if defined(_FEATURE_SIE)
-        logmsg(_("HHCCP017I CPU%4.4X: Machine check due to host error: %s\n"),
-          regs->sie_active ? regs->guestregs->cpuad : regs->cpuad,
-          strsignal(signo));
-#else /*!defined(_FEATURE_SIE)*/
         logmsg(_("HHCCP017I CPU%4.4X: Machine check due to host error: %s\n"),
           regs->cpuad, strsignal(signo));
-#endif /*!defined(_FEATURE_SIE)*/
 
         display_inst(
-#if defined(_FEATURE_SIE)
-                     regs->sie_active ? regs->guestregs :
-#endif /*defined(_FEATURE_SIE)*/
                                                           regs,
-#if defined(_FEATURE_SIE)
-          regs->sie_active ? regs->guestregs->ip :
-#endif /*defined(_FEATURE_SIE)*/
                                                    regs->ip);
 
-        switch(regs->arch_mode) {
-#if defined(_370)
-            case ARCH_370:
                 s370_sync_mck_interrupt(regs);
-                break;
-#endif
-#if defined(_390)
-            case ARCH_390:
-                s390_sync_mck_interrupt(regs);
-                break;
-#endif
-#if defined(_900)
-            case ARCH_900:
-                z900_sync_mck_interrupt(regs);
-                break;
-#endif
-        }
     }
     else
     {
-#if defined(_FEATURE_SIE)
-        logmsg(_("HHCCP018I CPU%4.4X: Check-Stop due to host error: %s\n"),
-          regs->sie_active ? regs->guestregs->cpuad : regs->cpuad,
-          strsignal(signo));
-#else /*!defined(_FEATURE_SIE)*/
         logmsg(_("HHCCP018I CPU%4.4X: Check-Stop due to host error: %s\n"),
           regs->cpuad, strsignal(signo));
-#endif /*!defined(_FEATURE_SIE)*/
         display_inst(
-#if defined(_FEATURE_SIE)
-                     regs->sie_active ? regs->guestregs :
-#endif /*defined(_FEATURE_SIE)*/
                                                           regs,
-#if defined(_FEATURE_SIE)
-          regs->sie_active ? regs->guestregs->ip :
-#endif /*defined(_FEATURE_SIE)*/
                                                    regs->ip);
         regs->cpustate = CPUSTATE_STOPPING;
         regs->checkstop = 1;

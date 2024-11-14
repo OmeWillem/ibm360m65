@@ -76,21 +76,6 @@ CPU_BITMAP      intmask = 0;            /* Interrupt CPU mask        */
         else if (IS_IC_CLKC(regs))
             OFF_IC_CLKC(regs);
 
-#if defined(_FEATURE_SIE)
-        /* If running under SIE also check the SIE copy */
-        if(regs->sie_active)
-        {
-        /* Signal clock comparator interrupt if needed */
-            if(TOD_CLOCK(regs->guestregs) > regs->guestregs->clkc)
-            {
-                ON_IC_CLKC(regs->guestregs);
-                intmask |= regs->cpubit;
-            }
-            else
-                OFF_IC_CLKC(regs->guestregs);
-        }
-#endif /*defined(_FEATURE_SIE)*/
-
         /*-------------------------------------------*
          * [2] Decrement the CPU timer for each CPU  *
          *-------------------------------------------*/
@@ -107,45 +92,13 @@ CPU_BITMAP      intmask = 0;            /* Interrupt CPU mask        */
         else if(IS_IC_PTIMER(regs))
             OFF_IC_PTIMER(regs);
 
-#if defined(_FEATURE_SIE)
-        /* When running under SIE also update the SIE copy */
-        if(regs->sie_active)
-        {
-            /* Set interrupt flag if the CPU timer is negative */
-            if (CPU_TIMER(regs->guestregs) < 0)
-            {
-                ON_IC_PTIMER(regs->guestregs);
-                intmask |= regs->cpubit;
-            }
-            else
-                OFF_IC_PTIMER(regs->guestregs);
-        }
-#endif /*defined(_FEATURE_SIE)*/
-
 #if defined(_FEATURE_INTERVAL_TIMER)
         /*-------------------------------------------*
          * [3] Check for interval timer interrupt    *
          *-------------------------------------------*/
 
-        if(regs->arch_mode == ARCH_370)
-        {
             if( chk_int_timer(regs) )
                 intmask |= regs->cpubit;
-        }
-
-
-#if defined(_FEATURE_SIE)
-        /* When running under SIE also update the SIE copy */
-        if(regs->sie_active)
-        {
-            if(SIE_STATB(regs->guestregs, M, 370)
-              && SIE_STATNB(regs->guestregs, M, ITMOF))
-            {
-                if( chk_int_timer(regs->guestregs) )
-                    intmask |= regs->cpubit;
-            }
-        }
-#endif /*defined(_FEATURE_SIE)*/
 
 #endif /*defined(_FEATURE_INTERVAL_TIMER)*/
 

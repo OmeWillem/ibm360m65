@@ -105,19 +105,6 @@ HDL_REGISTER_SECTION;
 
     HDL_REGISTER( hdl_device_type_equates,    UNRESOLVED      );
 
-#if defined(_390_FEATURE_MESSAGE_SECURITY_ASSIST)
-    HDL_REGISTER( s390_cipher_message,                      UNRESOLVED );
-    HDL_REGISTER( s390_cipher_message_with_chaining,        UNRESOLVED );
-    HDL_REGISTER( s390_compute_message_digest,              UNRESOLVED );
-    HDL_REGISTER( s390_compute_message_authentication_code, UNRESOLVED );
-#endif /*defined(_390_FEATURE_MESSAGE_SECURITY_ASSIST)*/
-#if defined(_900_FEATURE_MESSAGE_SECURITY_ASSIST)
-    HDL_REGISTER( z900_cipher_message,                      UNRESOLVED );
-    HDL_REGISTER( z900_cipher_message_with_chaining,        UNRESOLVED );
-    HDL_REGISTER( z900_compute_message_digest,              UNRESOLVED );
-    HDL_REGISTER( z900_compute_message_authentication_code, UNRESOLVED );
-#endif /*defined(_900_FEATURE_MESSAGE_SECURITY_ASSIST)*/
-
 }
 END_REGISTER_SECTION
 
@@ -145,19 +132,6 @@ HDL_RESOLVER_SECTION;
 #endif
 
     HDL_RESOLVE( hdl_device_type_equates    );
-
-#if defined(_390_FEATURE_MESSAGE_SECURITY_ASSIST)
-    HDL_RESOLVE( s390_cipher_message                      );
-    HDL_RESOLVE( s390_cipher_message_with_chaining        );
-    HDL_RESOLVE( s390_compute_message_digest              );
-    HDL_RESOLVE( s390_compute_message_authentication_code );
-#endif /*defined(_390_FEATURE_MESSAGE_SECURITY_ASSIST)*/
-#if defined(_900_FEATURE_MESSAGE_SECURITY_ASSIST)
-    HDL_RESOLVE( z900_cipher_message                      );
-    HDL_RESOLVE( z900_cipher_message_with_chaining        );
-    HDL_RESOLVE( z900_compute_message_digest              );
-    HDL_RESOLVE( z900_compute_message_authentication_code );
-#endif /*defined(_900_FEATURE_MESSAGE_SECURITY_ASSIST)*/
 
 }
 END_RESOLVER_SECTION

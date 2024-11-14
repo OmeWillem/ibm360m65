@@ -88,9 +88,6 @@ int ARCH_DEP(system_reset) (int cpu, int clear)
                 memset (regs->ar,0,sizeof(regs->ar));
                 memset (regs->gr,0,sizeof(regs->gr));
                 memset (regs->fpr,0,sizeof(regs->fpr));
-              #if defined(_FEATURE_VECTOR_FACILITY)
-                memset (regs->vf->vr,0,sizeof(regs->vf->vr));
-              #endif /*defined(_FEATURE_VECTOR_FACILITY)*/
             }
         }
 
@@ -103,11 +100,6 @@ int ARCH_DEP(system_reset) (int cpu, int clear)
         xstorage_clear();
 
     }
-
-#if defined(FEATURE_CONFIGURATION_TOPOLOGY_FACILITY)
-    /* Clear topology-change-report-pending condition */
-    sysblk.topchnge = 0;
-#endif /*defined(FEATURE_CONFIGURATION_TOPOLOGY_FACILITY)*/
 
     /* ZZ FIXME: we should probably present a machine-check
        if we encounter any errors during the reset (rc != 0) */
@@ -145,15 +137,6 @@ int ARCH_DEP(common_load_begin) (int cpu, int clear)
         return -1;
     regs = sysblk.regs[cpu];
 
-    if (sysblk.arch_mode == ARCH_900)
-    {
-        /* Switch architecture mode to ESA390 mode for z/Arch IPL */
-        sysblk.arch_mode = ARCH_390;
-        /* Capture the z/Arch PSW if this is a Load-normal IPL */
-        if (!clear)
-            captured_zpsw = regs->psw;
-    }
-
     /* Load-clear does a clear-reset (which does an initial-cpu-reset)
        on all cpus in the configuration, but Load-normal does an initial-
        cpu-reset only for the IPL CPU and a regular cpu-reset for all
@@ -168,8 +151,6 @@ int ARCH_DEP(common_load_begin) (int cpu, int clear)
             return -1;
         /* Save our captured-z/Arch-PSW if this is a Load-normal IPL
            since the initial_cpu_reset call cleared it to zero. */
-        if (orig_arch_mode == ARCH_900)
-            regs->captured_zpsw = captured_zpsw;
     }
 
     /* The actual IPL (load) now begins... */
@@ -183,6 +164,11 @@ int ARCH_DEP(common_load_begin) (int cpu, int clear)
 /* Returns 0 if successful, -1 if error                              */
 /* intlock MUST be held on entry                                     */
 /*-------------------------------------------------------------------*/
+
+#if defined(COMPARE_M65) || defined(SOFTWARE_M65)
+#include "360_cstruc.h"
+#endif
+
 int ARCH_DEP(load_ipl) (U16 lcss, U16 devnum, int cpu, int clear)
 {
 REGS   *regs;                           /* -> Regs                   */
@@ -205,8 +191,7 @@ BYTE    chanstat;                       /* IPL device channel status */
     {
         logmsg (_("HHCCP027E Device %4.4X not in configuration%s\n"),
                 devnum,
-                (sysblk.arch_mode == ARCH_370 ?
-                  " or not conneceted to channelset" : ""));
+                " or not conneceted to channelset");
         HDC1(debug_cpu_state, regs);
         return -1;
     }
@@ -221,8 +206,9 @@ BYTE    chanstat;                       /* IPL device channel status */
     }
 #endif
 
+
     /* Set Main Storage Reference and Update bits */
-    STORAGE_KEY(regs->PX, regs) |= (STORKEY_REF | STORKEY_CHANGE);
+    STORAGE_KEY(0, regs) |= (STORKEY_REF | STORKEY_CHANGE);
     sysblk.main_clear = sysblk.xpnd_clear = 0;
 
     /* Build the IPL CCW at location 0 */
@@ -261,15 +247,8 @@ BYTE    chanstat;                       /* IPL device channel status */
     dev->scsw.flag3 = 0;
 
     /* Check that load completed normally */
-#ifdef FEATURE_S370_CHANNEL
     unitstat = dev->csw[4];
     chanstat = dev->csw[5];
-#endif /*FEATURE_S370_CHANNEL*/
-
-#ifdef FEATURE_CHANNEL_SUBSYSTEM
-    unitstat = dev->scsw.unitstat;
-    chanstat = dev->scsw.chanstat;
-#endif /*FEATURE_CHANNEL_SUBSYSTEM*/
 
     if (unitstat != (CSW_CE | CSW_DE) || chanstat != 0) {
         logmsg (_("HHCCP029E %s mode IPL failed: CSW status=%2.2X%2.2X\n"
@@ -285,7 +264,6 @@ BYTE    chanstat;                       /* IPL device channel status */
         return -1;
     }
 
-#ifdef FEATURE_S370_CHANNEL
     /* Test the EC mode bit in the IPL PSW */
     if (regs->psa->iplpsw[1] & 0x08) {
         /* In EC mode, store device address at locations 184-187 */
@@ -294,16 +272,6 @@ BYTE    chanstat;                       /* IPL device channel status */
         /* In BC mode, store device address at locations 2-3 */
         STORE_HW(regs->psa->iplpsw + 2, dev->devnum);
     }
-#endif /*FEATURE_S370_CHANNEL*/
-
-#ifdef FEATURE_CHANNEL_SUBSYSTEM
-    /* Set LPUM */
-    dev->pmcw.lpum = 0x80;
-    STORE_FW(regs->psa->ioid, (dev->ssid<<16)|dev->subchan);
-
-    /* Store zeroes at locations 188-191 */
-    memset (regs->psa->ioparm, 0, 4);
-#endif /*FEATURE_CHANNEL_SUBSYSTEM*/
 
     /* Save IPL device number, cpu number and lcss */
     sysblk.ipldev = devnum;
@@ -335,6 +303,10 @@ int ARCH_DEP(common_load_finish) (REGS *regs)
         HDC1(debug_cpu_state, regs);
         return -1;
     }
+#if defined(COMPARE_M65) || defined(SOFTWARE_M65)
+    write_m65_reg(M65_REG_IO_RESP, current_io_num);
+//    run_single_instruction(regs);
+#endif
 
     /* Set the CPU into the started state */
     regs->opinterv = 0;
@@ -380,13 +352,6 @@ int             i;                      /* Array subscript           */
     /* Clear monitor code */
     regs->MC_G = 0;
 
-    /* Purge the lookaside buffers */
-    ARCH_DEP(purge_tlb) (regs);
-
-#if defined(FEATURE_ACCESS_REGISTERS)
-    ARCH_DEP(purge_alb) (regs);
-#endif /*defined(FEATURE_ACCESS_REGISTERS)*/
-
     if(regs->host)
     {
         /* Put the CPU into the stopped state */
@@ -424,7 +389,6 @@ int ARCH_DEP(initial_cpu_reset) (REGS *regs)
     memset ( &regs->captured_zpsw, 0, sizeof(regs->captured_zpsw) );
     memset ( regs->cr,             0, sizeof(regs->cr)            );
     regs->fpc    = 0;
-    regs->PX     = 0;
     regs->psw.AMASK_G = AMASK24;
     /* 
      * ISW20060125 : Since we reset the prefix, we must also adjust 
@@ -448,24 +412,17 @@ int ARCH_DEP(initial_cpu_reset) (REGS *regs)
     /* Initialize external interrupt masks in control register 0 */
     regs->CR(0) = CR0_XM_ITIMER | CR0_XM_INTKEY | CR0_XM_EXTSIG;
 
-#ifdef FEATURE_S370_CHANNEL
     /* For S/370 initialize the channel masks in CR2 */
     regs->CR(2) = 0xFFFFFFFF;
-#endif /*FEATURE_S370_CHANNEL*/
 
-    regs->chanset = 
-#if defined(FEATURE_CHANNEL_SWITCHING)
-                    regs->cpuad < FEATURE_LCSS_MAX ? regs->cpuad :
-#endif /*defined(FEATURE_CHANNEL_SWITCHING)*/
-                                                                   0xFFFF;
+    regs->chanset =
+        regs->cpuad;
 
     /* Initialize the machine check masks in control register 14 */
     regs->CR(14) = CR14_CHKSTOP | CR14_SYNCMCEL | CR14_XDMGRPT;
 
-#ifndef FEATURE_LINKAGE_STACK
     /* For S/370 initialize the MCEL address in CR15 */
     regs->CR(15) = 512;
-#endif /*!FEATURE_LINKAGE_STACK*/
 
     if(regs->host && regs->guestregs)
       ARCH_DEP(initial_cpu_reset)(regs->guestregs);
@@ -494,25 +451,39 @@ int ARCH_DEP(initial_cpu_reset) (REGS *regs)
 /*  Load / IPL         (Load Normal  -or-  Load Clear)               */
 /*-------------------------------------------------------------------*/
 
+#if !defined(HARDWARE_M65)
+
 int load_ipl (U16 lcss, U16 devnum, int cpu, int clear)
 {
-    switch(sysblk.arch_mode) {
-#if defined(_370)
-        case ARCH_370:
+#if defined(COMPARE_M65) || defined(SOFTWARE_M65)
+            current_io_num = read_m65_reg(M65_REG_IO_CMD) & 0xc0000000;
+            write_m65_reg(M65_REG_IO_RESP, current_io_num);
+            newstate.EXTERNAL_.switches_0.F |= 0xffe000;
+            for (int i=0;i<12;i++)
+              newstate.EXTERNAL_.switches_0.F &= ~(((devnum>>i)&1)<<(23-i));
+            newstate.EXTERNAL_.switches_0.B14 = false;
+            D_fprintf(lf, "   %06x\n", newstate.EXTERNAL_.switches_0.F);
+#endif
+#if defined(COMPARE_M65)
+            for (int i = 0; i < 50; i++)
+                twenty_cycle(sysblk.regs);
+            newstate.EXTERNAL_.switches_0.B14 = true;
+            while ((!newstate.KW_INT._reset_delay_ss))
+                twenty_cycle();
+            while (!((current_io_num ^read_m65_reg(M65_REG_IO_CMD))&0xc0000000))
+                twenty_cycle();
+            unsigned int ioc = read_m65_reg(M65_REG_IO_CMD);
+            current_io_num = ioc & 0xc0000000;
+            D_fprintf(lf, "IPL: %08x %08x\n", read_m65_reg(M65_REG_IO_CMD), newstate.FE.ext_reg.F);
+#endif
+#if defined(SOFTWARE_M65)
+            return 0;
+#else
             return s370_load_ipl (lcss, devnum, cpu, clear);
 #endif
-#if defined(_390)
-        case ARCH_390:
-            return s390_load_ipl (lcss, devnum, cpu, clear);
-#endif
-#if defined(_900)
-        case ARCH_900:
-            /* z/Arch always starts out in ESA390 mode */
-            return s390_load_ipl (lcss, devnum, cpu, clear);
-#endif
-    }
-    return -1;
 }
+
+#endif
 
 /*-------------------------------------------------------------------*/
 /*  Initial CPU Reset                                                */
@@ -520,24 +491,7 @@ int load_ipl (U16 lcss, U16 devnum, int cpu, int clear)
 int initial_cpu_reset (REGS *regs)
 {
 int rc = -1;
-    switch(sysblk.arch_mode) {
-#if defined(_370)
-        case ARCH_370:
             rc = s370_initial_cpu_reset (regs);
-            break;
-#endif
-#if defined(_390)
-        case ARCH_390:
-            rc = s390_initial_cpu_reset (regs);
-            break;
-#endif
-#if defined(_900)
-        case ARCH_900:
-            /* z/Arch always starts out in ESA390 mode */
-            rc = s390_initial_cpu_reset (regs);
-            break;
-#endif
-    }
     regs->arch_mode = sysblk.arch_mode;
     return rc;
 }
@@ -547,22 +501,7 @@ int rc = -1;
 /*-------------------------------------------------------------------*/
 int system_reset (int cpu, int clear)
 {
-    switch(sysblk.arch_mode) {
-#if defined(_370)
-        case ARCH_370:
             return s370_system_reset (cpu, clear);
-#endif
-#if defined(_390)
-        case ARCH_390:
-            return s390_system_reset (cpu, clear);
-#endif
-#if defined(_900)
-        case ARCH_900:
-            /* z/Arch always starts out in ESA390 mode */
-            return s390_system_reset (cpu, clear);
-#endif
-    }
-    return -1;
 }
 
 /*-------------------------------------------------------------------*/
@@ -570,22 +509,7 @@ int system_reset (int cpu, int clear)
 /*-------------------------------------------------------------------*/
 int cpu_reset (REGS *regs)
 {
-    switch(sysblk.arch_mode) {
-#if defined(_370)
-        case ARCH_370:
             return s370_cpu_reset (regs);
-#endif
-#if defined(_390)
-        case ARCH_390:
-            return s390_cpu_reset (regs);
-#endif
-#if defined(_900)
-        case ARCH_900:
-            /* z/Arch always starts out in ESA390 mode */
-            return s390_cpu_reset (regs);
-#endif
-    }
-    return -1;
 }
 
 /*-------------------------------------------------------------------*/

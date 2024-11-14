@@ -92,7 +92,7 @@ void write_top_h_file(std::string outdir) {
 	of << "/* ALD top include file */\n\n";
 	of << "#include \"ald_types.h\"\n";
 	for (auto& s : sections)
-		of << "#include \"" << s.second.ald_path.replace_extension(".h").string() << "\"\n";
+		of << "#include \"" << s.second.ald_path.replace_extension(".h").filename().string() << "\"\n";
 	of << "\ninline void process_ald() {\n";
 	for (auto& s : sections)
 		of << "  process_" << s.first << "();\n";

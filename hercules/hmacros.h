@@ -177,8 +177,6 @@
 
 #define  UNREFERENCED(x)      ((x)=(x))
 #define  UNREFERENCED_370(x)  ((x)=(x))
-#define  UNREFERENCED_390(x)  ((x)=(x))
-#define  UNREFERENCED_900(x)  ((x)=(x))
 
 /*-------------------------------------------------------------------*/
 /* Macro for Debugging / Tracing...                                  */
@@ -315,11 +313,7 @@ typedef U64  (*z900_trace_br_func) (int amode,  U64 ia, REGS *regs);
 #define IS_CPU_ONLINE(_cpu) \
   (sysblk.regs[(_cpu)] != NULL)
 
-#if defined(_FEATURE_CPU_RECONFIG)
- #define MAX_CPU sysblk.maxcpu
-#else
  #define MAX_CPU sysblk.numcpu
-#endif
 
 #define HI_CPU sysblk.hicpu
 
@@ -398,8 +392,6 @@ typedef U64  (*z900_trace_br_func) (int amode,  U64 ia, REGS *regs);
          _mask ^= CPU_BIT(_i); \
        else { \
          ON_IC_INTERRUPT(sysblk.regs[_i]); \
-         if (SIE_MODE(sysblk.regs[_i])) \
-           ON_IC_INTERRUPT(sysblk.regs[_i]->guestregs); \
          _n++; \
        } \
      } \
@@ -468,6 +460,17 @@ typedef U64  (*z900_trace_br_func) (int amode,  U64 ia, REGS *regs);
 
 /* NOTE: sysblk.iointqlk ALWAYS needed to examine sysblk.iointq */
 
+#if defined(COMPARE_M65) || defined(SOFTWARE_M65) || defined(HARDWARE_M65)
+#define EVALUATE_IOINTQ() do { \
+int req = 0;\
+for (IOINT* ioi = sysblk.iointq; ioi != NULL; ioi = ioi->next) \
+  req |= (1<<(6-(ioi->dev->devnum>>8))); \
+write_m65_reg(M65_REG_IO_INT, req); \
+} while (0)
+#else
+#define EVALUATE_IOINTQ() do { } while (0)
+#endif
+
 #define QUEUE_IO_INTERRUPT(_io) \
  do { \
    obtain_lock(&sysblk.iointqlk); \
@@ -489,6 +492,7 @@ typedef U64  (*z900_trace_br_func) (int amode,  U64 ia, REGS *regs);
         if ((_io)->pending)     (_io)->dev->pending     = 1; \
    else if ((_io)->pcipending)  (_io)->dev->pcipending  = 1; \
    else if ((_io)->attnpending) (_io)->dev->attnpending = 1; \
+   EVALUATE_IOINTQ(); \
  } while (0)
 
 #define DEQUEUE_IO_INTERRUPT(_io) \
@@ -509,6 +513,7 @@ typedef U64  (*z900_trace_br_func) (int amode,  U64 ia, REGS *regs);
        else if ((_io)->attnpending) (_io)->dev->attnpending = 0; \
        break; \
      } \
+   EVALUATE_IOINTQ(); \
  } while (0)
 
 /* NOTE: sysblk.iointqlk needed to examine sysblk.iointq,

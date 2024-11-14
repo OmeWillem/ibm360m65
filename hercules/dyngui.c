@@ -159,16 +159,6 @@ REGS* CopyREGS( int cpu )               // (same logic as in panel.c)
         return &sysblk.dummyregs;
     }
 
-#if defined(_FEATURE_SIE)
-    if (regs->sie_active)
-    {
-        memcpy( &copysieregs, regs->guestregs, sysblk.regs_copy_len );
-        copyregs.guestregs = &copysieregs;
-        copysieregs.hostregs = &copyregs;
-        regs = &copysieregs;
-    }
-    else
-#endif
         regs = &copyregs;
 
     SET_PSW_IA( regs );
@@ -699,17 +689,9 @@ void  UpdateCPUStatus ()
             ,pTargetCPU_REGS->checkstop                    ? 'C' : '.'
             ,PROBSTATE(&pTargetCPU_REGS->psw)              ? 'P' : '.'
             ,
-#if        defined(_FEATURE_SIE)
-            SIE_MODE(pTargetCPU_REGS)                      ? 'S' : '.'
-#else  // !defined(_FEATURE_SIE)
                                                                    '.'
-#endif //  defined(_FEATURE_SIE)
             ,
-#if        defined(_900)
-            ARCH_900 == pTargetCPU_REGS->arch_mode         ? 'Z' : '.'
-#else  // !defined(_900)
                                                                    '.'
-#endif //  defined(_900)
             ,(long long)INSTCOUNT(pTargetCPU_REGS)
         );
 
@@ -1234,94 +1216,94 @@ void  UpdateRegisters ()
     if (gui_wants_aregs)
     {
         if (0
-            || prev_ar[0] != pTargetCPU_REGS->AR(0)
-            || prev_ar[1] != pTargetCPU_REGS->AR(1)
-            || prev_ar[2] != pTargetCPU_REGS->AR(2)
-            || prev_ar[3] != pTargetCPU_REGS->AR(3)
+            || prev_ar[0] != pTargetCPU_REGS->AR_(0)
+            || prev_ar[1] != pTargetCPU_REGS->AR_(1)
+            || prev_ar[2] != pTargetCPU_REGS->AR_(2)
+            || prev_ar[3] != pTargetCPU_REGS->AR_(3)
         )
         {
-            prev_ar[0] = pTargetCPU_REGS->AR(0);
-            prev_ar[1] = pTargetCPU_REGS->AR(1);
-            prev_ar[2] = pTargetCPU_REGS->AR(2);
-            prev_ar[3] = pTargetCPU_REGS->AR(3);
+            prev_ar[0] = pTargetCPU_REGS->AR_(0);
+            prev_ar[1] = pTargetCPU_REGS->AR_(1);
+            prev_ar[2] = pTargetCPU_REGS->AR_(2);
+            prev_ar[3] = pTargetCPU_REGS->AR_(3);
 
             gui_fprintf(fStatusStream,
 
                 "AR0-3="REG32FMT" "REG32FMT" "REG32FMT" "REG32FMT"\n"
 
-                ,pTargetCPU_REGS->AR(0)
-                ,pTargetCPU_REGS->AR(1)
-                ,pTargetCPU_REGS->AR(2)
-                ,pTargetCPU_REGS->AR(3)
+                ,pTargetCPU_REGS->AR_(0)
+                ,pTargetCPU_REGS->AR_(1)
+                ,pTargetCPU_REGS->AR_(2)
+                ,pTargetCPU_REGS->AR_(3)
             );
         }
 
         if (0
-            || prev_ar[4] != pTargetCPU_REGS->AR(4)
-            || prev_ar[5] != pTargetCPU_REGS->AR(5)
-            || prev_ar[6] != pTargetCPU_REGS->AR(6)
-            || prev_ar[7] != pTargetCPU_REGS->AR(7)
+            || prev_ar[4] != pTargetCPU_REGS->AR_(4)
+            || prev_ar[5] != pTargetCPU_REGS->AR_(5)
+            || prev_ar[6] != pTargetCPU_REGS->AR_(6)
+            || prev_ar[7] != pTargetCPU_REGS->AR_(7)
         )
         {
-            prev_ar[4] = pTargetCPU_REGS->AR(4);
-            prev_ar[5] = pTargetCPU_REGS->AR(5);
-            prev_ar[6] = pTargetCPU_REGS->AR(6);
-            prev_ar[7] = pTargetCPU_REGS->AR(7);
+            prev_ar[4] = pTargetCPU_REGS->AR_(4);
+            prev_ar[5] = pTargetCPU_REGS->AR_(5);
+            prev_ar[6] = pTargetCPU_REGS->AR_(6);
+            prev_ar[7] = pTargetCPU_REGS->AR_(7);
 
             gui_fprintf(fStatusStream,
 
                 "AR4-7="REG32FMT" "REG32FMT" "REG32FMT" "REG32FMT"\n"
 
-                ,pTargetCPU_REGS->AR(4)
-                ,pTargetCPU_REGS->AR(5)
-                ,pTargetCPU_REGS->AR(6)
-                ,pTargetCPU_REGS->AR(7)
+                ,pTargetCPU_REGS->AR_(4)
+                ,pTargetCPU_REGS->AR_(5)
+                ,pTargetCPU_REGS->AR_(6)
+                ,pTargetCPU_REGS->AR_(7)
             );
         }
 
         if (0
-            || prev_ar[8]  != pTargetCPU_REGS->AR(8)
-            || prev_ar[9]  != pTargetCPU_REGS->AR(9)
-            || prev_ar[10] != pTargetCPU_REGS->AR(10)
-            || prev_ar[11] != pTargetCPU_REGS->AR(11)
+            || prev_ar[8]  != pTargetCPU_REGS->AR_(8)
+            || prev_ar[9]  != pTargetCPU_REGS->AR_(9)
+            || prev_ar[10] != pTargetCPU_REGS->AR_(10)
+            || prev_ar[11] != pTargetCPU_REGS->AR_(11)
         )
         {
-            prev_ar[8]  = pTargetCPU_REGS->AR(8);
-            prev_ar[9]  = pTargetCPU_REGS->AR(9);
-            prev_ar[10] = pTargetCPU_REGS->AR(10);
-            prev_ar[11] = pTargetCPU_REGS->AR(11);
+            prev_ar[8]  = pTargetCPU_REGS->AR_(8);
+            prev_ar[9]  = pTargetCPU_REGS->AR_(9);
+            prev_ar[10] = pTargetCPU_REGS->AR_(10);
+            prev_ar[11] = pTargetCPU_REGS->AR_(11);
 
             gui_fprintf(fStatusStream,
 
                 "AR8-B="REG32FMT" "REG32FMT" "REG32FMT" "REG32FMT"\n"
 
-                ,pTargetCPU_REGS->AR(8)
-                ,pTargetCPU_REGS->AR(9)
-                ,pTargetCPU_REGS->AR(10)
-                ,pTargetCPU_REGS->AR(11)
+                ,pTargetCPU_REGS->AR_(8)
+                ,pTargetCPU_REGS->AR_(9)
+                ,pTargetCPU_REGS->AR_(10)
+                ,pTargetCPU_REGS->AR_(11)
             );
         }
 
         if (0
-            || prev_ar[12] != pTargetCPU_REGS->AR(12)
-            || prev_ar[13] != pTargetCPU_REGS->AR(13)
-            || prev_ar[14] != pTargetCPU_REGS->AR(14)
-            || prev_ar[15] != pTargetCPU_REGS->AR(15)
+            || prev_ar[12] != pTargetCPU_REGS->AR_(12)
+            || prev_ar[13] != pTargetCPU_REGS->AR_(13)
+            || prev_ar[14] != pTargetCPU_REGS->AR_(14)
+            || prev_ar[15] != pTargetCPU_REGS->AR_(15)
         )
         {
-            prev_ar[12] = pTargetCPU_REGS->AR(12);
-            prev_ar[13] = pTargetCPU_REGS->AR(13);
-            prev_ar[14] = pTargetCPU_REGS->AR(14);
-            prev_ar[15] = pTargetCPU_REGS->AR(15);
+            prev_ar[12] = pTargetCPU_REGS->AR_(12);
+            prev_ar[13] = pTargetCPU_REGS->AR_(13);
+            prev_ar[14] = pTargetCPU_REGS->AR_(14);
+            prev_ar[15] = pTargetCPU_REGS->AR_(15);
 
             gui_fprintf(fStatusStream,
 
                 "ARC-F="REG32FMT" "REG32FMT" "REG32FMT" "REG32FMT"\n"
 
-                ,pTargetCPU_REGS->AR(12)
-                ,pTargetCPU_REGS->AR(13)
-                ,pTargetCPU_REGS->AR(14)
-                ,pTargetCPU_REGS->AR(15)
+                ,pTargetCPU_REGS->AR_(12)
+                ,pTargetCPU_REGS->AR_(13)
+                ,pTargetCPU_REGS->AR_(14)
+                ,pTargetCPU_REGS->AR_(15)
             );
         }
     }

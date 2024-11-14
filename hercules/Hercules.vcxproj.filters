@@ -1,0 +1,1810 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5B799457-D8CE-492d-B610-D73BC167A0BF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Hercules">
+      <UniqueIdentifier>{146cc926-fd62-4633-a838-06dc55b6df70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Crypto">
+      <UniqueIdentifier>{319e4e79-3271-481b-8565-e044d1dde549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Crypto\Header Files">
+      <UniqueIdentifier>{6b62d855-c02f-4096-b7f2-4295109f7f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Crypto\Source Files">
+      <UniqueIdentifier>{45eb36b2-ba8c-4c5d-978a-26d2857f925a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\decNumber">
+      <UniqueIdentifier>{b17be809-ea45-47f1-8396-c0ca4cfc2576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\decNumber\Header Files">
+      <UniqueIdentifier>{3be5c510-3e22-434c-aed5-cae2580ca378}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\decNumber\Source Files">
+      <UniqueIdentifier>{3e61d5e9-9ed8-4f9c-a790-8f056281c18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\decNumber\Resource Files">
+      <UniqueIdentifier>{339c51c3-0bda-4122-8e37-e0a20b0d82ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices">
+      <UniqueIdentifier>{17231e78-ab19-4dcb-b618-1d61c1002f91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Con/Disp/Term">
+      <UniqueIdentifier>{e87e2cf0-e6fa-4376-ba05-4ba75c2eced2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Con/Disp/Term\Header Files">
+      <UniqueIdentifier>{36be6e10-a092-449a-beac-321fae75efdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Con/Disp/Term\Source Files">
+      <UniqueIdentifier>{fddfcb22-5bd5-4ba4-a430-2444558cff1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\CTC">
+      <UniqueIdentifier>{41cac446-1c76-4174-b4f5-13eea9e28fb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\CTC\Header Files">
+      <UniqueIdentifier>{a0e1b1d6-7866-44e7-b2ff-d026666860be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\CTC\Source Files">
+      <UniqueIdentifier>{8566fb34-7ecb-482f-b9b3-6c769ee3acf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Dasd">
+      <UniqueIdentifier>{b6f065bc-0b65-4abb-95af-5de8f3c4a62e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Dasd\Header Files">
+      <UniqueIdentifier>{7883b8d5-cff0-49c7-aa21-4c6cb9f7a46b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Dasd\Source Files">
+      <UniqueIdentifier>{34d17a57-75fe-42e7-be5f-df5a287ee599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Tape">
+      <UniqueIdentifier>{7b70aa77-2241-4d2f-b37a-c7b684135f6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Tape\Header Files">
+      <UniqueIdentifier>{9eaaa1d5-d7bc-4c47-a81d-d1703d766c1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Tape\Source Files">
+      <UniqueIdentifier>{e80bc480-ae81-43a7-8b47-e363e9c9e57d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Unit Record">
+      <UniqueIdentifier>{62c5dae9-6cc0-43b9-b19a-b4517c6328c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Unit Record\Header Files">
+      <UniqueIdentifier>{411b789f-ef78-4dc3-818b-2b3155abe19d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Devices\Unit Record\Source Files">
+      <UniqueIdentifier>{4ddf3054-3180-45ec-93d7-ac68092e3326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Emulation">
+      <UniqueIdentifier>{5c33f96e-5c6c-4804-9fb2-5511e176079b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Emulation\Source Files">
+      <UniqueIdentifier>{b554a792-d05e-4533-989f-4b4fe52c1960}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hercules\Emulation\Header Files">
+      <UniqueIdentifier>{6bd8a9a8-2184-4ac7-9bb3-e379a913f7c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{a60e638a-8afd-46ea-aea1-5e866da55f3c}</UniqueIdentifier>
+      <Extensions>.rc</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Other Files">
+      <UniqueIdentifier>{ade481ee-67c0-4c54-88c9-d169304212b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\DOC">
+      <UniqueIdentifier>{12bfc16f-478c-49d0-bd62-ef2a14517d95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\DOC\README">
+      <UniqueIdentifier>{bd2a92fc-3c4d-4713-b9f9-d6326cd39337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\DOC\html">
+      <UniqueIdentifier>{2c4f0dbe-9511-4eab-98b0-f38156142fcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\DOC\html\herc">
+      <UniqueIdentifier>{6f8fe724-ce3c-4b2b-a96b-bdde2447c1d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\DOC\html\msgs">
+      <UniqueIdentifier>{1ddefa93-5cb8-422f-b8a8-7eaf6edb21f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\Build">
+      <UniqueIdentifier>{e2e55e97-c572-4cbe-b78d-f2d4db838cda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\Build\msvc">
+      <UniqueIdentifier>{324c1ca1-38fd-4c61-ab66-1f60952e7265}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\Build\msvc\makefile includes">
+      <UniqueIdentifier>{97d3f29d-75d2-4df0-8242-9f227a59a53c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\Build\msvc\runjobs.jobs">
+      <UniqueIdentifier>{127efad1-1590-48f9-9595-02660bcf90be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\Build\other">
+      <UniqueIdentifier>{cb149023-5f1d-4fd9-977a-ed79d5a8626b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\Utilities">
+      <UniqueIdentifier>{42efa3a8-8107-40dc-b0cb-a0ec8d658fd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\tests">
+      <UniqueIdentifier>{d6dac51d-683d-41cd-8d5f-9bc96600cd3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\tests\core">
+      <UniqueIdentifier>{ea2191ba-ea4b-4932-b470-52f0950167da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\tests\scripts">
+      <UniqueIdentifier>{908dad6c-6a2d-48ef-80fb-b0206b9763b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\misc">
+      <UniqueIdentifier>{7894adc7-bdeb-4df1-be3d-58cf15941fad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\360">
+      <UniqueIdentifier>{53e58410-56ea-463e-b1f1-0d206839cac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\360\Generated CPP">
+      <UniqueIdentifier>{11f00c6f-d569-4476-96d1-0411db60d477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\360\CPP">
+      <UniqueIdentifier>{0df04b1c-9822-4cfb-bd19-10cdcb6733cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\360\ALD">
+      <UniqueIdentifier>{1733997a-14bf-4c00-adfb-97bc6d7f9d16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\360\Generated Headers">
+      <UniqueIdentifier>{1bda0bfb-9efb-4aeb-93f2-4152b9d3cd8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\360\Headers">
+      <UniqueIdentifier>{6ce0a5b5-937f-4c41-8049-a03f17811cec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="crypto\aes.c">
+      <Filter>Source Files\Hercules\Crypto\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crypto\des.c">
+      <Filter>Source Files\Hercules\Crypto\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crypto\dyncrypt.c">
+      <Filter>Source Files\Hercules\Crypto\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crypto\sha1.c">
+      <Filter>Source Files\Hercules\Crypto\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crypto\sha256.c">
+      <Filter>Source Files\Hercules\Crypto\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="decNumber\decContext.c">
+      <Filter>Source Files\Hercules\decNumber\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="decNumber\decimal128.c">
+      <Filter>Source Files\Hercules\decNumber\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="decNumber\decimal32.c">
+      <Filter>Source Files\Hercules\decNumber\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="decNumber\decimal64.c">
+      <Filter>Source Files\Hercules\decNumber\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="decNumber\decNumber.c">
+      <Filter>Source Files\Hercules\decNumber\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="decNumber\decPacked.c">
+      <Filter>Source Files\Hercules\decNumber\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="con1052c.c">
+      <Filter>Source Files\Hercules\Devices\Con/Disp/Term\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="console.c">
+      <Filter>Source Files\Hercules\Devices\Con/Disp/Term\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="commadpt.c">
+      <Filter>Source Files\Hercules\Devices\CTC\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ctc_ctci.c">
+      <Filter>Source Files\Hercules\Devices\CTC\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ctc_lcs.c">
+      <Filter>Source Files\Hercules\Devices\CTC\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ctcadpt.c">
+      <Filter>Source Files\Hercules\Devices\CTC\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qeth.c">
+      <Filter>Source Files\Hercules\Devices\CTC\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tuntap.c">
+      <Filter>Source Files\Hercules\Devices\CTC\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="w32ctca.c">
+      <Filter>Source Files\Hercules\Devices\CTC\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cckddasd.c">
+      <Filter>Source Files\Hercules\Devices\Dasd\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cckdutil.c">
+      <Filter>Source Files\Hercules\Devices\Dasd\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ckddasd.c">
+      <Filter>Source Files\Hercules\Devices\Dasd\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dasdtab.c">
+      <Filter>Source Files\Hercules\Devices\Dasd\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dasdutil.c">
+      <Filter>Source Files\Hercules\Devices\Dasd\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fbadasd.c">
+      <Filter>Source Files\Hercules\Devices\Dasd\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shared.c">
+      <Filter>Source Files\Hercules\Devices\Dasd\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="awstape.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="faketape.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hetlib.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hettape.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omatape.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scsitape.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sllib.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tapeccws.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tapedev.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="w32stape.c">
+      <Filter>Source Files\Hercules\Devices\Tape\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cardpch.c">
+      <Filter>Source Files\Hercules\Devices\Unit Record\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cardrdr.c">
+      <Filter>Source Files\Hercules\Devices\Unit Record\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="printer.c">
+      <Filter>Source Files\Hercules\Devices\Unit Record\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sockdev.c">
+      <Filter>Source Files\Hercules\Devices\Unit Record\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bldcfg.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bootstrap.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="build_pch.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cache.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgibin.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="channel.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clock.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cmdtab.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="codepage.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="config.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="control.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dat.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="decimal.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="diagnose.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dyngui.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dyninst.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="external.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fillfnam.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fishhang.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fthreads.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="general1.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="general2.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="getopt.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hao.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hconsole.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hdl.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hdlmain.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hdteq.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="history.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hostinfo.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hsccmd.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hscmisc.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hscutl.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hscutl2.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hsocket.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hsys.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="httpserv.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="impl.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="io.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ipl.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logger.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logmsg.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="losc.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ltdl.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="machchk.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memrchr.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="opcode.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="panel.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plo.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pttrace.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scedasd.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sr.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="strsignal.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="version.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vstore.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="w32chan.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="w32util.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="float.c">
+      <Filter>Source Files\Hercules\Emulation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ap.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ar.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_as.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_bf.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ca.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ce.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_cs.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ct.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_cw.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_dn.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_dp.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_dr.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ds.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ee.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ef.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_fe.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_fx.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ja.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_kc.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_kd.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_kk.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_km.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_kn.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ks.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_kt.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ku.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_kw.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_kx.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_kz.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ls.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ma.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_mb.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_mc.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_pk.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_px.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ra.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_rd.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_re.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_rf.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_rg.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_rq.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_rr.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_rs.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_rw.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_rx.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_ry.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_wa.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gen\ald\360_za.cpp">
+      <Filter>Source Files\360\Generated CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="360_ros.cpp">
+      <Filter>Source Files\360\CPP</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="crypto\Makefile.am">
+      <Filter>Source Files\Hercules\Crypto</Filter>
+    </None>
+    <None Include="decNumber\readme.txt">
+      <Filter>Source Files\Hercules\decNumber</Filter>
+    </None>
+    <None Include="hercules.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="_TODO.txt">
+      <Filter>Other Files\DOC</Filter>
+    </None>
+    <None Include="CHANGES">
+      <Filter>Other Files\DOC</Filter>
+    </None>
+    <None Include="RELEASE.NOTES">
+      <Filter>Other Files\DOC</Filter>
+    </None>
+    <None Include="README.COMMADPT">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.CVS">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.DYNMOD">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.ECPSVM">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.HAO">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.HDL">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.HERCLOGO">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.ISSUES">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.MINGW">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.MSVC">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.NETWORKING">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.OSX">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.SETUID">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.SUN">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.TAPE">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="README.WIN64">
+      <Filter>Other Files\DOC\README</Filter>
+    </None>
+    <None Include="html\hercules.css">
+      <Filter>Other Files\DOC\html</Filter>
+    </None>
+    <None Include="html\Makefile.am">
+      <Filter>Other Files\DOC\html</Filter>
+    </None>
+    <None Include="html\cckddasd.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\fishgui.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercconf.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercfaq.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercinst.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\herclic.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercload.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercnew.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercrdr.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercrnot.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercsupp.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\herctcp.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercules.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\index.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\shared.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\tasks.html">
+      <Filter>Other Files\DOC\html\herc</Filter>
+    </None>
+    <None Include="html\hercmsca.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmscf.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmscp.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsct.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsda.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsdc.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsdg.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsdi.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsdl.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsds.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsdt.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsdu.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsg.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmshd.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmshe.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmshg.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmshm.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsht.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmshu.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsif.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsin.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmslc.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmslg.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmspn.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmspr.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmspu.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsrd.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmssd.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsta.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmstc.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmste.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmstm.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsts.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmstt.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmstu.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="html\hercmsvm.html">
+      <Filter>Other Files\DOC\html\msgs</Filter>
+    </None>
+    <None Include="dynmake.bat">
+      <Filter>Other Files\Build\msvc</Filter>
+    </None>
+    <None Include="makefile-dllmod.msvc">
+      <Filter>Other Files\Build\msvc</Filter>
+    </None>
+    <None Include="makefile.bat">
+      <Filter>Other Files\Build\msvc</Filter>
+    </None>
+    <None Include="makefile.msvc">
+      <Filter>Other Files\Build\msvc</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\BZIP2_DIR.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\BZIP2_FLAGS.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\BZIP2_RULES.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\CONFIG.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\DEBUG_RETAIL.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\HERC_FLAGS.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\MOD_RULES1.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\MOD_RULES2.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\MODULES.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\OBJ_CODE.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\OUTDIR_RULES.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\OUTPUT_DIRS.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\PCRE_DIR.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\PCRE_FLAGS.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\PCRE_RULES.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\PRIM_RULES.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\VERSION.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\ZLIB_DIR.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\ZLIB_FLAGS.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="msvc.makefile.includes\ZLIB_RULES.msvc">
+      <Filter>Other Files\Build\msvc\makefile includes</Filter>
+    </None>
+    <None Include="all-all.jobs">
+      <Filter>Other Files\Build\msvc\runjobs.jobs</Filter>
+    </None>
+    <None Include="debug-all.jobs">
+      <Filter>Other Files\Build\msvc\runjobs.jobs</Filter>
+    </None>
+    <None Include="retail-all.jobs">
+      <Filter>Other Files\Build\msvc\runjobs.jobs</Filter>
+    </None>
+    <None Include="autogen.sh">
+      <Filter>Other Files\Build\other</Filter>
+    </None>
+    <None Include="configure.ac">
+      <Filter>Other Files\Build\other</Filter>
+    </None>
+    <None Include="util\cvslvlck">
+      <Filter>Other Files\Build\other</Filter>
+    </None>
+    <None Include="autoconf\hercules.m4">
+      <Filter>Other Files\Build\other</Filter>
+    </None>
+    <None Include="Makefile.am">
+      <Filter>Other Files\Build\other</Filter>
+    </None>
+    <None Include="makefile.generic">
+      <Filter>Other Files\Build\other</Filter>
+    </None>
+    <None Include="makefile.w32">
+      <Filter>Other Files\Build\other</Filter>
+    </None>
+    <None Include="util\awssl-v19g">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\awswrite.jcl">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\cckddump.hla">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\cckdload.hla">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\dasdlist">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\dasdlist.bat">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\Makefile.am">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\rawstape.jcl">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\tapeconv.jcl">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="util\TMOUNT.txt">
+      <Filter>Other Files\Utilities</Filter>
+    </None>
+    <None Include="tests\Makefile.am">
+      <Filter>Other Files\tests</Filter>
+    </None>
+    <None Include="tests\a.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\b.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\bctr.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\cpu0off.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\l.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\la.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\la2.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\mvc.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\sieve.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\st.core">
+      <Filter>Other Files\tests\core</Filter>
+    </None>
+    <None Include="tests\alsi.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\axtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\brc.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cdfr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cdgr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cgdr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cgdtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cger.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cgfrl.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cgxr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cgxtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cpsdr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\csst.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cxgbr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\cxgtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\dxtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\epsw.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\exrl.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\fiebr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\fixtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\iedtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kimd0.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kimd1.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kimd2.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kimd3.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\klmd0.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\klmd1.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\klmd2.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\klmd3.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\km0.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\km1.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\km18.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\km19.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\km2.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\km20.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\km3.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmac0.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmac1.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmac2.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmac3.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmc0.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmc1.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmc18.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmc19.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmc2.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmc20.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmc3.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\kmc67.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\ldetr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\ldxtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\ledtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\lfpc.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\llhrl.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\loop.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\lxdtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\maer.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\mvcos.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\mxtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\prtest.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\rnsbg.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\rrdtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\rrxtr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\srdt.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\stfle.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\stsi.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\tapepos.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\tbedr.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\tdcdt.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\tdgdt.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\thder.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="tests\trte.txt">
+      <Filter>Other Files\tests\scripts</Filter>
+    </None>
+    <None Include="herclogo.txt">
+      <Filter>Other Files\misc</Filter>
+    </None>
+    <None Include="hercules.cnf">
+      <Filter>Other Files\misc</Filter>
+    </None>
+    <None Include="..\src\ald\360_ap.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ar.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_as.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_bf.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ca.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ce.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_cs.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ct.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_cw.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_dn.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_dp.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_dr.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ds.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ee.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ef.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_fe.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_fx.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ja.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_kc.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_kd.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_kk.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_km.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_kn.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ks.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_kt.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ku.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_kw.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_kx.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_kz.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ls.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ma.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_mb.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_mc.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_pk.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_px.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ra.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_rd.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_re.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_rf.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_rg.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_rq.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_rr.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_rs.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_rw.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_rx.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_ry.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_wa.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+    <None Include="..\src\ald\360_za.ald">
+      <Filter>Source Files\360\ALD</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="crypto\aes.h">
+      <Filter>Source Files\Hercules\Crypto\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crypto\des.h">
+      <Filter>Source Files\Hercules\Crypto\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crypto\sha1.h">
+      <Filter>Source Files\Hercules\Crypto\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crypto\sha256.h">
+      <Filter>Source Files\Hercules\Crypto\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decNumber\decContext.h">
+      <Filter>Source Files\Hercules\decNumber\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decNumber\decDPD.h">
+      <Filter>Source Files\Hercules\decNumber\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decNumber\decimal128.h">
+      <Filter>Source Files\Hercules\decNumber\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decNumber\decimal32.h">
+      <Filter>Source Files\Hercules\decNumber\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decNumber\decimal64.h">
+      <Filter>Source Files\Hercules\decNumber\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decNumber\decNumber.h">
+      <Filter>Source Files\Hercules\decNumber\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decNumber\decNumberLocal.h">
+      <Filter>Source Files\Hercules\decNumber\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decNumber\decPacked.h">
+      <Filter>Source Files\Hercules\decNumber\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="commadpt.h">
+      <Filter>Source Files\Hercules\Devices\CTC\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ctcadpt.h">
+      <Filter>Source Files\Hercules\Devices\CTC\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hercifc.h">
+      <Filter>Source Files\Hercules\Devices\CTC\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tt32api.h">
+      <Filter>Source Files\Hercules\Devices\CTC\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tuntap.h">
+      <Filter>Source Files\Hercules\Devices\CTC\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="w32ctca.h">
+      <Filter>Source Files\Hercules\Devices\CTC\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dasdblks.h">
+      <Filter>Source Files\Hercules\Devices\Dasd\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dasdtab.h">
+      <Filter>Source Files\Hercules\Devices\Dasd\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shared.h">
+      <Filter>Source Files\Hercules\Devices\Dasd\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hetlib.h">
+      <Filter>Source Files\Hercules\Devices\Tape\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scsitape.h">
+      <Filter>Source Files\Hercules\Devices\Tape\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sllib.h">
+      <Filter>Source Files\Hercules\Devices\Tape\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tapedev.h">
+      <Filter>Source Files\Hercules\Devices\Tape\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="w32mtio.h">
+      <Filter>Source Files\Hercules\Devices\Tape\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="w32stape.h">
+      <Filter>Source Files\Hercules\Devices\Tape\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sockdev.h">
+      <Filter>Source Files\Hercules\Devices\Unit Record\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoBuildCount.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cache.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="chsc.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clock.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cmdtab.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="codepage.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cpuint.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crypto.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dat.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="devtype.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ecpsvm.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="esa390.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="feat370.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="feat390.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="feat900.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="featall.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="featchk.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="feature.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fillfnam.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fishhang.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fthreads.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="getopt.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hbyteswp.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hchan.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hconsole.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hconsts.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hdl.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="herc_getopt.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hercules.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hercwind.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hextapi.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hexterns.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="history.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hmacros.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hostinfo.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hostopts.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hscutl.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hsocket.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hstdinc.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hstdint.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hstructs.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hthreads.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="httpmisc.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="htypes.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ieee-sol.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ieee-w32.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inline.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="linklist.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ltdl.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="machdep.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memrchr.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="opcode.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pttrace.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="service.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sr.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vstore.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="w32chan.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="w32dl.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="w32util.h">
+      <Filter>Source Files\Hercules\Emulation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ap.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ar.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_as.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_bf.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ca.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ce.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_cs.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ct.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_cw.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_dn.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_dp.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_dr.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ds.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ee.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ef.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_fe.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_fx.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ja.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_kc.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_kd.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_kk.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_km.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_kn.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ks.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_kt.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ku.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_kw.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_kx.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_kz.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ls.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ma.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_mb.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_mc.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_pk.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_px.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ra.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_rd.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_re.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_rf.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_rg.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_rq.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_rr.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_rs.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_rw.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_rx.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_ry.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_wa.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\360_za.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\ald.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gen\ald\ald_types.h">
+      <Filter>Source Files\360\Generated Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="360_cstruc.h">
+      <Filter>Source Files\360\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="360_minstruc.h">
+      <Filter>Source Files\360\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="360_struc.h">
+      <Filter>Source Files\360\Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="decNumber\decNumber.rc">
+      <Filter>Source Files\Hercules\decNumber\Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

@@ -41,9 +41,6 @@
 
 #define MAX_DEVLIST_DEVICES  1024
 
-#if defined(FEATURE_ECPSVM)
-extern void ecpsvm_command(int argc,char **argv);
-#endif
 int ProcessPanelCommand (char*);
 int process_script_file(char *,int);
 
@@ -800,96 +797,6 @@ DLL_EXPORT int stopall_cmd(int argc, char *argv[], char *cmdline)
     return 0;
 }
 
-#ifdef _FEATURE_CPU_RECONFIG
-
-
-/*-------------------------------------------------------------------*/
-/* cf command - configure/deconfigure a CPU                          */
-/*-------------------------------------------------------------------*/
-int cf_cmd(int argc, char *argv[], char *cmdline)
-{
-    int on = -1;
-
-    UNREFERENCED(cmdline);
-
-    if (argc == 2)
-    {
-        if (!strcasecmp(argv[1],"on"))
-            on = 1;
-        else if (!strcasecmp(argv[1], "off"))
-            on = 0;
-    }
-
-    OBTAIN_INTLOCK(NULL);
-
-    if (IS_CPU_ONLINE(sysblk.pcpu))
-    {
-        if (on < 0)
-            logmsg(_("HHCPN152I CPU%4.4X online\n"), sysblk.pcpu);
-        else if (on == 0)
-            deconfigure_cpu(sysblk.pcpu);
-    }
-    else
-    {
-        if (on < 0)
-            logmsg(_("HHCPN153I CPU%4.4X offline\n"), sysblk.pcpu);
-        else if (on > 0)
-            configure_cpu(sysblk.pcpu);
-    }
-
-    RELEASE_INTLOCK(NULL);
-
-    if (on >= 0) cf_cmd (0, NULL, NULL);
-
-    return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* cfall command - configure/deconfigure all CPU's                   */
-/*-------------------------------------------------------------------*/
-int cfall_cmd(int argc, char *argv[], char *cmdline)
-{
-    int i;
-    int on = -1;
-
-    UNREFERENCED(cmdline);
-
-    if (argc == 2)
-    {
-        if (!strcasecmp(argv[1],"on"))
-            on = 1;
-        else if (!strcasecmp(argv[1], "off"))
-            on = 0;
-    }
-
-    OBTAIN_INTLOCK(NULL);
-
-    for (i = 0; i < MAX_CPU_ENGINES; i++)
-        if (IS_CPU_ONLINE(i))
-        {
-            if (on < 0)
-                logmsg(_("HHCPN154I CPU%4.4X online\n"), i);
-            else if (on == 0)
-                deconfigure_cpu(i);
-        }
-        else
-        {
-            if (on < 0)
-                logmsg(_("HHCPN155I CPU%4.4X offline\n"), i);
-            else if (on > 0 && i < MAX_CPU)
-                configure_cpu(i);
-        }
-
-    RELEASE_INTLOCK(NULL);
-
-    if (on >= 0) cfall_cmd (0, NULL, NULL);
-
-    return 0;
-}
-
-#endif /*_FEATURE_CPU_RECONFIG*/
-
 
 /*-------------------------------------------------------------------*/
 /* quiet command - quiet PANEL                                       */
@@ -1009,15 +916,6 @@ U64 epoch_now_abs;
 char epoch_sign;
 U64 clkc_now;
 S64 cpt_now;
-#if defined(_FEATURE_SIE)
-U64 vtod_now = 0;
-S64 vepoch_now = 0;
-U64 vepoch_now_abs = 0;
-char vepoch_sign = ' ';
-U64 vclkc_now = 0;
-S64 vcpt_now = 0;
-char sie_flag = 0;
-#endif
 U32 itimer = 0;
 char itimer_formatted[20];
 char arch370_flag = 0;
@@ -1043,17 +941,6 @@ char arch370_flag = 0;
     epoch_now = regs->tod_epoch;
     clkc_now = regs->clkc;
     cpt_now = CPU_TIMER(regs);
-#if defined(_FEATURE_SIE)
-    if(regs->sie_active)
-    {
-        vtod_now = (TOD_CLOCK(regs->guestregs) << 8) >> 8;
-        vepoch_now = regs->guestregs->tod_epoch;
-        vclkc_now = regs->guestregs->clkc;
-        vcpt_now = CPU_TIMER(regs->guestregs);
-        sie_flag = 1;
-    }
-#endif
-    if (regs->arch_mode == ARCH_370)
     {
         itimer = INT_TIMER(regs);
         /* The interval timer counts 76800 per second, or one every
@@ -1092,33 +979,6 @@ char arch370_flag = 0;
         logmsg( _("          cpt = %16.16" I64_FMT "X\n"), cpt_now << 8);
     else
         logmsg( _("          cpt = not decrementing\n"));
-
-#if defined(_FEATURE_SIE)
-    if(sie_flag)
-    {
-
-        logmsg( _("         vtod = %16.16" I64_FMT "X    %s\n"),
-                   (vtod_now << 8),format_tod(clock_buf,vtod_now,TRUE));
-
-        if (epoch_now < 0) {
-            epoch_now_abs = -(epoch_now);
-            epoch_sign = '-';
-        }
-        else
-        {
-            epoch_now_abs = epoch_now;
-            epoch_sign = ' ';
-        }
-        logmsg( _("         voff = %16.16" I64_FMT "X   %c%s\n"),
-                   (vepoch_now << 8),vepoch_sign,
-                   format_tod(clock_buf,vepoch_now_abs,FALSE));
-
-        logmsg( _("         vckc = %16.16" I64_FMT "X    %s\n"),
-                   (vclkc_now << 8),format_tod(clock_buf,vclkc_now,TRUE));
-
-        logmsg( _("         vcpt = %16.16" I64_FMT "X\n"),vcpt_now << 8);
-    }
-#endif
 
     if (arch370_flag)
     {
@@ -2113,37 +1973,6 @@ char c;
 #endif // defined( HTTP_SERVER_CONNECT_KLUDGE )
 #endif /*defined(OPTION_HTTP_SERVER)*/
 
-#if defined(_FEATURE_ASN_AND_LX_REUSE)
-/*-------------------------------------------------------------------*/
-/* alrf command - display or set asn_and_lx_reuse                    */
-/*-------------------------------------------------------------------*/
-int alrf_cmd(int argc, char *argv[], char *cmdline)
-{
-    UNREFERENCED(cmdline);
-
-    if (argc > 1)
-    {
-        if(strcasecmp(argv[1],"enable")==0)
-            sysblk.asnandlxreuse=1;
-        else
-        {
-            if(strcasecmp(argv[1],"disable")==0)
-                sysblk.asnandlxreuse=0;
-            else {
-                logmsg(_("HHCCF067S Incorrect keyword %s for the ASN_AND_LX_REUSE statement.\n"),
-                            argv[1]);
-                return -1;
-                }
-        }
-    }
-    else
-        logmsg(_("HHCCF0028I ASN and LX reuse is %s\n"),sysblk.asnandlxreuse ? "Enabled" : "Disabled");
-
-    return 0;
-}
-#endif /*defined(_FEATURE_ASN_AND_LX_REUSE)*/
-
-
 /*-------------------------------------------------------------------*/
 /* toddrag command - display or set TOD clock drag factor            */
 /*-------------------------------------------------------------------*/
@@ -2381,9 +2210,6 @@ REGS *regs;
             return 0;
         }
 
-        if ( ARCH_900 == regs->arch_mode )
-            regs->GR_G(reg_num) = (U64) reg_value;
-        else
             regs->GR_L(reg_num) = (U32) reg_value;
     }
 
@@ -2485,9 +2311,6 @@ U64   cr_value;
             logmsg( _("HHCPN164E Invalid format. .Enter \"help cr\" for help.\n"));
             return 0;
         }
-        if ( ARCH_900 == regs->arch_mode )
-            regs->CR_G(cr_num) = (U64)cr_value;
-        else
             regs->CR_G(cr_num) = (U32)cr_value;
     }
 
@@ -2548,11 +2371,6 @@ REGS *regs;
         return 0;
     }
     regs = sysblk.regs[sysblk.pcpu];
-
-    if(regs->arch_mode == ARCH_900)
-        logmsg( "Prefix=%16.16" I64_FMT "X\n", (long long)regs->PX_G );
-    else
-        logmsg( "Prefix=%8.8X\n", regs->PX_L );
 
     release_lock(&sysblk.cpulock[sysblk.pcpu]);
 
@@ -2616,21 +2434,6 @@ int   n, errflag, stopflag=0, modflag=0;
             else
                 errflag = 1;
         }
-        else if (strncasecmp(argv[n],"as=",3) == 0)
-        {
-            /* PSW address-space control operand */
-            if (strcasecmp(argv[n]+3,"pri") == 0)
-                newas = PSW_PRIMARY_SPACE_MODE;
-            else if (strcmp(argv[n]+3,"ar") == 0)
-                newas = PSW_ACCESS_REGISTER_MODE;
-            else if (strcmp(argv[n]+3,"sec") == 0)
-                newas = PSW_SECONDARY_SPACE_MODE;
-            else if (strcmp(argv[n]+3,"home") == 0)
-                newas = PSW_HOME_SPACE_MODE;
-            else
-                errflag = 1;
-            if (errflag == 0) updas = 1;
-        }
         else if (strncasecmp(argv[n],"cc=",3) == 0)
         {
             /* PSW condition code operand */
@@ -2654,13 +2457,6 @@ int   n, errflag, stopflag=0, modflag=0;
             /* PSW addressing mode operand */
             if (strcmp(argv[n]+3,"24") == 0)
                 newam = 24;
-            else if (strcmp(argv[n]+3,"31") == 0
-                    && (sysblk.arch_mode == ARCH_390
-                        || sysblk.arch_mode == ARCH_900))
-                newam = 31;
-            else if (strcmp(argv[n]+3,"64") == 0
-                    && sysblk.arch_mode == ARCH_900)
-                newam = 64;
             else
                 errflag = 1;
         }
@@ -2706,15 +2502,6 @@ int   n, errflag, stopflag=0, modflag=0;
     if (updcmwp)
     {
         regs->psw.states = newcmwp;
-    }
-
-    /* Update the PSW address-space control mode, if specified */
-    if (updas
-        && (ECMODE(&regs->psw)
-            || sysblk.arch_mode == ARCH_390
-            || sysblk.arch_mode == ARCH_900))
-    {
-        regs->psw.asc = newas;
     }
 
     /* Update the PSW condition code, if specified */
@@ -2765,10 +2552,7 @@ int   n, errflag, stopflag=0, modflag=0;
         regs->psw.sysmask,
         regs->psw.pkey >> 4,
         regs->psw.states,
-        (regs->psw.asc == PSW_PRIMARY_SPACE_MODE ? "pri" :
-            regs->psw.asc == PSW_ACCESS_REGISTER_MODE ? "ar" :
-            regs->psw.asc == PSW_SECONDARY_SPACE_MODE ? "sec" :
-            regs->psw.asc == PSW_HOME_SPACE_MODE ? "home" : "???"),
+        "???",
         regs->psw.cc,
         regs->psw.progmask,
         (regs->psw.amode == 0 && regs->psw.amode64 == 0 ? "24" :
@@ -2862,6 +2646,7 @@ REGS *regs;
     return 0;
 }
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
 
 /*-------------------------------------------------------------------*/
 /* u command - disassemble                                           */
@@ -2889,6 +2674,7 @@ REGS *regs;
 
     return 0;
 }
+#endif
 
 
 /*-------------------------------------------------------------------*/
@@ -3275,141 +3061,6 @@ int codepage_cmd(int argc, char *argv[], char *cmdline)
 }
 
 
-#if defined(OPTION_SET_STSI_INFO)
-/*-------------------------------------------------------------------*/
-/* model config statement                                            */
-/* operands: hardware_model [capacity_model [perm_model temp_model]] */
-/*-------------------------------------------------------------------*/
-int stsi_model_cmd(int argc, char *argv[], char *cmdline)
-{
-
-    UNREFERENCED(cmdline);
-
-    /* Update model name if operand is specified */
-    if (argc > 1)
-        set_model(argc, argv[1], argv[2], argv[3], argv[4]);
-    else
-    {
-        logmsg( _("HHCxxnnnE MODEL: no model code\n"));
-        return -1;
-    }
-
-    return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* plant config statement                                            */
-/*-------------------------------------------------------------------*/
-int stsi_plant_cmd(int argc, char *argv[], char *cmdline)
-{
-
-    UNREFERENCED(cmdline);
-
-    /* Update model name if operand is specified */
-    if (argc > 1)
-        set_plant(argv[1]);
-    else
-    {
-        logmsg( _("HHCxxnnnE PLANT: no plant code\n"));
-        return -1;
-    }
-
-    return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* manufacturer config statement                                     */
-/*-------------------------------------------------------------------*/
-int stsi_mfct_cmd(int argc, char *argv[], char *cmdline)
-{
-
-    UNREFERENCED(cmdline);
-
-    /* Update model name if operand is specified */
-    if (argc > 1)
-        set_manufacturer(argv[1]);
-    else
-    {
-        logmsg( _("HHCxxnnnE MANUFACTURER: no manufacturer code\n"));
-        return -1;
-    }
-
-    return 0;
-}
-#endif /* defined(OPTION_SET_STSI_INFO) */
-
-
-/*-------------------------------------------------------------------*/
-/* lparname - set or display LPAR name                               */
-/*-------------------------------------------------------------------*/
-int lparname_cmd(int argc, char *argv[], char *cmdline)
-{
-
-    UNREFERENCED(cmdline);
-
-    /* Update LPAR name if operand is specified */
-    if (argc > 1)
-        set_lparname(argv[1]);
-    else
-        logmsg( _("HHCPN056I LPAR name = %s\n"),str_lparname());
-
-    return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* lparnum command - set or display LPAR identification number       */
-/*-------------------------------------------------------------------*/
-int lparnum_cmd(int argc, char *argv[], char *cmdline)
-{
-U16     id;
-BYTE    c;
-
-    UNREFERENCED(cmdline);
-
-    /* Update LPAR identification number if operand is specified */
-    if (argc > 1)
-    {
-        if (argv[1] != NULL
-          && strlen(argv[1]) >= 1 && strlen(argv[1]) <= 2
-          && sscanf(argv[1], "%hx%c", &id, &c) == 1)  
-        {
-            sysblk.lparnum = id;
-            sysblk.lparnuml = strlen(argv[1]);
-        }
-        else
-        {
-            logmsg( _("HHCPN058E LPARNUM must be one or two hex digits\n"));
-            return -1;
-        }
-    }
-    else
-        logmsg( _("HHCPN060I LPAR number = %"I16_FMT"X\n"), sysblk.lparnum);
-
-    return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* loadparm - set or display IPL parameter                           */
-/*-------------------------------------------------------------------*/
-int loadparm_cmd(int argc, char *argv[], char *cmdline)
-{
-
-    UNREFERENCED(cmdline);
-
-    /* Update IPL parameter if operand is specified */
-    if (argc > 1)
-        set_loadparm(argv[1]);
-    else
-        logmsg( _("HHCPN051I LOADPARM=%s\n"),str_loadparm());
-
-    return 0;
-}
-
-
 /*-------------------------------------------------------------------*/
 /* system reset/system reset clear function                          */
 /*-------------------------------------------------------------------*/
@@ -3522,6 +3173,7 @@ char *cdev, *clcss;
 
     OBTAIN_INTLOCK(NULL);
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
     for (i = 0; i < MAX_CPU; i++)
         if (IS_CPU_ONLINE(i)
          && sysblk.regs[i]->cpustate != CPUSTATE_STOPPED)
@@ -3530,6 +3182,7 @@ char *cdev, *clcss;
             logmsg( _("HHCPN053E ipl rejected: All CPU's must be stopped\n") );
             return -1;
         }
+#endif
 
     /* The ipl device number might be in format lcss:devnum */
     if((cdev = strchr(argv[1],':')))
@@ -5164,12 +4817,6 @@ int ipending_cmd(int argc, char *argv[], char *cmdline)
             sysblk.regs[i]->cpuad,
             IS_IC_ITIMER(sysblk.regs[i]) ? "" : _("not ")
             );
-#if defined(_FEATURE_ECPSVM)
-        logmsg( _("          CPU%4.4X: ECPS vtimer %spending\n"),
-            sysblk.regs[i]->cpuad,
-            IS_IC_ECPSVTIMER(sysblk.regs[i]) ? "" : _("not ")
-            );
-#endif /*defined(_FEATURE_ECPSVM)*/
 #endif /*defined(_FEATURE_INTERVAL_TIMER)*/
         logmsg( _("          CPU%4.4X: External call %spending\n"),
             sysblk.regs[i]->cpuad,
@@ -5203,7 +4850,6 @@ int ipending_cmd(int argc, char *argv[], char *cmdline)
             sysblk.regs[i]->cpuad,
             test_lock(&sysblk.cpulock[i]) ? "" : _("not ")
             );
-        if (ARCH_370 == sysblk.arch_mode)
         {
             if (0xFFFF == sysblk.regs[i]->chanset)
                 logmsg( _("          CPU%4.4X: No channelset connected\n"),
@@ -5225,87 +4871,7 @@ int ipending_cmd(int argc, char *argv[], char *cmdline)
         logmsg( _("          CPU%4.4X: psw %2.2x%2.2x%2.2x%2.2x %2.2x%2.2x%2.2x%2.2x"),
                sysblk.regs[i]->cpuad,curpsw[0],curpsw[1],curpsw[2],curpsw[3],
                curpsw[4],curpsw[5],curpsw[6],curpsw[7]);
-        if (ARCH_900 == sysblk.arch_mode)
-        logmsg( _(" %2.2x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x"),
-               curpsw[8],curpsw[9],curpsw[10],curpsw[11],
-               curpsw[12],curpsw[13],curpsw[14],curpsw[15]);
         logmsg("\n");
-
-        if (sysblk.regs[i]->sie_active)
-        {
-            logmsg( _("HHCPN123I SIE%4.4X: CPUint=%8.8X "
-                      "(State:%8.8X)&(Mask:%8.8X)\n"),
-                sysblk.regs[i]->guestregs->cpuad, IC_INTERRUPT_CPU(sysblk.regs[i]->guestregs),
-                sysblk.regs[i]->guestregs->ints_state, sysblk.regs[i]->guestregs->ints_mask
-                );
-            logmsg( _("          SIE%4.4X: Interrupt %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_INTERRUPT(sysblk.regs[i]->guestregs) ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: I/O interrupt %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_IOPENDING                 ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: Clock comparator %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_CLKC(sysblk.regs[i]->guestregs) ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: CPU timer %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_PTIMER(sysblk.regs[i]->guestregs) ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: Interval timer %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_ITIMER(sysblk.regs[i]->guestregs) ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: External call %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_EXTCALL(sysblk.regs[i]->guestregs) ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: Emergency signal %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_EMERSIG(sysblk.regs[i]->guestregs) ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: Machine check interrupt %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_MCKPENDING(sysblk.regs[i]->guestregs) ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: Service signal %spending\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                IS_IC_SERVSIG                    ? "" : _("not ")
-                );
-            logmsg( _("          SIE%4.4X: lock %sheld\n"),
-                sysblk.regs[i]->guestregs->cpuad,
-                test_lock(&sysblk.cpulock[i]) ? "" : _("not ")
-                );
-            if (ARCH_370 == sysblk.arch_mode)
-            {
-                if (0xFFFF == sysblk.regs[i]->guestregs->chanset)
-                    logmsg( _("          SIE%4.4X: No channelset connected\n"),
-                        sysblk.regs[i]->guestregs->cpuad
-                        );
-                else
-                    logmsg( _("          SIE%4.4X: Connected to channelset "
-                              "%4.4X\n"),
-                        sysblk.regs[i]->guestregs->cpuad,sysblk.regs[i]->guestregs->chanset
-                        );
-            }
-            logmsg( _("          SIE%4.4X: state %s\n"),
-                   sysblk.regs[i]->guestregs->cpuad,states[sysblk.regs[i]->guestregs->cpustate]);
-            logmsg( _("          SIE%4.4X: instcount %" I64_FMT "d\n"),
-                   sysblk.regs[i]->guestregs->cpuad,(long long)sysblk.regs[i]->guestregs->instcount);
-            logmsg( _("          SIE%4.4X: siocount %" I64_FMT "d\n"),
-                   sysblk.regs[i]->guestregs->cpuad,(long long)sysblk.regs[i]->guestregs->siototal);
-            copy_psw(sysblk.regs[i]->guestregs, curpsw);
-            logmsg( _("          SIE%4.4X: psw %2.2x%2.2x%2.2x%2.2x %2.2x%2.2x%2.2x%2.2x"),
-                   sysblk.regs[i]->guestregs->cpuad,curpsw[0],curpsw[1],curpsw[2],curpsw[3],
-                   curpsw[4],curpsw[5],curpsw[6],curpsw[7]);
-            if (ARCH_900 == sysblk.regs[i]->guestregs->arch_mode)
-            logmsg( _(" %2.2x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x"),
-               curpsw[8],curpsw[9],curpsw[10],curpsw[11],
-               curpsw[12],curpsw[13],curpsw[14],curpsw[15]);
-            logmsg("\n");
-        }
     }
 
     logmsg( _("          Config mask "F_CPU_BITMAP
@@ -6251,41 +5817,12 @@ int archmode_cmd(int argc, char *argv[], char *cmdline)
                       "architecture\n") );
             return -1;
         }
-#if defined(_370)
     if (!strcasecmp (argv[1], arch_name[ARCH_370]))
     {
         sysblk.arch_mode = ARCH_370;
         sysblk.maxcpu = sysblk.numcpu;
     }
     else
-#endif
-#if defined(_390)
-    if (!strcasecmp (argv[1], arch_name[ARCH_390]))
-    {
-        sysblk.arch_mode = ARCH_390;
-#if defined(_FEATURE_CPU_RECONFIG)
-        sysblk.maxcpu = MAX_CPU_ENGINES;
-#else
-        sysblk.maxcpu = sysblk.numcpu;
-#endif
-    }
-    else
-#endif
-#if defined(_900)
-    if (0
-        || !strcasecmp (argv[1], arch_name[ARCH_900])
-        || !strcasecmp (argv[1], "ESAME")
-    )
-    {
-        sysblk.arch_mode = ARCH_900;
-#if defined(_FEATURE_CPU_RECONFIG)
-        sysblk.maxcpu = MAX_CPU_ENGINES;
-#else
-        sysblk.maxcpu = sysblk.numcpu;
-#endif
-    }
-    else
-#endif
     {
         RELEASE_INTLOCK(NULL);
         logmsg( _("HHCPN128E Invalid architecture mode %s\n"), argv[1] );
@@ -6299,18 +5836,6 @@ int archmode_cmd(int argc, char *argv[], char *cmdline)
     ios_arch_mode = sysblk.arch_mode;
 #endif /* defined(OPTION_FISHIO) */
 
-    /* Indicate if z/Architecture is supported */
-    sysblk.arch_z900 = sysblk.arch_mode != ARCH_390;
-
-#if defined(_FEATURE_CPU_RECONFIG) && defined(_S370)
-    /* Configure CPUs for S/370 mode */
-    if (sysblk.archmode == ARCH_370)
-        for (i = MAX_CPU_ENGINES - 1; i >= 0; i--)
-            if (i < MAX_CPU && !IS_CPU_ONLINE(i))
-                configure_cpu(i);
-            else if (i >= MAX_CPU && IS_CPU_ONLINE(i))
-                deconfigure_cpu(i);
-#endif
 
     RELEASE_INTLOCK(NULL);
 
@@ -6428,14 +5953,6 @@ BYTE c;                                 /* Character work area       */
     return -1;
 }
 
-static inline char *aea_mode_str(BYTE mode)
-{
-static char *name[] = { "DAT-Off", "Primary", "AR", "Secondary", "Home",
-0, 0, 0, "PER/DAT-Off", "PER/Primary", "PER/AR", "PER/Secondary", "PER/Home" };
-
-    return name[(mode & 0x0f) | ((mode & 0xf0) ? 8 : 0)];
-}
-
 
 /*-------------------------------------------------------------------*/
 /* aea - display aea values                                          */
@@ -6458,90 +5975,6 @@ int aea_cmd(int argc, char *argv[], char *cmdline)
         return 0;
     }
     regs = sysblk.regs[sysblk.pcpu];
-
-    logmsg ("aea mode   %s\n",aea_mode_str(regs->aea_mode));
-
-    logmsg ("aea ar    ");
-    for (i = 16; i < 21; i++)
-         if(regs->aea_ar[i] > 0)
-            logmsg(" %2.2x",regs->aea_ar[i]);
-        else
-            logmsg(" %2d",regs->aea_ar[i]);
-    for (i = 0; i < 16; i++)
-         if(regs->aea_ar[i] > 0)
-            logmsg(" %2.2x",regs->aea_ar[i]);
-        else
-            logmsg(" %2d",regs->aea_ar[i]);
-    logmsg ("\n");
-
-    logmsg ("aea common            ");
-    if(regs->aea_common[32] > 0)
-        logmsg(" %2.2x",regs->aea_common[32]);
-    else
-        logmsg(" %2d",regs->aea_common[32]);    
-    for (i = 0; i < 16; i++)
-        if(regs->aea_common[i] > 0)
-            logmsg(" %2.2x",regs->aea_common[i]);
-        else
-            logmsg(" %2d",regs->aea_common[i]);
-    logmsg ("\n");
-
-    logmsg ("aea cr[1]  %16.16" I64_FMT "x\n    cr[7]  %16.16" I64_FMT "x\n"
-            "    cr[13] %16.16" I64_FMT "x\n",
-            regs->CR_G(1),regs->CR_G(7),regs->CR_G(13));
-
-    logmsg ("    cr[r]  %16.16" I64_FMT "x\n",
-            regs->CR_G(CR_ASD_REAL));
-
-    for(i = 0; i < 16; i++)
-        if(regs->aea_ar[i] > 15)
-            logmsg ("    alb[%d] %16.16" I64_FMT "x\n",
-                    regs->cr[CR_ALB_OFFSET + i]);
-
-    if (regs->sie_active)
-    {
-        regs = regs->guestregs;
-
-        logmsg ("aea SIE\n");
-        logmsg ("aea mode   %s\n",aea_mode_str(regs->aea_mode));
-
-        logmsg ("aea ar    ");
-        for (i = 16; i < 21; i++)
-            if(regs->aea_ar[i] > 0)
-                logmsg(" %2.2x",regs->aea_ar[i]);
-            else
-                logmsg(" %2d",regs->aea_ar[i]);
-        for (i = 0; i < 16; i++)
-            if(regs->aea_ar[i] > 0)
-                logmsg(" %2.2x",regs->aea_ar[i]);
-            else
-                logmsg(" %2d",regs->aea_ar[i]);
-        logmsg ("\n");
-
-        logmsg ("aea common            ");
-        if(regs->aea_common[32] > 0)
-            logmsg(" %2.2x",regs->aea_common[32]);
-        else
-            logmsg(" %2d",regs->aea_common[32]);
-        for (i = 0; i < 16; i++)
-        if(regs->aea_common[i] > 0)
-            logmsg(" %2.2x",regs->aea_common[i]);
-        else
-            logmsg(" %2d",regs->aea_common[i]);
-        logmsg ("\n");
-
-        logmsg ("aea cr[1]  %16.16" I64_FMT "x\n    cr[7]  %16.16" I64_FMT "x\n"
-                "    cr[13] %16.16" I64_FMT "x\n",
-                regs->CR_G(1),regs->CR_G(7),regs->CR_G(13));
-
-        logmsg ("    cr[r]  %16.16" I64_FMT "x\n",
-                regs->CR_G(CR_ASD_REAL));
-
-        for(i = 0; i < 16; i++)
-            if(regs->aea_ar[i] > 15)
-                logmsg ("    alb[%d] %16.16" I64_FMT "x\n",
-                        regs->cr[CR_ALB_OFFSET + i]);
-    }
 
     release_lock (&sysblk.cpulock[sysblk.pcpu]);
 
@@ -6573,146 +6006,10 @@ DLL_EXPORT int aia_cmd(int argc, char *argv[], char *cmdline)
     logmsg ("AIV %16.16" I64_FMT "x aip %p ip %p aie %p aim %p\n",
             regs->aiv,regs->aip,regs->ip,regs->aie,(BYTE *)regs->aim);
 
-    if (regs->sie_active)
-    {
-        regs = regs->guestregs;
-        logmsg ("SIE:\n");
-        logmsg ("AIV %16.16" I64_FMT "x aip %p ip %p aie %p\n",
-            regs->aiv,regs->aip,regs->ip,regs->aie);
-    }
-
     release_lock (&sysblk.cpulock[sysblk.pcpu]);
 
     return 0;
 }
-
-
-/*-------------------------------------------------------------------*/
-/* tlb - display tlb table                                           */
-/*-------------------------------------------------------------------*/
-/*                                                                   */
-/* NOTES:                                                            */
-/*   The "tlbid" field is part of TLB_VADDR so it must be extracted  */
-/*   whenever it's used or displayed. The TLB_VADDR does not contain */
-/*   all of the effective address bits so they are created on-the-fly*/
-/*   with (i << shift) The "main" field of the tlb contains an XOR   */
-/*   hash of effective address. So MAINADDR() macro is used to remove*/
-/*   the hash before it's displayed.                                 */
-/*                                                                   */
-int tlb_cmd(int argc, char *argv[], char *cmdline)
-{
-    int     i;                          /* Index                     */
-    int     shift;                      /* Number of bits to shift   */
-    int     bytemask;                   /* Byte mask                 */
-    U64     pagemask;                   /* Page mask                 */
-    int     matches = 0;                /* Number aeID matches       */
-    REGS   *regs;
-
-    UNREFERENCED(argc);
-    UNREFERENCED(argv);
-    UNREFERENCED(cmdline);
-
-    obtain_lock(&sysblk.cpulock[sysblk.pcpu]);
-
-    if (!IS_CPU_ONLINE(sysblk.pcpu))
-    {
-        release_lock(&sysblk.cpulock[sysblk.pcpu]);
-        logmsg( _("HHCPN160W CPU%4.4X not configured\n"), sysblk.pcpu);
-        return 0;
-    }
-    regs = sysblk.regs[sysblk.pcpu];
-    shift = regs->arch_mode == ARCH_370 ? 11 : 12;
-    bytemask = regs->arch_mode == ARCH_370 ? 0x1FFFFF : 0x3FFFFF;
-    pagemask = regs->arch_mode == ARCH_370 ? 0x00E00000 :
-               regs->arch_mode == ARCH_390 ? 0x7FC00000 :
-                                     0xFFFFFFFFFFC00000ULL;
-
-    logmsg ("tlbID 0x%6.6x mainstor %p\n",regs->tlbID,regs->mainstor);
-    logmsg ("  ix              asd            vaddr              pte   id c p r w ky       main\n");
-    for (i = 0; i < TLBN; i++)
-    {
-        logmsg("%s%3.3x %16.16" I64_FMT "x %16.16" I64_FMT "x %16.16" I64_FMT "x %4.4x %1d %1d %1d %1d %2.2x %8.8x\n",
-         ((regs->tlb.TLB_VADDR_G(i) & bytemask) == regs->tlbID ? "*" : " "),
-         i,regs->tlb.TLB_ASD_G(i),
-         ((regs->tlb.TLB_VADDR_G(i) & pagemask) | (i << shift)),
-         regs->tlb.TLB_PTE_G(i),(int)(regs->tlb.TLB_VADDR_G(i) & bytemask),
-         regs->tlb.common[i],regs->tlb.protect[i],
-         (regs->tlb.acc[i] & ACC_READ) != 0,(regs->tlb.acc[i] & ACC_WRITE) != 0,
-         regs->tlb.skey[i],
-         MAINADDR(regs->tlb.main[i],
-                  ((regs->tlb.TLB_VADDR_G(i) & pagemask) | (i << shift)))
-                  - regs->mainstor);
-        matches += ((regs->tlb.TLB_VADDR(i) & bytemask) == regs->tlbID);
-    }
-    logmsg("%d tlbID matches\n", matches);
-
-    if (regs->sie_active)
-    {
-        regs = regs->guestregs;
-        shift = regs->guestregs->arch_mode == ARCH_370 ? 11 : 12;
-        bytemask = regs->arch_mode == ARCH_370 ? 0x1FFFFF : 0x3FFFFF;
-        pagemask = regs->arch_mode == ARCH_370 ? 0x00E00000 :
-                   regs->arch_mode == ARCH_390 ? 0x7FC00000 :
-                                         0xFFFFFFFFFFC00000ULL;
-
-        logmsg ("\nSIE: tlbID 0x%4.4x mainstor %p\n",regs->tlbID,regs->mainstor);
-        logmsg ("  ix              asd            vaddr              pte   id c p r w ky       main\n");
-        for (i = matches = 0; i < TLBN; i++)
-        {
-            logmsg("%s%3.3x %16.16" I64_FMT "x %16.16" I64_FMT "x %16.16" I64_FMT "x %4.4x %1d %1d %1d %1d %2.2x %p\n",
-             ((regs->tlb.TLB_VADDR_G(i) & bytemask) == regs->tlbID ? "*" : " "),
-             i,regs->tlb.TLB_ASD_G(i),
-             ((regs->tlb.TLB_VADDR_G(i) & pagemask) | (i << shift)),
-             regs->tlb.TLB_PTE_G(i),(int)(regs->tlb.TLB_VADDR_G(i) & bytemask),
-             regs->tlb.common[i],regs->tlb.protect[i],
-             (regs->tlb.acc[i] & ACC_READ) != 0,(regs->tlb.acc[i] & ACC_WRITE) != 0,
-             regs->tlb.skey[i],
-             MAINADDR(regs->tlb.main[i],
-                     ((regs->tlb.TLB_VADDR_G(i) & pagemask) | (i << shift)))
-                    - regs->mainstor);
-            matches += ((regs->tlb.TLB_VADDR(i) & bytemask) == regs->tlbID);
-        }
-        logmsg("SIE: %d tlbID matches\n", matches);
-    }
-
-    release_lock (&sysblk.cpulock[sysblk.pcpu]);
-
-    return 0;
-}
-
-
-#if defined(SIE_DEBUG_PERFMON)
-/*-------------------------------------------------------------------*/
-/* spm - SIE performance monitor table                               */
-/*-------------------------------------------------------------------*/
-int spm_cmd(int argc, char *argv[], char *cmdline)
-{
-    UNREFERENCED(argc);
-    UNREFERENCED(argv);
-    UNREFERENCED(cmdline);
-
-    sie_perfmon_disp();
-
-    return 0;
-}
-#endif
-
-
-#if defined(_FEATURE_SYSTEM_CONSOLE)
-/*-------------------------------------------------------------------*/
-/* ssd - signal shutdown command                                     */
-/*-------------------------------------------------------------------*/
-int ssd_cmd(int argc, char *argv[], char *cmdline)
-{
-    UNREFERENCED(argc);
-    UNREFERENCED(argv);
-    UNREFERENCED(cmdline);
-
-    signal_quiesce(0, 0);
-
-    return 0;
-}
-#endif
 
 
 #if defined(OPTION_COUNTING)
@@ -6854,37 +6151,6 @@ int modpath_cmd(int argc, char *argv[], char *cmdline)
 #endif /*defined(OPTION_DYNAMIC_LOAD)*/
 
 
-#ifdef FEATURE_ECPSVM
-/*-------------------------------------------------------------------*/
-/* evm - ECPS:VM command                                             */
-/*-------------------------------------------------------------------*/
-int evm_cmd_1(int argc, char *argv[], char *cmdline)
-{
-    UNREFERENCED(cmdline);
-    UNREFERENCED(argc);
-    UNREFERENCED(argv);
-
-    logmsg(_("HHCPN150W evm command is deprecated. Use \"ecpsvm\" instead\n"));
-    ecpsvm_command(argc,argv);
-    return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* evm - ECPS:VM command                                             */
-/*-------------------------------------------------------------------*/
-int evm_cmd(int argc, char *argv[], char *cmdline)
-{
-    UNREFERENCED(cmdline);
-    UNREFERENCED(argc);
-    UNREFERENCED(argv);
-
-    ecpsvm_command(argc,argv);
-    return 0;
-}
-#endif
-
-
 /*-------------------------------------------------------------------*/
 /* herclogo - Set the hercules logo file                             */
 /*-------------------------------------------------------------------*/
@@ -6921,8 +6187,6 @@ int sizeof_cmd(int argc, char *argv[], char *cmdline)
     logmsg(_("HHCPN161I REGS (copy len) ...%7d\n"),sysblk.regs_copy_len);
     logmsg(_("HHCPN161I PSW ...............%7d\n"),sizeof(PSW));
     logmsg(_("HHCPN161I DEVBLK ............%7d\n"),sizeof(DEVBLK));
-    logmsg(_("HHCPN161I TLB entry .........%7d\n"),sizeof(TLB)/TLBN);
-    logmsg(_("HHCPN161I TLB table .........%7d\n"),sizeof(TLB));
     logmsg(_("HHCPN161I FILENAME_MAX ......%7d\n"),FILENAME_MAX);
     logmsg(_("HHCPN161I PATH_MAX ..........%7d\n"),PATH_MAX);
     logmsg(_("HHCPN161I CPU_BITMAP ........%7d\n"),sizeof(CPU_BITMAP));
@@ -7008,102 +6272,6 @@ int traceopt_cmd(int argc, char *argv[], char *cmdline)
                             _("traditional"));
     return 0;
 }
-
-
-#ifdef OPTION_CMDTGT
-/*-------------------------------------------------------------------*/
-/* cmdtgt - Specify the command target                               */
-/*-------------------------------------------------------------------*/
-int cmdtgt_cmd(int argc, char *argv[], char *cmdline)
-{
-  int print = 1;
-
-  UNREFERENCED(cmdline);
-  if(argc == 2)
-  {
-    if(!strcasecmp(argv[1], "herc"))
-      sysblk.cmdtgt = 0;
-    else if(!strcasecmp(argv[1], "scp"))
-      sysblk.cmdtgt = 1;
-    else if(!strcasecmp(argv[1], "pscp"))
-      sysblk.cmdtgt = 2;
-    else if(!strcasecmp(argv[1], "?"))
-      ;
-    else
-      print = 0;
-  }
-  else
-    print = 0;
-
-  if(print)
-  {
-    switch(sysblk.cmdtgt)
-    {
-      case 0:
-      {
-        logmsg("cmdtgt: Commands are sent to hercules\n");
-        break;
-      }
-      case 1:
-      {
-        logmsg("cmdtgt: Commands are sent to scp\n");
-        break;
-      }
-      case 2:
-      {
-        logmsg("cmdtgt: Commands are sent as priority messages to scp\n");
-        break;
-      }
-    }
-  }
-  else
-    logmsg("cmdtgt: Use cmdtgt [herc | scp | pscp | ?]\n");
-
-  return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* scp - Send scp command in any mode                                */
-/*-------------------------------------------------------------------*/
-int scp_cmd(int argc, char *argv[], char *cmdline)
-{
-  UNREFERENCED(argv);
-  if(argc == 1)
-    scp_command(" ", 0);
-  else
-    scp_command(&cmdline[4], 0);
-  return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* pscp - Send a priority message in any mode                        */
-/*-------------------------------------------------------------------*/
-int prioscp_cmd(int argc, char *argv[], char *cmdline)
-{
-  UNREFERENCED(argv);
-  if(argc == 1)
-    scp_command(" ", 1);
-  else
-    scp_command(&cmdline[5], 1);
-  return 0;
-}
-
-
-/*-------------------------------------------------------------------*/
-/* herc - Send a Hercules command in any mode                        */
-/*-------------------------------------------------------------------*/
-int herc_cmd(int argc, char *argv[], char *cmdline)
-{
-  UNREFERENCED(argv);
-  if(argc == 1)
-    ProcessPanelCommand(" ");
-  else
-    ProcessPanelCommand(&cmdline[5]);
-  return 0;
-}
-#endif // OPTION_CMDTGT
 
 
 /* PATCH ISW20030220 - Script command support */

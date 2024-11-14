@@ -115,20 +115,9 @@ typedef struct  _PSW {
 #define PSW_KEYMASK     0xF0            /* PSW key mask              */
 
 /*                            (12 - 15) */
-#define PSW_EC_BIT         3    /* 0x08    ECMODE                    */
 #define PSW_MACH_BIT       2    /* 0x04    Machine check mask        */
 #define PSW_WAIT_BIT       1    /* 0x02    Wait state                */
 #define PSW_PROB_BIT       0    /* 0x01    Problem state             */
-#define PSW_NOTESAME_BIT   PSW_EC_BIT
-
-/* Address space control      (16 - 17) */
-#define PSW_ASCMASK     0xC0            /* Address space control mask*/
-#define PSW_SPACE_BIT      7    /* 0x80    Space mode bit            */
-#define PSW_AR_BIT         6    /* 0x40    Access register mode bit  */
-#define PSW_PRIMARY_SPACE_MODE     0x00 /* Primary-space mode        */
-#define PSW_SECONDARY_SPACE_MODE   0x80 /* Secondary-space mode      */
-#define PSW_ACCESS_REGISTER_MODE   0x40 /* Access-register mode      */
-#define PSW_HOME_SPACE_MODE        0xC0 /* Home-space mode           */
 
 /* Condition code             (18 - 19) */
 #define PSW_CCMASK      0x30            /* Condition code mask       */
@@ -140,13 +129,7 @@ typedef struct  _PSW {
 #define PSW_EUBIT          1    /* 0x02    Exponent underflow bit    */
 #define PSW_SGBIT          0    /* 0x01    Significance bit          */
 
-/* Address mode               (31 - 32) */
-#define PSW_AMODE64_BIT    0            /* Extended addressing  (31) */
-#define PSW_AMODE31_BIT    7            /* Basic addressing     (32) */
-
 /* Macros for testing states (EC, M, W, P bits) */
-#define ECMODE(p)    (((p)->states & BIT(PSW_EC_BIT))       != 0)
-#define NOTESAME(p)  (((p)->states & BIT(PSW_NOTESAME_BIT)) != 0)
 #define MACHMASK(p)  (((p)->states & BIT(PSW_MACH_BIT))     != 0)
 #define WAITSTATE(p) (((p)->states & BIT(PSW_WAIT_BIT))     != 0)
 #define PROBSTATE(p) (((p)->states & BIT(PSW_PROB_BIT))     != 0)
@@ -163,24 +146,6 @@ typedef struct  _PSW {
 #define TLB_REAL_ASD_L  0xFFFFFFFF      /* ASD values for real mode  */
 #define TLB_REAL_ASD_G  0xFFFFFFFFFFFFFFFFULL
 #define TLB_HOST_ASD    0x800           /* Host entry for XC guest   */
-typedef struct _TLB  {
-        DW              asd[TLBN];      /* Address space designator  */
-#define TLB_ASD_G(_n)   asd[(_n)].D
-#define TLB_ASD_L(_n)   asd[(_n)].F.L.F
-        DW              vaddr[TLBN];    /* Virtual page address      */
-#define TLB_VADDR_G(_n) vaddr[(_n)].D
-#define TLB_VADDR_L(_n) vaddr[(_n)].F.L.F
-        DW              pte[TLBN];      /* Copy of page table entry  */
-#define TLB_PTE_G(_n)   pte[(_n)].D
-#define TLB_PTE_L(_n)   pte[(_n)].F.L.F
-        BYTE           *main[TLBN];     /* Mainstor address          */
-        BYTE           *storkey[TLBN];  /* -> Storage key            */
-        BYTE            skey[TLBN];     /* Storage key key-value     */
-        BYTE            common[TLBN];   /* 1=Page in common segment  */
-        BYTE            protect[TLBN];  /* 1=Page in protected segmnt*/
-        BYTE            acc[TLBN];      /* Access type flags         */
-    } TLB;
-
 /* TLB Notes -
  * Fields set by translate_addr() are asd, vaddr, pte, id, common and
  * protect.
@@ -190,16 +155,16 @@ typedef struct _TLB  {
 
 /* Structure for Dynamic Address Translation */
 typedef struct _DAT {
-        RADR    raddr;                  /* Real address              */
-        RADR    aaddr;                  /* Absolute address          */
-        RADR    rpfra;                  /* Real page frame address   */
-        RADR    asd;                    /* Address space designator: */
+//        RADR    raddr;                  /* Real address              */
+//        RADR    aaddr;                  /* Absolute address          */
+//        RADR    rpfra;                  /* Real page frame address   */
+//        RADR    asd;                    /* Address space designator: */
                                         /*   STD or ASCE             */
-        int     stid;                   /* Address space indicator   */
+//        int     stid;                   /* Address space indicator   */
         BYTE   *storkey;                /* ->Storage key             */
-        U16     xcode;                  /* Translation exception code*/
-        u_int   private:1,              /* 1=Private address space   */
-                protect:2;              /* 1=Page prot, 2=ALE prot   */
+//        U16     xcode;                  /* Translation exception code*/
+//        u_int   private:1,              /* 1=Private address space   */
+//                protect:2;              /* 1=Page prot, 2=ALE prot   */
       } DAT;
 
 /* Bit definitions for control register 0 */
@@ -317,8 +282,6 @@ typedef struct _DAT {
 #define CR14_AFTO       0x0007FFFF      /* ASN first table origin    */
 
 /* Bit definitions for control register 15 */
-#define CR15_LSEA_390   0x7FFFFFF8      /* Linkage stack address  390*/
-#define CR15_LSEA_900   0xFFFFFFFFFFFFFFF8ULL /* Linkage stack  ESAME*/
 #define CR15_MCEL       0x00FFFFF8      /* MCEL address         S/370*/
 
 /* Linkage table designation bit definitions */
@@ -441,16 +404,9 @@ typedef struct _DAT {
 #define ALET_ALESN      0x00FF0000      /* ALE sequence number       */
 #define ALET_ALEN       0x0000FFFF      /* Access-list entry number  */
 
-/* Access-list designation bit definitions */
-#if FEATURE_ALD_FORMAT == 0 || defined(_900)
 #define ALD_ALO         0x7FFFFF80      /* Access-list origin (fmt0) */
 #define ALD_ALL         0x0000007F      /* Access-list length (fmt0) */
 #define ALD_ALL_SHIFT   3               /* Length units are 2**3     */
-#else
-#define ALD_ALO         0x7FFFFF00      /* Access-list origin (fmt1) */
-#define ALD_ALL         0x000000FF      /* Access-list length (fmt1) */
-#define ALD_ALL_SHIFT   4               /* Length units are 2**4     */
-#endif
 
 /* Access-list entry bit definitions */
 #define ALE0_INVALID    0x80000000      /* ALEN invalid              */
@@ -625,7 +581,6 @@ typedef struct _LSED {
 #define SIGP_IMPL                0x0A   /* Initial uprogram load  370*/
 #define SIGP_INITRESET           0x0B   /* Initial CPU reset         */
 #define SIGP_RESET               0x0C   /* CPU reset                 */
-#define SIGP_SETPREFIX           0x0D   /* Set prefix                */
 #define SIGP_STORE               0x0E   /* Store status at address   */
 #define SIGP_STOREX              0x11   /* Store ext stat at addr 390*/
 #define SIGP_SETARCH             0x12   /* Set architecture mode     */
@@ -718,77 +673,6 @@ typedef struct _PSA_3XX {               /* Prefixed storage area     */
 /*180*/ FWORD  storegpr[16];            /* General register save area*/
 /*1C0*/ FWORD  storecr[16];             /* Control register save area*/
 } PSA_3XX;
-
-/* ESAME Prefixed storage area structure definition */
-typedef struct _PSA_900 {               /* Prefixed storage area     */
-/*0000*/ DBLWRD iplpsw;                 /* IPL PSW                   */
-/*0008*/ DBLWRD iplccw1;                /* IPL CCW1                  */
-/*0010*/ DBLWRD iplccw2;                /* IPL CCW2                  */
-/*0018*/ BYTE   resv0018[104];          /* Reserved                  */
-/*0080*/ FWORD  extparm;                /* External interrupt param  */
-/*0084*/ HWORD  extcpad;                /* External interrupt CPU#   */
-/*0086*/ HWORD  extint;                 /* External interrupt code   */
-/*0088*/ FWORD  svcint;                 /* SVC interrupt code        */
-/*008C*/ FWORD  pgmint;                 /* Program interrupt code    */
-/*0090*/ FWORD  dataexc;                /* Data exception code       */
-/*0094*/ HWORD  monclass;               /* Monitor class             */
-/*0096*/ HWORD  perint;                 /* PER interrupt code        */
-/*0098*/ DBLWRD peradr;                 /* PER address               */
-/*00A0*/ BYTE   excarid;                /* Exception access id       */
-/*00A1*/ BYTE   perarid;                /* PER access id             */
-/*00A2*/ BYTE   opndrid;                /* Operand access id         */
-/*00A3*/ BYTE   arch;                   /* Architecture mode ID      */
-/*00A4*/ FWORD  mpladdr;                /* MPL addr                  */
-/*00A8*/ DWORD_U tea;                   /* Translation exception addr*/
-#define TEA_G tea.D
-#define TEA_L tea.F.L.F
-#define TEA_H tea.F.H.F
-/*00B0*/ DBLWRD moncode;                /* Monitor code              */
-/*00B8*/ FWORD  ioid;                   /* I/O interrupt subsys id   */
-/*00BC*/ FWORD  ioparm;                 /* I/O interrupt parameter   */
-/*00C0*/ FWORD  iointid;                /* I/O interrupt ID          */
-/*00C4*/ FWORD  resv00C0;               /* Reserved                  */
-/*00C8*/ FWORD  stfl;                   /* Facilities list (STFL)    */
-/*00CC*/ FWORD  resv00CC;               /* Reserved                  */
-/*00D0*/ DBLWRD resv00D0;               /* Reserved                  */
-/*00D8*/ DBLWRD resv00D8;               /* Reserved                  */
-/*00E0*/ DBLWRD resv00E0;               /* Reserved                  */
-/*00E8*/ DBLWRD mckint;                 /* Machine check int code    */
-/*00F0*/ FWORD  mckext;                 /* Machine check int code ext*/
-/*00F4*/ FWORD  xdmgcode;               /* External damage code      */
-/*00F8*/ DBLWRD mcstorad;               /* Failing storage address   */
-/*0100*/ DBLWRD resv0100;               /* Reserved                  */
-/*0108*/ DBLWRD resv0108;               /* Reserved                  */
-/*0110*/ DBLWRD bea;                    /* Breaking event address @Z9*/
-/*0118*/ DBLWRD resv0118;               /* Reserved                  */
-/*0120*/ QWORD  rstold;                 /* Restart old PSW           */
-/*0130*/ QWORD  extold;                 /* External old PSW          */
-/*0140*/ QWORD  svcold;                 /* SVC old PSW               */
-/*0150*/ QWORD  pgmold;                 /* Program check old PSW     */
-/*0160*/ QWORD  mckold;                 /* Machine check old PSW     */
-/*0170*/ QWORD  iopold;                 /* I/O old PSW               */
-/*0180*/ BYTE   resv0180[32];           /* Reserved                  */
-/*01A0*/ QWORD  rstnew;                 /* Restart new PSW           */
-/*01B0*/ QWORD  extnew;                 /* External new PSW          */
-/*01C0*/ QWORD  svcnew;                 /* SVC new PSW               */
-/*01D0*/ QWORD  pgmnew;                 /* Program check new PSW     */
-/*01E0*/ QWORD  mcknew;                 /* Machine check new PSW     */
-/*01F0*/ QWORD  iopnew;                 /* I/O new PSW               */
-/*0200*/ BYTE   resv0200[4096];         /* Reserved                  */
-/*1200*/ FWORD  storefpr[32];           /* FP register save area     */
-/*1280*/ DBLWRD storegpr[16];           /* General register save area*/
-/*1300*/ QWORD  storepsw;               /* Store status PSW save area*/
-/*1310*/ DBLWRD resv1310;               /* Reserved                  */
-/*1318*/ FWORD  storepfx;               /* Prefix register save area */
-/*131C*/ FWORD  storefpc;               /* FP control save area      */
-/*1320*/ FWORD  resv1320;               /* Reserved                  */
-/*1324*/ FWORD  storetpr;               /* TOD prog reg save area    */
-/*1328*/ DBLWRD storeptmr;              /* CPU timer save area       */
-/*1330*/ DBLWRD storeclkc;              /* Clock comparator save area*/
-/*1338*/ DBLWRD resv1338;               /* Reserved                  */
-/*1340*/ FWORD  storear[16];            /* Access register save area */
-/*1380*/ DBLWRD storecr[16];            /* Control register save area*/
-} PSA_900;
 
 /* Bit settings for translation exception address */
 #define TEA_SECADDR     0x80000000      /* Secondary addr (370,390)  */
@@ -945,12 +829,6 @@ typedef struct _PSA_900 {               /* Prefixed storage area     */
 #define EXT_ETR_INTERRUPT                               0x1406
 #define EXT_SERVICE_SIGNAL_INTERRUPT                    0x2401
 #define EXT_IUCV_INTERRUPT                              0x4000
-#if defined(FEATURE_ECPSVM)
-#define EXT_VINTERVAL_TIMER_INTERRUPT                   0x0100
-#endif
-#if defined(FEATURE_VM_BLOCKIO)
-#define EXT_BLOCKIO_INTERRUPT                           0x2603
-#endif
 
 /* Macros for classifying CCW operation codes */
 #define IS_CCW_WRITE(c)         (((c)&0x03)==0x01)
@@ -1916,28 +1794,6 @@ typedef struct _SYSIB121 {              /* Basic Machine CPU         */
         HWORD   resv2;                  /* Reserved                  */
         HWORD   cpuad;                  /* CPU address               */
     }   SYSIB121;
-
-typedef struct _SYSIB122 {              /* Basic Machine CPUs        */
-        BYTE    format;                 /* Format 0 or 1             */
-        BYTE    resv1;                  /* Reserved                  */
-        HWORD   accoff;                 /* Offset to accap field     */
-        FWORD   resv2[6];               /* Reserved                  */
-        FWORD   sccap;                  /* Secondary CPU Capability  */
-        FWORD   cap;                    /* CPU capability            */
-        HWORD   totcpu;                 /* Total CPU count           */
-        HWORD   confcpu;                /* Configured CPU count      */
-        HWORD   sbcpu;                  /* Standby CPU count         */
-        HWORD   resvcpu;                /* Reserved CPU count        */
-        HWORD   mpfact[MAX_CPU_ENGINES-1];  /* MP factors            */
-#if ((MAX_CPU_ENGINES-1) % 2)           /* if prev is odd #of HWORDs */
-        HWORD   resv3;                  /* then need some alignment  */
-#endif
-        FWORD   accap;                  /* Alternate CPU Capability  */
-        HWORD   ampfact[MAX_CPU_ENGINES-1]; /* Alternate MP factors  */
-#if ((MAX_CPU_ENGINES-1) % 2)           /* if prev is odd #of HWORDs */
-        HWORD   resv4;                  /* then need some alignment  */
-#endif
-    }   SYSIB122;
 
 typedef struct _SYSIB221 {              /* Logical partition CPU     */
         FWORD   resv1[20];              /* Reserved                  */

@@ -70,14 +70,9 @@ int i;
 
     hprintf(webblk->sock, "<H2>Control Registers</H2>\n");
     hprintf(webblk->sock, "<PRE>\n");
-    if(regs->arch_mode != ARCH_900)
         for (i = 0; i < 16; i++)
             hprintf(webblk->sock, "CR%2.2d=%8.8X%s", i, regs->CR_L(i),
                 ((i & 0x03) == 0x03) ? "\n" : "\t");
-    else
-        for (i = 0; i < 16; i++)
-            hprintf(webblk->sock, "CR%1.1X=%16.16" I64_FMT "X%s", i,
-                (U64)regs->CR_G(i), ((i & 0x03) == 0x03) ? "\n" : " ");
 
     hprintf(webblk->sock, "</PRE>\n");
 
@@ -99,14 +94,9 @@ int i;
 
     hprintf(webblk->sock, "<H2>General Registers</H2>\n");
     hprintf(webblk->sock, "<PRE>\n");
-    if(regs->arch_mode != ARCH_900)
         for (i = 0; i < 16; i++)
             hprintf(webblk->sock, "GR%2.2d=%8.8X%s", i, regs->GR_L(i),
                 ((i & 0x03) == 0x03) ? "\n" : "\t");
-    else
-        for (i = 0; i < 16; i++)
-            hprintf(webblk->sock, "GR%1.1X=%16.16" I64_FMT "X%s", i,
-                (U64)regs->GR_G(i), ((i & 0x03) == 0x03) ? "\n" : " ");
 
     hprintf(webblk->sock, "</PRE>\n");
 
@@ -164,23 +154,10 @@ void cgibin_psw(WEBBLK *webblk)
 
     hprintf(webblk->sock, "<P>\n");
 
-    if( regs->arch_mode != ARCH_900 )
-    {
         copy_psw (regs, qword);
         hprintf(webblk->sock, "PSW=%2.2X%2.2X%2.2X%2.2X %2.2X%2.2X%2.2X%2.2X\n",
                 qword[0], qword[1], qword[2], qword[3],
                 qword[4], qword[5], qword[6], qword[7]);
-    }
-    else
-    {
-        copy_psw (regs, qword);
-        hprintf(webblk->sock, "PSW=%2.2X%2.2X%2.2X%2.2X %2.2X%2.2X%2.2X%2.2X "
-                "%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X\n",
-                qword[0], qword[1], qword[2], qword[3],
-                qword[4], qword[5], qword[6], qword[7],
-                qword[8], qword[9], qword[10], qword[11],
-                qword[12], qword[13], qword[14], qword[15]);
-    }
 
     if (autorefresh)
     {
@@ -404,10 +381,7 @@ REGS *regs;
             sprintf(regname,"alter_gr%d",i);
             if((value = cgi_variable(webblk,regname)))
             {
-                if(regs->arch_mode != ARCH_900)
                     sscanf(value,"%"I32_FMT"x",&(regs->GR_L(i)));
-                else
-                    sscanf(value,"%"I64_FMT"x",&(regs->GR_G(i)));
             }
         }
     }
@@ -420,10 +394,7 @@ REGS *regs;
             sprintf(regname,"alter_cr%d",i);
             if((value = cgi_variable(webblk,regname)))
             {
-                if(regs->arch_mode != ARCH_900)
                     sscanf(value,"%"I32_FMT"x",&(regs->CR_L(i)));
-                else
-                    sscanf(value,"%"I64_FMT"x",&(regs->CR_G(i)));
             }
         }
     }
@@ -435,7 +406,7 @@ REGS *regs;
         char regname[16];
             sprintf(regname,"alter_ar%d",i);
             if((value = cgi_variable(webblk,regname)))
-                sscanf(value,"%x",&(regs->AR(i)));
+                sscanf(value,"%x",&(regs->AR_(i)));
         }
     }
 
@@ -483,11 +454,6 @@ REGS *regs;
                               "<table>\n");
         for(i = 0; i < 16; i++)
         {
-            if(regs->arch_mode != ARCH_900)
-                hprintf(webblk->sock,"%s<td>GR%d</td><td><input type=text name=alter_gr%d size=8 "
-                  "value=%8.8X></td>\n%s",
-                  (i&3)==0?"<tr>\n":"",i,i,regs->GR_L(i),((i&3)==3)?"</tr>\n":"");
-            else
                 hprintf(webblk->sock,"%s<td>GR%d</td><td><input type=text name=alter_gr%d size=16 "
                   "value=%16.16" I64_FMT "X></td>\n%s",
                   (i&3)==0?"<tr>\n":"",i,i,(U64)regs->GR_G(i),((i&3)==3)?"</tr>\n":"");
@@ -527,11 +493,6 @@ REGS *regs;
                               "<table>\n");
         for(i = 0; i < 16; i++)
         {
-            if(regs->arch_mode != ARCH_900)
-                hprintf(webblk->sock,"%s<td>CR%d</td><td><input type=text name=alter_cr%d size=8 "
-                  "value=%8.8X></td>\n%s",
-                  (i&3)==0?"<tr>\n":"",i,i,regs->CR_L(i),((i&3)==3)?"</tr>\n":"");
-            else
                 hprintf(webblk->sock,"%s<td>CR%d</td><td><input type=text name=alter_cr%d size=16 "
                   "value=%16.16" I64_FMT "X></td>\n%s",
                   (i&3)==0?"<tr>\n":"",i,i,(U64)regs->CR_G(i),((i&3)==3)?"</tr>\n":"");
@@ -544,48 +505,6 @@ REGS *regs;
                               "<input type=hidden name=select_gr value=%c>\n"
                               "<input type=hidden name=select_ar value=%c>\n"
                               "</form>\n",cpu,select_gr?'S':'H',select_ar?'S':'H');
-    }
-
-
-    if(regs->arch_mode != ARCH_370)
-    {
-        if(!select_ar)
-        {
-            hprintf(webblk->sock,"<form method=post>\n"
-                                  "<input type=submit name=select_ar "
-                                  "value=\"Select Access Registers\">\n"
-                                  "<input type=hidden name=cpu value=%d>\n"
-                                  "<input type=hidden name=select_gr value=%c>\n"
-                                  "<input type=hidden name=select_cr value=%c>\n"
-                                  "</form>\n",cpu,select_gr?'S':'H',select_cr?'S':'H');
-        }
-        else
-        {
-            hprintf(webblk->sock,"<form method=post>\n"
-                                  "<input type=submit name=select_ar "
-                                  "value=\"Hide Access Registers\">\n"
-                                  "<input type=hidden name=cpu value=%d>\n"
-                                  "<input type=hidden name=select_gr value=%c>\n"
-                                  "<input type=hidden name=select_cr value=%c>\n"
-                                  "</form>\n",cpu,select_gr?'S':'H',select_cr?'S':'H');
-
-            hprintf(webblk->sock,"<form method=post>\n"
-                                  "<table>\n");
-            for(i = 0; i < 16; i++)
-            {
-                hprintf(webblk->sock,"%s<td>AR%d</td><td><input type=text name=alter_ar%d size=8 "
-                  "value=%8.8X></td>\n%s",
-                  (i&3)==0?"<tr>\n":"",i,i,regs->AR(i),((i&3)==3)?"</tr>\n":"");
-            }
-            hprintf(webblk->sock,"</table>\n"
-                                  "<input type=submit name=refresh value=\"Refresh\">\n"
-                                  "<input type=submit name=alter_ar value=\"Alter\">\n"
-                                  "<input type=hidden name=cpu value=%d>\n"
-                                  "<input type=hidden name=select_gr value=%c>\n"
-                                  "<input type=hidden name=select_cr value=%c>\n"
-                                  "<input type=hidden name=select_ar value=S>\n"
-                                  "</form>\n",cpu,select_gr?'S':'H',select_cr?'S':'H');
-        }
     }
 
     html_footer(webblk);
@@ -678,9 +597,6 @@ U32 doipl;
     else
         iplcpu = sysblk.iplcpu;
 
-    if((value = cgi_variable(webblk,"loadparm")))
-    set_loadparm(value);
-
     /* Validate CPU number */
     if(iplcpu >= MAX_CPU)
         doipl = 0;
@@ -705,8 +621,6 @@ U32 doipl;
                   dev->devnum, ((dev->devnum == ipldev) ? " selected" : ""), dev->devnum);
 
         hprintf(webblk->sock,"</select>\n");
-
-        hprintf(webblk->sock,"Loadparm:<input type=text name=loadparm size=8 value=\"%s\">\n", str_loadparm());
 
         hprintf(webblk->sock,"<input type=submit name=doipl value=\"IPL\">\n"
                           "</form>\n");
@@ -953,45 +867,6 @@ int zone;
     html_header(webblk);
 
     hprintf(webblk->sock,"<h2>Miscellaneous Registers<h2>\n");
-
-
-    hprintf(webblk->sock,"<table border>\n"
-                          "<caption align=left>"
-                          "<h3>Zone related Registers</h3>"
-                          "</caption>\n");
-
-    hprintf(webblk->sock,"<tr><th>Zone</th>"
-                          "<th>CS Origin</th>"
-                          "<th>CS Limit</th>"
-                          "<th>ES Origin</th>"
-                          "<th>ES Limit</th>"
-                          "<th>Measurement Block</th>"
-                          "<th>Key</th></tr>\n");
-
-    for(zone = 0; zone < FEATURE_SIE_MAXZONES; zone++)
-    {
-        hprintf(webblk->sock,"<tr><td>%2.2X</td>"
-                              "<td>%8.8X</td>"
-                              "<td>%8.8X</td>"
-                              "<td>%8.8X</td>"
-                              "<td>%8.8X</td>"
-                              "<td>%8.8X</td>"
-                              "<td>%2.2X</td></tr>\n",
-                              zone,
-#if defined(_FEATURE_SIE)
-                              (U32)sysblk.zpb[zone].mso << 20,
-                              ((U32)sysblk.zpb[zone].msl << 20) | 0xFFFFF,
-                              (U32)sysblk.zpb[zone].eso << 20,
-                              ((U32)sysblk.zpb[zone].esl << 20) | 0xFFFFF,
-                              (U32)sysblk.zpb[zone].mbo,
-                              sysblk.zpb[zone].mbk
-#else
-                              0, 0, 0, 0, 0, 0
-#endif
-               );
-    }
-
-    hprintf(webblk->sock,"</table>\n");
 
 
     hprintf(webblk->sock,"<table border>\n"

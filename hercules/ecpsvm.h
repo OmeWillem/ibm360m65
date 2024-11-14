@@ -5,18 +5,6 @@
 #ifndef __ECPSVM_H__
 #define __ECPSVM_H__
 
-/* CR6 Definitions */
-#define ECPSVM_CR6_VMASSIST 0x80000000         /* DO Privop Sim */
-#define ECPSVM_CR6_VIRTPROB 0x40000000         /* Running user in Problem State */
-#define ECPSVM_CR6_ISKINHIB 0x20000000         /* Inhibit ISK/SSK Sim */
-#define ECPSVM_CR6_S360ONLY 0x10000000         /* Only S/360 Operations */
-#define ECPSVM_CR6_SVCINHIB 0x08000000         /* No SVC sim */
-#define ECPSVM_CR6_STVINHIB 0x04000000         /* No Shadow Table Validation */
-#define ECPSVM_CR6_ECPSVM   0x02000000         /* ECPS:VM Enable */
-#define ECPSVM_CR6_VIRTTIMR 0x01000000         /* Virtual Interval Timer update */
-#define ECPSVM_CR6_MICBLOK  0x00FFFFF8         /* MICBLOK Address mask */
-#define ECPSVM_CR6_VMMVSAS  0x00000004         /* VM Assists for MVS Enable (370E) */
-
 /* CR6 Definitions (VMBLOK style) */
 #define VMMFE 0x80
 #define VMMPROB 0x40
@@ -26,51 +14,6 @@
 #define VMMSHADT 0x04
 #define VMMCPAST 0x02
 #define VMMVTMR 0x01
-
-/* MICBLOK */
-typedef struct _ECPSVM_MICBLOK
-{
-    U32 MICRSEG;
-    U32 MICCREG;
-    U32 MICVPSW;
-#define MICVIP MICVPSW
-#define MICPEND 0x80
-    U32 MICWORK;
-    U32 MICVTMR;
-    U32 MICACF;
-    U32 RESERVED1;
-    U32 RESERVED2;
-    U32 MICCREG0;
-    U32 RESERVED3;
-    /* Bits defined in MICEVMA */
-#define MICLPSW 0x80    /* LPSW SIM */
-#define MICPTLB 0x40    /* PTLB SIM */
-#define MICSCSP 0x20    /* SCKC, SPT SIM */
-#define MICSIO  0x10    /* SIO, SIOF SIM */
-#define MICSTSM 0x08    /* SSM, STNSM, STOSM SIM */
-#define MICSTPT 0x04    /* STPT SIM */
-#define MICTCH  0x02    /* TCH SIM */
-#define MICDIAG 0x01    /* DIAG SIM */
-    /* Hint : The following bits may be irrelevant for ECPS:VM Level 20 */
-    /* Bits defined in MICEVMA2 */
-    /* V=R Shadow Table Bypass assists */
-#define MICSTBVR 0x80   /* V=R STBYPASS Assist active */
-#define MICPTLB2 0x40   /* VRSTBYPASS PTLB Simulation */
-#define MICIPTP2 0x20   /* VRSTBYPASS IPTE/TPRT Simulation */
-#define MICVPFR2 0x10   /* Virtual Page Fault reflection Assists */
-#define MICLRA2  0x08   /* VRSTBYPASS LRA Simulation */
-#define MICSTSM2 0x02   /* VRSTBYPASS SSM/STxSM Sim */
-#define MICLCTL2 0x01   /* VRSTBYPASS LCTL Sim */
-    /* Bits define in MICEVMA3 */
-#define MICSKYMD 0x20   /* Unknown */
-#define MICISKE  0x10   /* PTLB Sim */ 
-#define MICRRBE  0x08   /* IPTE/TPRT Sim */
-#define MICSSKE  0x04   /* V Page Fault Sim */
-    /* Bits defined in MICEVMA4 */
-#define MICSVC4  0x40   /* SVC/LPSW/LCTL Assists Extentions */
-#define MICSPT4  0x20   /* SPT Assist Extension */
-#define MICIUCV  0x10   /* IUCV ASSIST */
-} ECPSVM_MICBLOK;
 
 /* PSA Usefull Values */
 #define IOOPSW   0x038
@@ -140,41 +83,6 @@ typedef struct _ECPSVM_MICBLOK
 
 /* PSA + 6D0 : STACKVM - GPR11 Backup for dispatcher */
 #define STACKVM 0x6D0
-
-/* CP ASSIST SVC (Not VM Assist SVC) LIST */
-/* ASSISTS FOR CP LINK/RETURN SVCs */
-/* DMKSVCNS */
-/* Address found @ PSA+3E4 */
-typedef struct _ECPSVM_SVCLIST
-{
-    DW NEXTSAVE;        /* Pointer to next Save Area + 8 */
-    DW SLCADDR;         /* V=R Start */
-    DW DMKSVCHI;        /* DMKFREHI */
-    DW DMKSVCLO;        /* DMKFRELO + SAVEAREA LENGTH */
-} ECPSVM_SVCLIST;
-
-/* VM ASSIST LISTS */
-/* ENTRYPOINT TO VARIOUS PRIVOP SIM FASTPATH */
-/* (DMKPRVMA) */
-/* Address found @ PSA+3E8 */
-
-typedef struct _ECPSVM_VMALIST
-{
-    DW VSIVS;   /* EP To DMKVSIVS (Fastpath SIO/SIOF) */
-    DW VSIEX;   /* Base addr for VSIVS */
-    DW DSPCH;   /* Scheduler - Fast path for LPSW/SSM/STNSM/STOSM */
-    DW TMRCC;   /* SCKC EP */
-    DW TMR;     /* Timer ops base */
-    DW TMRSP;   /* SPT EP */
-    DW VATAT;   /* ARCHITECT */
-    DW DSPB;    /* Slow Path Dispatcher - PSW Revalidate required */
-    DW PRVVS;   /* VSIVS COUNT */
-    DW PRVVL;   /* LPSW Count */
-    DW PRVVM;   /* SSM/STxSM COUNT */
-    DW PRVVC;   /* SCKC COUNT */
-    DW RESERVED;
-    DW PRVVP;   /* SPT COUNT */
-} ECPSVM_VMALIST;
 
 /* VMBLOK Displacements */
 #define VMQFPNT         0x000
@@ -353,39 +261,5 @@ typedef struct _ECPSVM_VMALIST
 #define EXTSHCR0 0x40
 #define EXTSHCR1 0x44
 
-typedef struct _ECPSVM_STAT
-{
-    char *name;
-    U32   call;
-    U32   hit;
-    u_int support:1;
-    u_int enabled:1;
-    u_int debug:1;
-    u_int total:1;
-} ECPSVM_STAT;
-
-/* THE FOLLOWING ARE C99 INITIALISATION OF THE ECPSVM INSTRUCTION STATE STRUCTURES */
-/* SINCE MSVC SEEMS TO NOT LIKE THOSE, THEY ARE REPLACED FOR THE TIME BEING        */
-#if 0
-#define ECPSVM_STAT_DCL(_name) ECPSVM_STAT _name
-#define ECPSVM_STAT_DEF(_name) ._name = { .name = ""#_name"" ,.call=0,.hit=0,.support=1,.total=0,.enabled=1,.debug=0}
-#define ECPSVM_STAT_DEFU(_name) ._name = { .name = ""#_name"" ,.call=0,.hit=0,.support=0,.total=0,.enabled=1,.debug=0}
-#define ECPSVM_STAT_DEFM(_name) ._name = { .name = ""#_name"" ,.call=0,.hit=0,.support=1,.total=1,.enabled=1,.debug=0}
-#endif
-
-/* BELOW ARE NON C99 STRUCTURE INITIALIZERS KEEP THE ABOVE IN SYNC PLEASE */
-#define ECPSVM_STAT_DCL(_name) ECPSVM_STAT _name
-#define ECPSVM_STAT_DEF(_name) { ""#_name"" ,0,0,1,1,0,0}
-#define ECPSVM_STAT_DEFU(_name) {""#_name"" ,0,0,0,1,0,0}
-#define ECPSVM_STAT_DEFM(_name) {""#_name"" ,0,0,1,1,0,1}
-
-typedef struct _ECPSVM_CMDENT
-{
-    char *name;
-    int  abbrev;
-    void (*fun)(int argc,char **av);
-    char *expl;
-    char *help;
-} ECPSVM_CMDENT;
 
 #endif

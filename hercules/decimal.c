@@ -48,6 +48,8 @@
 #define _DECIMAL_C_
 #endif
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
+
 #include "hercules.h"
 
 #include "opcode.h"
@@ -1003,11 +1005,6 @@ BYTE    rbyte;                          /* Result byte               */
                    is non-zero and significance indicator was off */
                 if (!trial_run && (inst[0] == 0xDF) && h > 0 && sig == 0)
                 {
-#if defined(FEATURE_ESAME)
-                    if (regs->psw.amode64)
-                        regs->GR_G(1) = addr1;
-                    else
-#endif
                     if ( regs->psw.amode )
                         regs->GR_L(1) = addr1;
                     else
@@ -1164,98 +1161,6 @@ int     carry;                          /* Carry indicator           */
 
 
 /*-------------------------------------------------------------------*/
-/* F0   SRP   - Shift and Round Decimal                         [SS] */
-/*-------------------------------------------------------------------*/
-DEF_INST(shift_and_round_decimal)
-{
-int     l1, i3;                         /* Length and rounding       */
-int     b1, b2;                         /* Base register numbers     */
-VADR    effective_addr1,
-        effective_addr2;                /* Effective addresses       */
-int     cc;                             /* Condition code            */
-BYTE    dec[MAX_DECIMAL_DIGITS];        /* Work area for operand     */
-int     count;                          /* Significant digit counter */
-int     sign;                           /* Sign of operand/result    */
-int     i, j;                           /* Array subscripts          */
-int     d;                              /* Decimal digit             */
-int     carry;                          /* Carry indicator           */
-
-    SS(inst, regs, l1, i3, b1, effective_addr1,
-                                     b2, effective_addr2);
-
-    /* Load operand into work area */
-    ARCH_DEP(load_decimal) (effective_addr1, l1, b1, regs, dec, &count, &sign);
-
-    /* Program check if rounding digit is invalid */
-    if (i3 > 9)
-    {
-        regs->dxc = DXC_DECIMAL;
-        ARCH_DEP(program_interrupt) (regs, PGM_DATA_EXCEPTION);
-    }
-
-    /* Isolate low-order six bits of shift count */
-    effective_addr2 &= 0x3F;
-
-    /* Shift count 0-31 means shift left, 32-63 means shift right */
-    if (effective_addr2 < 32)
-    {
-        /* Set condition code according to operand sign */
-        cc = (count == 0) ? 0 : (sign < 0) ? 1 : 2;
-
-        /* Set cc=3 if non-zero digits will be lost on left shift */
-        if (count > 0 && effective_addr2 > (VADR)((l1+1)*2 - 1 - count))
-            cc = 3;
-
-        /* Shift operand left */
-        for (i=0, j=effective_addr2; i < MAX_DECIMAL_DIGITS; i++, j++)
-            dec[i] = (j < MAX_DECIMAL_DIGITS) ? dec[j] : 0;
-    }
-    else
-    {
-        /* Calculate number of digits (1-32) to shift right */
-        effective_addr2 = 64 - effective_addr2;
-
-        /* Add the rounding digit to the leftmost of the digits
-           to be shifted out and propagate the carry to the left */
-        carry = (effective_addr2 > MAX_DECIMAL_DIGITS) ? 0 :
-                (dec[MAX_DECIMAL_DIGITS - effective_addr2] + i3) / 10;
-        count = 0;
-
-        /* Shift operand right */
-        for (i=MAX_DECIMAL_DIGITS-1, j=MAX_DECIMAL_DIGITS-1-effective_addr2;
-                i >= 0; i--, j--)
-        {
-            d = (j >= 0) ? dec[j] : 0;
-            d += carry;
-            carry = d / 10;
-            d %= 10;
-            dec[i] = d;
-            if (d != 0)
-                count = MAX_DECIMAL_DIGITS - i;
-        }
-
-        /* Set condition code according to operand sign */
-        cc = (count == 0) ? 0 : (sign < 0) ? 1 : 2;
-    }
-
-    /* Make sign positive if result is zero */
-    if (cc == 0)
-        sign = +1;
-
-    /* Store result into operand location */
-    ARCH_DEP(store_decimal) (effective_addr1, l1, b1, regs, dec, sign);
-
-    /* Set condition code */
-    regs->psw.cc = cc;
-
-    /* Program check if overflow and PSW program mask is set */
-    if (cc == 3 && DOMASK(&regs->psw))
-        ARCH_DEP(program_interrupt) (regs, PGM_DECIMAL_OVERFLOW_EXCEPTION);
-
-} /* end DEF_INST(shift_and_round_decimal) */
-
-
-/*-------------------------------------------------------------------*/
 /* FB   SP    - Subtract Decimal                                [SS] */
 /*-------------------------------------------------------------------*/
 DEF_INST(subtract_decimal)
@@ -1374,50 +1279,6 @@ int     sign;                           /* Sign                      */
 } /* end DEF_INST(zero_and_add) */
 
 
-#if defined(FEATURE_EXTENDED_TRANSLATION_FACILITY_2)
-/*-------------------------------------------------------------------*/
-/* EBC0 TP    - Test Decimal                                   [RSL] */
-/*-------------------------------------------------------------------*/
-DEF_INST(test_decimal)
-{
-int     l1;                             /* Length value              */
-int     b1;                             /* Base register number      */
-VADR    effective_addr1;                /* Effective address         */
-int     i;                              /* Array subscript           */
-int     cc = 0;                         /* Condition code            */
-BYTE    pack[MAX_DECIMAL_LENGTH];       /* Packed decimal work area  */
-
-    RSL(inst, regs, l1, b1, effective_addr1);
-
-    /* Fetch the packed decimal operand into the work area */
-    ARCH_DEP(vfetchc) (pack, l1, effective_addr1, b1, regs);
-
-    /* Test each byte of the operand */
-    for (i=0; ; i++)
-    {
-        /* Test the high-order digit of the byte */
-        if ((pack[i] & 0xF0) > 0x90)
-            cc = 2;
-
-        /* Exit if this is the last byte */
-        if (i == l1) break;
-
-        /* Test the low-order digit of the byte */
-        if ((pack[i] & 0x0F) > 0x09)
-            cc = 2;
-    }
-
-    /* Test the sign in the last byte */
-    if ((pack[i] & 0x0F) < 0x0A)
-        cc |= 1;
-
-    /* Return condition code */
-    regs->psw.cc = cc;
-
-} /* end DEF_INST(test_decimal) */
-#endif /*defined(FEATURE_EXTENDED_TRANSLATION_FACILITY_2)*/
-
-
 #if !defined(_GEN_ARCH)
 
 #if defined(_ARCHMODE2)
@@ -1432,3 +1293,5 @@ BYTE    pack[MAX_DECIMAL_LENGTH];       /* Packed decimal work area  */
 #endif
 
 #endif /*!defined(_GEN_ARCH)*/
+
+#endif

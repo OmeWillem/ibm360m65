@@ -58,15 +58,7 @@ static const char *build_info[] = {
 #else
     "Modes:"
 #endif
-#if defined(_370)
     " " _ARCH_370_NAME
-#endif
-#if defined(_390)
-    " " _ARCH_390_NAME
-#endif
-#if defined(_900)
-    " " _ARCH_900_NAME
-#endif
     ,
 
     "Max CPU Engines: " MSTRING(MAX_CPU_ENGINES),

@@ -373,14 +373,6 @@ DEVBLK**dvpp;
     dev->shrdwait = -1;
 #endif /*defined(OPTION_SHARED_DEVICES)*/
 
-#ifdef _FEATURE_CHANNEL_SUBSYSTEM
-    /* Indicate a CRW is pending for this device */
-#if defined(_370)
-    if (sysblk.arch_mode != ARCH_370)
-#endif /*defined(_370)*/
-        dev->crwpending = 1;
-#endif /*_FEATURE_CHANNEL_SUBSYSTEM*/
-
 #ifdef EXTERNALGUI
     if ( !dev->pGUIStat )
     {
@@ -502,16 +494,8 @@ int     i;                              /* Loop index                */
     /* Release device lock */
     release_lock(&dev->lock);
 
-#ifdef _FEATURE_CHANNEL_SUBSYSTEM
-    /* Signal machine check */
-#if defined(_370)
-    if (sysblk.arch_mode != ARCH_370)
-#endif
-        machine_check_crwpend();
-#endif /*_FEATURE_CHANNEL_SUBSYSTEM*/
-
     /*
-    if(lcss!=0 && sysblk.arch_mode==ARCH_370)
+    if(lcss!=0)
     {
         logmsg(_("HHCCF078W %d:%4.4X : Only devices on CSS 0 are usable in S/370 mode\n"),lcss,devnum);
     }
@@ -550,14 +534,6 @@ int     i;                              /* Loop index                */
 
     free(dev->typname);
 
-#ifdef _FEATURE_CHANNEL_SUBSYSTEM
-    /* Indicate a CRW is pending for this device */
-#if defined(_370)
-    if (sysblk.arch_mode != ARCH_370)
-#endif /*defined(_370)*/
-        dev->crwpending = 1;
-#endif /*_FEATURE_CHANNEL_SUBSYSTEM*/
-
     // detach all devices in group
     if(dev->group)
     {
@@ -587,14 +563,6 @@ int     i;                              /* Loop index                */
 
     /* Zeroize the PMCW */
     memset (&dev->pmcw, 0, sizeof(PMCW));
-
-#ifdef _FEATURE_CHANNEL_SUBSYSTEM
-    /* Signal machine check */
-#if defined(_370)
-    if (sysblk.arch_mode != ARCH_370)
-#endif
-        machine_check_crwpend();
-#endif /*_FEATURE_CHANNEL_SUBSYSTEM*/
 
     return 0;
 } /* end function detach_device */
@@ -692,24 +660,8 @@ DEVBLK *dev;                            /* -> Device block           */
     DelDevnumFastLookup(lcss,newdevn);
 #endif
 
-#ifdef _FEATURE_CHANNEL_SUBSYSTEM
-    /* Indicate a CRW is pending for this device */
-#if defined(_370)
-    if (sysblk.arch_mode != ARCH_370)
-#endif /*defined(_370)*/
-        dev->crwpending = 1;
-#endif /*_FEATURE_CHANNEL_SUBSYSTEM*/
-
     /* Release device lock */
     release_lock(&dev->lock);
-
-#ifdef _FEATURE_CHANNEL_SUBSYSTEM
-    /* Signal machine check */
-#if defined(_370)
-    if (sysblk.arch_mode != ARCH_370)
-#endif
-        machine_check_crwpend();
-#endif /*_FEATURE_CHANNEL_SUBSYSTEM*/
 
 //  logmsg (_("HHCCF050I Device %4.4X defined as %4.4X\n"),
 //          olddevn, newdevn);

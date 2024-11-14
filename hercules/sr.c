@@ -165,13 +165,7 @@ BYTE     psw[16];
 
     SR_WRITE_VALUE (file,SR_SYS_SERVPARM,sysblk.servparm,sizeof(sysblk.servparm));
     SR_WRITE_VALUE (file,SR_SYS_SIGINTREQ,sysblk.sigintreq,1);
-    SR_WRITE_STRING(file,SR_SYS_LOADPARM,str_loadparm());
     SR_WRITE_VALUE (file,SR_SYS_INTS_STATE,sysblk.ints_state,sizeof(sysblk.ints_state));
-    SR_WRITE_HDR(file, SR_DELIMITER, 0);
-
-    /* Save service console state */
-    SR_WRITE_HDR(file, SR_SYS_SERVC, 0);
-    servc_hsuspend(file);
     SR_WRITE_HDR(file, SR_DELIMITER, 0);
 
     /* Save clock state */
@@ -186,7 +180,6 @@ BYTE     psw[16];
         regs = sysblk.regs[i];
         SR_WRITE_VALUE(file, SR_CPU, i, sizeof(i));
         SR_WRITE_VALUE(file, SR_CPU_ARCHMODE, regs->arch_mode,sizeof(regs->arch_mode));
-        SR_WRITE_VALUE(file, SR_CPU_PX, regs->PX_G,sizeof(regs->PX_G));
         copy_psw (regs, psw);
         SR_WRITE_BUF(file, SR_CPU_PSW, psw, 16);
         for (j = 0; j < 16; j++)
@@ -397,47 +390,17 @@ S64      dreg;
         case SR_SYS_ARCH_NAME:
             SR_READ_STRING(file, buf, len);
             i = -1;
-#if defined (_370)
             if (strcasecmp (buf, arch_name[ARCH_370]) == 0)
             {
                 i = ARCH_370;
                 sysblk.maxcpu = sysblk.numcpu;
             }
-#endif
-#if defined (_390)
-            if (strcasecmp (buf, arch_name[ARCH_390]) == 0)
-            {
-                i = ARCH_390;
-#if defined(_FEATURE_CPU_RECONFIG)
-                sysblk.maxcpu = MAX_CPU_ENGINES;
-#else
-                sysblk.maxcpu = sysblk.numcpu;
-#endif
-            }
-#endif
-#if defined (_900)
-            if (0
-                || strcasecmp (buf, arch_name[ARCH_900]) == 0
-                || strcasecmp (buf, "ESAME") == 0
-            )
-            {
-                i = ARCH_900;
-#if defined(_FEATURE_CPU_RECONFIG)
-                sysblk.maxcpu = MAX_CPU_ENGINES;
-#else
-                sysblk.maxcpu = sysblk.numcpu;
-#endif
-            }
-#endif
             if (i < 0)
             {
                 logmsg( _("HHCSR105E Archmode %s not supported\n"), buf);
                 goto sr_error_exit;
             }
             sysblk.arch_mode = i;
-#if defined (_900)
-            sysblk.arch_z900 = sysblk.arch_mode != ARCH_390;
-#endif
             sysblk.pcpu = 0;
             sysblk.dummyregs.arch_mode = sysblk.arch_mode;
 #if defined(OPTION_FISHIO)
@@ -601,15 +564,10 @@ S64      dreg;
             sysblk.sigintreq = rc;
             break;
 
-        case SR_SYS_LOADPARM:
-            SR_READ_STRING(file, buf, len);
-            set_loadparm ((char *)buf);
-            break;
-
-        case SR_SYS_SERVC:
-            rc = servc_hresume(file);
-            if (rc < 0) goto sr_error_exit;
-            break;
+//        case SR_SYS_LOADPARM:
+//            SR_READ_STRING(file, buf, len);
+//            set_loadparm ((char *)buf);
+//            break;
 
         case SR_SYS_CLOCK:
             rc = clock_hresume(file);
@@ -641,11 +599,6 @@ S64      dreg;
             regs = sysblk.regs[i];
             break;
 
-        case SR_CPU_PX:
-            if (regs == NULL) goto sr_null_regs_exit;
-            SR_READ_VALUE(file, len, &regs->px, sizeof(regs->px));
-            break;
-
         case SR_CPU_PSW:
             if (regs == NULL) goto sr_null_regs_exit;
             if (len != 8 && len != 16)
@@ -656,26 +609,8 @@ S64      dreg;
             }
             memset(buf, 0, 16);
             SR_READ_BUF(file, buf, len);
-            switch (regs->arch_mode) {
-#if defined (_370)
-            case ARCH_370:
                 len = 8;
                 rc = s370_load_psw(regs, (BYTE *)&buf);
-                break;
-#endif
-#if defined (_390)
-            case ARCH_390:
-                len = 8;
-                rc = s390_load_psw(regs, (BYTE *)&buf);
-                break;
-#endif
-#if defined (_900)
-            case ARCH_900:
-                len = 16;
-                rc = z900_load_psw(regs, (BYTE *)&buf);
-                break;
-#endif
-            } /* switch (regs->arch_mode) */
             if (rc != 0 && memcmp(buf, zeros, len))
             {
                 logmsg( _("HHCSR117E CPU%4.4d error loading psw (%d)\n"),
@@ -1278,26 +1213,8 @@ S64      dreg;
         if (dev->suspended && (dev->pmcw.flag5 & PMCW5_V))
         {
             dev->resumesuspended=1;
-            switch (sysblk.arch_mode) {
-#if defined(_370)
-            case ARCH_370:
                 rc = create_thread (&dev->tid, DETACHED,
                                     s370_execute_ccw_chain, dev, "device thread");
-                break;
-#endif
-#if defined(_390)
-            case ARCH_390:
-                rc = create_thread (&dev->tid, DETACHED,
-                                    s390_execute_ccw_chain, dev, "device thread");
-                break;
-#endif
-#if defined(_900)
-            case ARCH_900:
-                rc = create_thread (&dev->tid, DETACHED,
-                                    z900_execute_ccw_chain, dev, "device thread");
-                break;
-#endif
-            } /* switch (sysblk.arch_mode) */
             if (rc != 0)
             {
                 logmsg( _("HHCSR133E %4.4X Unable to resume suspended device: %s\n"),
@@ -1306,12 +1223,6 @@ S64      dreg;
             }
         } /* If suspended device */
     } /* For each device */
-
-    /* Indicate crw pending for any new devices */
-#if defined(_370)
-    if (sysblk.arch_mode != ARCH_370)
-#endif
-    machine_check_crwpend();
 
     /* Start the CPUs */
     OBTAIN_INTLOCK(NULL);

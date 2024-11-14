@@ -21,6 +21,9 @@
 #ifndef _HERCULES_H_
 #define _HERCULES_H_
 
+#define VERSION "3.07"
+#define CUSTOM_BUILD_STRING "360 model 65 emulator"
+
 #include "hercules.h"
 
 #ifndef _VERSION_C_

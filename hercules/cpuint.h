@@ -197,35 +197,14 @@
  */
 
 #undef IC_CR0_TO_INTMASK
-#if defined(FEATURE_ECPSVM)
-
-#define IC_CR0_TO_INTMASK(_regs) \
-(  ( (_regs)->CR(0) & IC_EXT_SCM_CR0) \
-  | (((_regs)->CR(0) & BIT(IC_ITIMER)) ? BIT(IC_ECPSVTIMER) : 0) )
-#else
 
 #define IC_CR0_TO_INTMASK(_regs) \
  ( (_regs)->CR(0) & IC_EXT_SCM_CR0)
 
-#endif /* FEATURE_ECPSVM */
-
 #define IC_MASK(_regs) \
  ( ( IC_INITIAL_MASK ) \
- | ( ECMODE(&(_regs)->psw) \
-     ? ( ((_regs)->psw.sysmask & PSW_IOMASK) ? BIT(IC_IO) : 0 ) \
-     : ( ((_regs)->psw.sysmask & 0xFE) ? BIT(IC_IO) : 0 ) \
-   ) \
+ |  ( ((_regs)->psw.sysmask & 0xFE) ? BIT(IC_IO) : 0 ) \
  | ( MACHMASK(&(_regs)->psw) ? ((_regs)->CR(14) & IC_MCKPENDING) : 0 ) \
- | ( PER_MODE((_regs)) ? ((_regs)->ints_mask & IC_PER_MASK) : 0 ) \
- | ( ((_regs)->psw.sysmask & PSW_EXTMASK) ? (IC_CR0_TO_INTMASK((_regs))) : 0 ) \
- | ( WAITSTATE(&(_regs)->psw) ? BIT(IC_PSW_WAIT) : 0 ) \
- )
-
-#define IC_ECMODE_MASK(_regs) \
- ( ( IC_INITIAL_MASK ) \
- | ( ((_regs)->psw.sysmask & PSW_IOMASK) ? BIT(IC_IO) : 0 ) \
- | ( MACHMASK(&(_regs)->psw) ? ((_regs)->CR(14) & IC_MCKPENDING) : 0 ) \
- | ( PER_MODE((_regs)) ? ((_regs)->ints_mask & IC_PER_MASK) : 0 ) \
  | ( ((_regs)->psw.sysmask & PSW_EXTMASK) ? (IC_CR0_TO_INTMASK((_regs))) : 0 ) \
  | ( WAITSTATE(&(_regs)->psw) ? BIT(IC_PSW_WAIT) : 0 ) \
  )
@@ -234,37 +213,20 @@
  ( ( IC_INITIAL_MASK ) \
  | ( ((_regs)->psw.sysmask & 0xFE) ? BIT(IC_IO) : 0 ) \
  | ( MACHMASK(&(_regs)->psw) ? ((_regs)->CR(14) & IC_MCKPENDING) : 0 ) \
- | ( PER_MODE((_regs)) ? ((_regs)->ints_mask & IC_PER_MASK) : 0 ) \
  | ( ((_regs)->psw.sysmask & PSW_EXTMASK) ? (IC_CR0_TO_INTMASK((_regs))) : 0 ) \
  | ( WAITSTATE(&(_regs)->psw) ? BIT(IC_PSW_WAIT) : 0 ) \
  )
 
-/* Note: if PER mode, invalidate the AIA to force instfetch to be called */
-#define SET_IC_ECMODE_MASK(_regs) \
- do { \
-   (_regs)->ints_mask = IC_ECMODE_MASK((_regs)); \
-   if ( ( (_regs)->permode = PER_MODE((_regs)) ) ) \
-    INVALIDATE_AIA((_regs)); \
- } while (0)
-
 #define SET_IC_BCMODE_MASK(_regs) \
  do { \
    (_regs)->ints_mask = IC_BCMODE_MASK((_regs)); \
-   if ( ( (_regs)->permode = PER_MODE((_regs)) ) ) \
-    INVALIDATE_AIA((_regs)); \
  } while (0)
 
 #undef SET_IC_MASK
-#ifdef FEATURE_BCMODE
  #define SET_IC_MASK(_regs) \
   do { \
     (_regs)->ints_mask = IC_MASK((_regs)); \
-    if ( ( (_regs)->permode = PER_MODE((_regs)) ) ) \
-     INVALIDATE_AIA((_regs)); \
   } while (0)
-#else
- #define SET_IC_MASK(_regs) SET_IC_ECMODE_MASK(_regs)
-#endif
 
 /*
  * State bits indicate what interrupts are possibly pending

@@ -1,0 +1,955 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="All-All|Itanium">
+      <Configuration>All-All</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="All-All|Win32">
+      <Configuration>All-All</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="All-All|x64">
+      <Configuration>All-All</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-All|Itanium">
+      <Configuration>Debug-All</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-All|Win32">
+      <Configuration>Debug-All</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-All|x64">
+      <Configuration>Debug-All</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Itanium">
+      <Configuration>Debug</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-All|Itanium">
+      <Configuration>Release-All</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-All|Win32">
+      <Configuration>Release-All</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-All|x64">
+      <Configuration>Release-All</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Itanium">
+      <Configuration>Release</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A0F495FF-9C35-4DFB-A51A-0427D8420779}</ProjectGuid>
+    <RootNamespace>Hercules</RootNamespace>
+    <Keyword>MakeFileProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All-All|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All-All|Itanium'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|Itanium'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|Itanium'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All-All|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='All-All|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='All-All|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='All-All|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>16.0.30712.155</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>./msvc.debug.dllmod.bin\</OutDir>
+    <IntDir>./msvc.debug.dllmod.obj\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat DEBUG makefile.msvc 32</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat DEBUG makefile.msvc 32 -a</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat DEBUG makefile.msvc 32 clean</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;_MSVC_;CPU=i386;HOST_ARCH=i386;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>./msvc.debug.AMD64.bin\</OutDir>
+    <IntDir>./msvc.debug.AMD64.bin\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat DEBUG-X64 makefile.msvc 32</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat DEBUG-X64 makefile.msvc 32 -a</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat DEBUG-X64 makefile.msvc 32 clean</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_MSVC_;CPU=AMD64;HOST_ARCH=AMD64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">
+    <OutDir>./msvc.debug.IA64.bin\</OutDir>
+    <IntDir>./msvc.debug.IA64.bin\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat DEBUG-IA64 makefile.msvc 32</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat DEBUG-IA64 makefile.msvc 32 -a</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat DEBUG-IA64 makefile.msvc 32 clean</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_MSVC_;CPU=IA64;HOST_ARCH=IA64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>./msvc.dllmod.bin\</OutDir>
+    <IntDir>./msvc.dllmod.obj\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat RETAIL makefile.msvc 32</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat RETAIL makefile.msvc 32 -a</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat RETAIL makefile.msvc 32 clean</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;_MSVC_;CPU=i386;HOST_ARCH=i386;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>./msvc.AMD64.bin\</OutDir>
+    <IntDir>./msvc.AMD64.bin\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat RETAIL-X64 makefile.msvc 32</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat RETAIL-X64 makefile.msvc 32 -a</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat RETAIL-X64 makefile.msvc 32 clean</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;NDEBUG;_MSVC_;CPU=AMD64;HOST_ARCH=AMD64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">
+    <OutDir>./msvc.IA64.bin\</OutDir>
+    <IntDir>./msvc.IA64.bin\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat RETAIL-IA64 makefile.msvc 32</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat RETAIL-IA64 makefile.msvc 32 -a</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat RETAIL-IA64 makefile.msvc 32 clean</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;NDEBUG;_MSVC_;CPU=IA64;HOST_ARCH=IA64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;_MSVC_;CPU=i386;HOST_ARCH=i386;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|x64'">
+    <NMakeBuildCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_MSVC_;CPU=AMD64;HOST_ARCH=AMD64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|Itanium'">
+    <NMakeBuildCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat DEBUG-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_MSVC_;CPU=IA64;HOST_ARCH=IA64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;_MSVC_;CPU=i386;HOST_ARCH=i386;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|x64'">
+    <NMakeBuildCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;NDEBUG;_MSVC_;CPU=AMD64;HOST_ARCH=AMD64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|Itanium'">
+    <NMakeBuildCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat RETAIL-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;NDEBUG;_MSVC_;CPU=IA64;HOST_ARCH=IA64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All-All|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>makefile.bat ALL-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat ALL-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat ALL-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_MSVC_;CPU=i386;HOST_ARCH=i386;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All-All|x64'">
+    <NMakeBuildCommandLine>makefile.bat ALL-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat ALL-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat ALL-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;_MSVC_;CPU=AMD64;HOST_ARCH=AMD64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All-All|Itanium'">
+    <NMakeBuildCommandLine>makefile.bat ALL-ALL makefile.msvc 32 "$(SolutionDir)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>makefile.bat ALL-ALL makefile.msvc 32 -a "$(SolutionDir)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>makefile.bat ALL-ALL makefile.msvc 32 clean "$(SolutionDir)"</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)</NMakeOutput>
+    <NMakePreprocessorDefinitions>WIN32;_WIN64;_MSVC_;CPU=IA64;HOST_ARCH=IA64;OPTION_DYNAMIC_LOAD;HDL_BUILD_SHARED;OPTION_FTHREADS;EXTERNALGUI;FEATURE_CHANNEL_SUBSYSTEM;FEATURE_CANCEL_IO_FACILITY;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-All|Itanium'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-All|Itanium'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='All-All|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\gen\ald;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='All-All|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='All-All|Itanium'">
+    <BuildLog>
+      <Path>$(SolutionDir)$(Configuration) BuildLog.htm</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>_MSVC_;HAVE_LIBZ;HAVE_ZLIB_H;COMPARE_M65</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\ibm360\zlib;C:\ibm360\hercules\hercules-3.07;c:\ibm360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\ibm360\zlib\projects\visualc6\Win32_LIB_Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalDependencies>zlib.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\ibm360\hercules\hercules-3.07;c:\ibm360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MSVC_;NO_COMPARE_M65</PreprocessorDefinitions>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>_MSVC_;COMPARE_M65</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\gen\ald;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\ibm360\zlib\projects\visualc6\Win32_LIB_Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">
+    <ClCompile>
+      <LanguageStandard>Default</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gen\ald\360_ap.cpp" />
+    <ClCompile Include="..\gen\ald\360_ar.cpp" />
+    <ClCompile Include="..\gen\ald\360_as.cpp" />
+    <ClCompile Include="..\gen\ald\360_bf.cpp" />
+    <ClCompile Include="..\gen\ald\360_ca.cpp" />
+    <ClCompile Include="..\gen\ald\360_ce.cpp" />
+    <ClCompile Include="..\gen\ald\360_cs.cpp" />
+    <ClCompile Include="..\gen\ald\360_ct.cpp" />
+    <ClCompile Include="..\gen\ald\360_cw.cpp" />
+    <ClCompile Include="..\gen\ald\360_dn.cpp" />
+    <ClCompile Include="..\gen\ald\360_dp.cpp" />
+    <ClCompile Include="..\gen\ald\360_dr.cpp" />
+    <ClCompile Include="..\gen\ald\360_ds.cpp" />
+    <ClCompile Include="..\gen\ald\360_ee.cpp" />
+    <ClCompile Include="..\gen\ald\360_ef.cpp" />
+    <ClCompile Include="..\gen\ald\360_fe.cpp" />
+    <ClCompile Include="..\gen\ald\360_fx.cpp" />
+    <ClCompile Include="..\gen\ald\360_ja.cpp" />
+    <ClCompile Include="..\gen\ald\360_kc.cpp" />
+    <ClCompile Include="..\gen\ald\360_kd.cpp" />
+    <ClCompile Include="..\gen\ald\360_kk.cpp" />
+    <ClCompile Include="..\gen\ald\360_km.cpp" />
+    <ClCompile Include="..\gen\ald\360_kn.cpp" />
+    <ClCompile Include="..\gen\ald\360_ks.cpp" />
+    <ClCompile Include="..\gen\ald\360_kt.cpp" />
+    <ClCompile Include="..\gen\ald\360_ku.cpp" />
+    <ClCompile Include="..\gen\ald\360_kw.cpp" />
+    <ClCompile Include="..\gen\ald\360_kx.cpp" />
+    <ClCompile Include="..\gen\ald\360_kz.cpp" />
+    <ClCompile Include="..\gen\ald\360_ls.cpp" />
+    <ClCompile Include="..\gen\ald\360_ma.cpp" />
+    <ClCompile Include="..\gen\ald\360_mb.cpp" />
+    <ClCompile Include="..\gen\ald\360_mc.cpp" />
+    <ClCompile Include="..\gen\ald\360_pk.cpp" />
+    <ClCompile Include="..\gen\ald\360_px.cpp" />
+    <ClCompile Include="..\gen\ald\360_ra.cpp" />
+    <ClCompile Include="..\gen\ald\360_rd.cpp" />
+    <ClCompile Include="..\gen\ald\360_re.cpp" />
+    <ClCompile Include="..\gen\ald\360_rf.cpp" />
+    <ClCompile Include="..\gen\ald\360_rg.cpp" />
+    <ClCompile Include="..\gen\ald\360_rq.cpp" />
+    <ClCompile Include="..\gen\ald\360_rr.cpp" />
+    <ClCompile Include="..\gen\ald\360_rs.cpp" />
+    <ClCompile Include="..\gen\ald\360_rw.cpp" />
+    <ClCompile Include="..\gen\ald\360_rx.cpp" />
+    <ClCompile Include="..\gen\ald\360_ry.cpp" />
+    <ClCompile Include="..\gen\ald\360_wa.cpp" />
+    <ClCompile Include="..\gen\ald\360_za.cpp" />
+    <ClCompile Include="360_ros.cpp" />
+    <ClCompile Include="awstape.c" />
+    <ClCompile Include="bldcfg.c" />
+    <ClCompile Include="bootstrap.c" />
+    <ClCompile Include="build_pch.c" />
+    <ClCompile Include="cache.c" />
+    <ClCompile Include="cardpch.c" />
+    <ClCompile Include="cardrdr.c" />
+    <ClCompile Include="cckddasd.c" />
+    <ClCompile Include="cckdutil.c" />
+    <ClCompile Include="cgibin.c" />
+    <ClCompile Include="channel.c" />
+    <ClCompile Include="ckddasd.c" />
+    <ClCompile Include="clock.c" />
+    <ClCompile Include="cmdtab.c" />
+    <ClCompile Include="codepage.c" />
+    <ClCompile Include="commadpt.c" />
+    <ClCompile Include="con1052c.c" />
+    <ClCompile Include="config.c" />
+    <ClCompile Include="console.c" />
+    <ClCompile Include="control.c" />
+    <ClCompile Include="cpu.c" />
+    <ClCompile Include="crypto\aes.c" />
+    <ClCompile Include="crypto\des.c" />
+    <ClCompile Include="crypto\dyncrypt.c" />
+    <ClCompile Include="crypto\sha1.c" />
+    <ClCompile Include="crypto\sha256.c" />
+    <ClCompile Include="ctcadpt.c" />
+    <ClCompile Include="ctc_ctci.c" />
+    <ClCompile Include="ctc_lcs.c" />
+    <ClCompile Include="dasdtab.c" />
+    <ClCompile Include="dasdutil.c" />
+    <ClCompile Include="dat.c" />
+    <ClCompile Include="decimal.c" />
+    <ClCompile Include="decNumber\decContext.c" />
+    <ClCompile Include="decNumber\decimal128.c" />
+    <ClCompile Include="decNumber\decimal32.c" />
+    <ClCompile Include="decNumber\decimal64.c" />
+    <ClCompile Include="decNumber\decNumber.c" />
+    <ClCompile Include="decNumber\decPacked.c" />
+    <ClCompile Include="diagnose.c" />
+    <ClCompile Include="dyngui.c" />
+    <ClCompile Include="dyninst.c" />
+    <ClCompile Include="external.c" />
+    <ClCompile Include="faketape.c" />
+    <ClCompile Include="fbadasd.c" />
+    <ClCompile Include="fillfnam.c" />
+    <ClCompile Include="fishhang.c" />
+    <ClCompile Include="float.c" />
+    <ClCompile Include="fthreads.c" />
+    <ClCompile Include="general1.c" />
+    <ClCompile Include="general2.c" />
+    <ClCompile Include="getopt.c" />
+    <ClCompile Include="hao.c" />
+    <ClCompile Include="hconsole.c" />
+    <ClCompile Include="hdl.c" />
+    <ClCompile Include="hdlmain.c" />
+    <ClCompile Include="hdteq.c" />
+    <ClCompile Include="hetlib.c" />
+    <ClCompile Include="hettape.c" />
+    <ClCompile Include="history.c" />
+    <ClCompile Include="hostinfo.c" />
+    <ClCompile Include="hsccmd.c" />
+    <ClCompile Include="hscmisc.c" />
+    <ClCompile Include="hscutl.c" />
+    <ClCompile Include="hscutl2.c" />
+    <ClCompile Include="hsocket.c" />
+    <ClCompile Include="hsys.c" />
+    <ClCompile Include="httpserv.c" />
+    <ClCompile Include="impl.c" />
+    <ClCompile Include="io.c" />
+    <ClCompile Include="ipl.c" />
+    <ClCompile Include="logger.c" />
+    <ClCompile Include="logmsg.c" />
+    <ClCompile Include="losc.c" />
+    <ClCompile Include="ltdl.c" />
+    <ClCompile Include="machchk.c" />
+    <ClCompile Include="memrchr.c" />
+    <ClCompile Include="omatape.c" />
+    <ClCompile Include="opcode.c" />
+    <ClCompile Include="panel.c" />
+    <ClCompile Include="parser.c" />
+    <ClCompile Include="plo.c" />
+    <ClCompile Include="printer.c" />
+    <ClCompile Include="pttrace.c" />
+    <ClCompile Include="qeth.c" />
+    <ClCompile Include="scedasd.c" />
+    <ClCompile Include="scsitape.c" />
+    <ClCompile Include="shared.c" />
+    <ClCompile Include="sllib.c" />
+    <ClCompile Include="sockdev.c" />
+    <ClCompile Include="sr.c" />
+    <ClCompile Include="strsignal.c" />
+    <ClCompile Include="tapeccws.c" />
+    <ClCompile Include="tapedev.c" />
+    <ClCompile Include="timer.c" />
+    <ClCompile Include="tuntap.c" />
+    <ClCompile Include="version.c" />
+    <ClCompile Include="vstore.c" />
+    <ClCompile Include="w32chan.c" />
+    <ClCompile Include="w32ctca.c" />
+    <ClCompile Include="w32stape.c" />
+    <ClCompile Include="w32util.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\ald\360_ap.ald" />
+    <None Include="..\src\ald\360_ar.ald" />
+    <None Include="..\src\ald\360_as.ald" />
+    <None Include="..\src\ald\360_bf.ald" />
+    <None Include="..\src\ald\360_ca.ald" />
+    <None Include="..\src\ald\360_ce.ald" />
+    <None Include="..\src\ald\360_cs.ald" />
+    <None Include="..\src\ald\360_ct.ald" />
+    <None Include="..\src\ald\360_cw.ald" />
+    <None Include="..\src\ald\360_dn.ald" />
+    <None Include="..\src\ald\360_dp.ald" />
+    <None Include="..\src\ald\360_dr.ald" />
+    <None Include="..\src\ald\360_ds.ald" />
+    <None Include="..\src\ald\360_ee.ald" />
+    <None Include="..\src\ald\360_ef.ald" />
+    <None Include="..\src\ald\360_fe.ald" />
+    <None Include="..\src\ald\360_fx.ald" />
+    <None Include="..\src\ald\360_ja.ald" />
+    <None Include="..\src\ald\360_kc.ald" />
+    <None Include="..\src\ald\360_kd.ald" />
+    <None Include="..\src\ald\360_kk.ald" />
+    <None Include="..\src\ald\360_km.ald" />
+    <None Include="..\src\ald\360_kn.ald" />
+    <None Include="..\src\ald\360_ks.ald" />
+    <None Include="..\src\ald\360_kt.ald" />
+    <None Include="..\src\ald\360_ku.ald" />
+    <None Include="..\src\ald\360_kw.ald" />
+    <None Include="..\src\ald\360_kx.ald" />
+    <None Include="..\src\ald\360_kz.ald" />
+    <None Include="..\src\ald\360_ls.ald" />
+    <None Include="..\src\ald\360_ma.ald" />
+    <None Include="..\src\ald\360_mb.ald" />
+    <None Include="..\src\ald\360_mc.ald" />
+    <None Include="..\src\ald\360_pk.ald" />
+    <None Include="..\src\ald\360_px.ald" />
+    <None Include="..\src\ald\360_ra.ald" />
+    <None Include="..\src\ald\360_rd.ald" />
+    <None Include="..\src\ald\360_re.ald" />
+    <None Include="..\src\ald\360_rf.ald" />
+    <None Include="..\src\ald\360_rg.ald" />
+    <None Include="..\src\ald\360_rq.ald" />
+    <None Include="..\src\ald\360_rr.ald" />
+    <None Include="..\src\ald\360_rs.ald" />
+    <None Include="..\src\ald\360_rw.ald" />
+    <None Include="..\src\ald\360_rx.ald" />
+    <None Include="..\src\ald\360_ry.ald" />
+    <None Include="..\src\ald\360_wa.ald" />
+    <None Include="..\src\ald\360_za.ald" />
+    <None Include="all-all.jobs" />
+    <None Include="autoconf\hercules.m4" />
+    <None Include="autogen.sh" />
+    <None Include="CHANGES" />
+    <None Include="configure.ac" />
+    <None Include="crypto\Makefile.am" />
+    <None Include="debug-all.jobs" />
+    <None Include="decNumber\readme.txt" />
+    <None Include="dynmake.bat" />
+    <None Include="herclogo.txt" />
+    <None Include="hercules.cnf" />
+    <None Include="hercules.ico" />
+    <None Include="html\cckddasd.html" />
+    <None Include="html\fishgui.html" />
+    <None Include="html\hercconf.html" />
+    <None Include="html\hercfaq.html" />
+    <None Include="html\hercinst.html" />
+    <None Include="html\herclic.html" />
+    <None Include="html\hercload.html" />
+    <None Include="html\hercmsca.html" />
+    <None Include="html\hercmscf.html" />
+    <None Include="html\hercmscp.html" />
+    <None Include="html\hercmsct.html" />
+    <None Include="html\hercmsda.html" />
+    <None Include="html\hercmsdc.html" />
+    <None Include="html\hercmsdg.html" />
+    <None Include="html\hercmsdi.html" />
+    <None Include="html\hercmsdl.html" />
+    <None Include="html\hercmsds.html" />
+    <None Include="html\hercmsdt.html" />
+    <None Include="html\hercmsdu.html" />
+    <None Include="html\hercmsg.html" />
+    <None Include="html\hercmshd.html" />
+    <None Include="html\hercmshe.html" />
+    <None Include="html\hercmshg.html" />
+    <None Include="html\hercmshm.html" />
+    <None Include="html\hercmsht.html" />
+    <None Include="html\hercmshu.html" />
+    <None Include="html\hercmsif.html" />
+    <None Include="html\hercmsin.html" />
+    <None Include="html\hercmslc.html" />
+    <None Include="html\hercmslg.html" />
+    <None Include="html\hercmspn.html" />
+    <None Include="html\hercmspr.html" />
+    <None Include="html\hercmspu.html" />
+    <None Include="html\hercmsrd.html" />
+    <None Include="html\hercmssd.html" />
+    <None Include="html\hercmsta.html" />
+    <None Include="html\hercmstc.html" />
+    <None Include="html\hercmste.html" />
+    <None Include="html\hercmstm.html" />
+    <None Include="html\hercmsts.html" />
+    <None Include="html\hercmstt.html" />
+    <None Include="html\hercmstu.html" />
+    <None Include="html\hercmsvm.html" />
+    <None Include="html\hercnew.html" />
+    <None Include="html\hercrdr.html" />
+    <None Include="html\hercrnot.html" />
+    <None Include="html\hercsupp.html" />
+    <None Include="html\herctcp.html" />
+    <None Include="html\hercules.css" />
+    <None Include="html\hercules.html" />
+    <None Include="html\index.html" />
+    <None Include="html\Makefile.am" />
+    <None Include="html\shared.html" />
+    <None Include="html\tasks.html" />
+    <None Include="makefile-dllmod.msvc" />
+    <None Include="Makefile.am" />
+    <None Include="makefile.bat" />
+    <None Include="makefile.generic" />
+    <None Include="makefile.msvc" />
+    <None Include="makefile.w32" />
+    <None Include="msvc.makefile.includes\BZIP2_DIR.msvc" />
+    <None Include="msvc.makefile.includes\BZIP2_FLAGS.msvc" />
+    <None Include="msvc.makefile.includes\BZIP2_RULES.msvc" />
+    <None Include="msvc.makefile.includes\CONFIG.msvc" />
+    <None Include="msvc.makefile.includes\DEBUG_RETAIL.msvc" />
+    <None Include="msvc.makefile.includes\HERC_FLAGS.msvc" />
+    <None Include="msvc.makefile.includes\MODULES.msvc" />
+    <None Include="msvc.makefile.includes\MOD_RULES1.msvc" />
+    <None Include="msvc.makefile.includes\MOD_RULES2.msvc" />
+    <None Include="msvc.makefile.includes\OBJ_CODE.msvc" />
+    <None Include="msvc.makefile.includes\OUTDIR_RULES.msvc" />
+    <None Include="msvc.makefile.includes\OUTPUT_DIRS.msvc" />
+    <None Include="msvc.makefile.includes\PCRE_DIR.msvc" />
+    <None Include="msvc.makefile.includes\PCRE_FLAGS.msvc" />
+    <None Include="msvc.makefile.includes\PCRE_RULES.msvc" />
+    <None Include="msvc.makefile.includes\PRIM_RULES.msvc" />
+    <None Include="msvc.makefile.includes\VERSION.msvc" />
+    <None Include="msvc.makefile.includes\ZLIB_DIR.msvc" />
+    <None Include="msvc.makefile.includes\ZLIB_FLAGS.msvc" />
+    <None Include="msvc.makefile.includes\ZLIB_RULES.msvc" />
+    <None Include="README.COMMADPT" />
+    <None Include="README.CVS" />
+    <None Include="README.DYNMOD" />
+    <None Include="README.ECPSVM" />
+    <None Include="README.HAO" />
+    <None Include="README.HDL" />
+    <None Include="README.HERCLOGO" />
+    <None Include="README.ISSUES" />
+    <None Include="README.MINGW" />
+    <None Include="README.MSVC" />
+    <None Include="README.NETWORKING" />
+    <None Include="README.OSX" />
+    <None Include="README.SETUID" />
+    <None Include="README.SUN" />
+    <None Include="README.TAPE" />
+    <None Include="README.WIN64" />
+    <None Include="RELEASE.NOTES" />
+    <None Include="retail-all.jobs" />
+    <None Include="tests\a.core" />
+    <None Include="tests\alsi.txt" />
+    <None Include="tests\axtr.txt" />
+    <None Include="tests\b.core" />
+    <None Include="tests\bctr.core" />
+    <None Include="tests\brc.txt" />
+    <None Include="tests\cdfr.txt" />
+    <None Include="tests\cdgr.txt" />
+    <None Include="tests\cgdr.txt" />
+    <None Include="tests\cgdtr.txt" />
+    <None Include="tests\cger.txt" />
+    <None Include="tests\cgfrl.txt" />
+    <None Include="tests\cgxr.txt" />
+    <None Include="tests\cgxtr.txt" />
+    <None Include="tests\cpsdr.txt" />
+    <None Include="tests\cpu0off.core" />
+    <None Include="tests\csst.txt" />
+    <None Include="tests\cxgbr.txt" />
+    <None Include="tests\cxgtr.txt" />
+    <None Include="tests\dxtr.txt" />
+    <None Include="tests\epsw.txt" />
+    <None Include="tests\exrl.txt" />
+    <None Include="tests\fiebr.txt" />
+    <None Include="tests\fixtr.txt" />
+    <None Include="tests\iedtr.txt" />
+    <None Include="tests\kimd0.txt" />
+    <None Include="tests\kimd1.txt" />
+    <None Include="tests\kimd2.txt" />
+    <None Include="tests\kimd3.txt" />
+    <None Include="tests\klmd0.txt" />
+    <None Include="tests\klmd1.txt" />
+    <None Include="tests\klmd2.txt" />
+    <None Include="tests\klmd3.txt" />
+    <None Include="tests\km0.txt" />
+    <None Include="tests\km1.txt" />
+    <None Include="tests\km18.txt" />
+    <None Include="tests\km19.txt" />
+    <None Include="tests\km2.txt" />
+    <None Include="tests\km20.txt" />
+    <None Include="tests\km3.txt" />
+    <None Include="tests\kmac0.txt" />
+    <None Include="tests\kmac1.txt" />
+    <None Include="tests\kmac2.txt" />
+    <None Include="tests\kmac3.txt" />
+    <None Include="tests\kmc0.txt" />
+    <None Include="tests\kmc1.txt" />
+    <None Include="tests\kmc18.txt" />
+    <None Include="tests\kmc19.txt" />
+    <None Include="tests\kmc2.txt" />
+    <None Include="tests\kmc20.txt" />
+    <None Include="tests\kmc3.txt" />
+    <None Include="tests\kmc67.txt" />
+    <None Include="tests\l.core" />
+    <None Include="tests\la.core" />
+    <None Include="tests\la2.core" />
+    <None Include="tests\ldetr.txt" />
+    <None Include="tests\ldxtr.txt" />
+    <None Include="tests\ledtr.txt" />
+    <None Include="tests\lfpc.txt" />
+    <None Include="tests\llhrl.txt" />
+    <None Include="tests\loop.txt" />
+    <None Include="tests\lxdtr.txt" />
+    <None Include="tests\maer.txt" />
+    <None Include="tests\Makefile.am" />
+    <None Include="tests\mvc.core" />
+    <None Include="tests\mvcos.txt" />
+    <None Include="tests\mxtr.txt" />
+    <None Include="tests\prtest.txt" />
+    <None Include="tests\rnsbg.txt" />
+    <None Include="tests\rrdtr.txt" />
+    <None Include="tests\rrxtr.txt" />
+    <None Include="tests\sieve.core" />
+    <None Include="tests\srdt.txt" />
+    <None Include="tests\st.core" />
+    <None Include="tests\stfle.txt" />
+    <None Include="tests\stsi.txt" />
+    <None Include="tests\tapepos.txt" />
+    <None Include="tests\tbedr.txt" />
+    <None Include="tests\tdcdt.txt" />
+    <None Include="tests\tdgdt.txt" />
+    <None Include="tests\thder.txt" />
+    <None Include="tests\trte.txt" />
+    <None Include="util\awssl-v19g" />
+    <None Include="util\awswrite.jcl" />
+    <None Include="util\cckddump.hla" />
+    <None Include="util\cckdload.hla" />
+    <None Include="util\cvslvlck" />
+    <None Include="util\dasdlist" />
+    <None Include="util\dasdlist.bat" />
+    <None Include="util\Makefile.am" />
+    <None Include="util\rawstape.jcl" />
+    <None Include="util\tapeconv.jcl" />
+    <None Include="util\TMOUNT.txt" />
+    <None Include="_TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gen\ald\360_ap.h" />
+    <ClInclude Include="..\gen\ald\360_ar.h" />
+    <ClInclude Include="..\gen\ald\360_as.h" />
+    <ClInclude Include="..\gen\ald\360_bf.h" />
+    <ClInclude Include="..\gen\ald\360_ca.h" />
+    <ClInclude Include="..\gen\ald\360_ce.h" />
+    <ClInclude Include="..\gen\ald\360_cs.h" />
+    <ClInclude Include="..\gen\ald\360_ct.h" />
+    <ClInclude Include="..\gen\ald\360_cw.h" />
+    <ClInclude Include="..\gen\ald\360_dn.h" />
+    <ClInclude Include="..\gen\ald\360_dp.h" />
+    <ClInclude Include="..\gen\ald\360_dr.h" />
+    <ClInclude Include="..\gen\ald\360_ds.h" />
+    <ClInclude Include="..\gen\ald\360_ee.h" />
+    <ClInclude Include="..\gen\ald\360_ef.h" />
+    <ClInclude Include="..\gen\ald\360_fe.h" />
+    <ClInclude Include="..\gen\ald\360_fx.h" />
+    <ClInclude Include="..\gen\ald\360_ja.h" />
+    <ClInclude Include="..\gen\ald\360_kc.h" />
+    <ClInclude Include="..\gen\ald\360_kd.h" />
+    <ClInclude Include="..\gen\ald\360_kk.h" />
+    <ClInclude Include="..\gen\ald\360_km.h" />
+    <ClInclude Include="..\gen\ald\360_kn.h" />
+    <ClInclude Include="..\gen\ald\360_ks.h" />
+    <ClInclude Include="..\gen\ald\360_kt.h" />
+    <ClInclude Include="..\gen\ald\360_ku.h" />
+    <ClInclude Include="..\gen\ald\360_kw.h" />
+    <ClInclude Include="..\gen\ald\360_kx.h" />
+    <ClInclude Include="..\gen\ald\360_kz.h" />
+    <ClInclude Include="..\gen\ald\360_ls.h" />
+    <ClInclude Include="..\gen\ald\360_ma.h" />
+    <ClInclude Include="..\gen\ald\360_mb.h" />
+    <ClInclude Include="..\gen\ald\360_mc.h" />
+    <ClInclude Include="..\gen\ald\360_pk.h" />
+    <ClInclude Include="..\gen\ald\360_px.h" />
+    <ClInclude Include="..\gen\ald\360_ra.h" />
+    <ClInclude Include="..\gen\ald\360_rd.h" />
+    <ClInclude Include="..\gen\ald\360_re.h" />
+    <ClInclude Include="..\gen\ald\360_rf.h" />
+    <ClInclude Include="..\gen\ald\360_rg.h" />
+    <ClInclude Include="..\gen\ald\360_rq.h" />
+    <ClInclude Include="..\gen\ald\360_rr.h" />
+    <ClInclude Include="..\gen\ald\360_rs.h" />
+    <ClInclude Include="..\gen\ald\360_rw.h" />
+    <ClInclude Include="..\gen\ald\360_rx.h" />
+    <ClInclude Include="..\gen\ald\360_ry.h" />
+    <ClInclude Include="..\gen\ald\360_wa.h" />
+    <ClInclude Include="..\gen\ald\360_za.h" />
+    <ClInclude Include="..\gen\ald\ald.h" />
+    <ClInclude Include="..\gen\ald\ald_types.h" />
+    <ClInclude Include="360_cstruc.h" />
+    <ClInclude Include="360_minstruc.h" />
+    <ClInclude Include="360_struc.h" />
+    <ClInclude Include="AutoBuildCount.h" />
+    <ClInclude Include="cache.h" />
+    <ClInclude Include="chsc.h" />
+    <ClInclude Include="clock.h" />
+    <ClInclude Include="cmdtab.h" />
+    <ClInclude Include="codepage.h" />
+    <ClInclude Include="commadpt.h" />
+    <ClInclude Include="cpuint.h" />
+    <ClInclude Include="crypto.h" />
+    <ClInclude Include="crypto\aes.h" />
+    <ClInclude Include="crypto\des.h" />
+    <ClInclude Include="crypto\sha1.h" />
+    <ClInclude Include="crypto\sha256.h" />
+    <ClInclude Include="ctcadpt.h" />
+    <ClInclude Include="dasdblks.h" />
+    <ClInclude Include="dasdtab.h" />
+    <ClInclude Include="dat.h" />
+    <ClInclude Include="decNumber\decContext.h" />
+    <ClInclude Include="decNumber\decDPD.h" />
+    <ClInclude Include="decNumber\decimal128.h" />
+    <ClInclude Include="decNumber\decimal32.h" />
+    <ClInclude Include="decNumber\decimal64.h" />
+    <ClInclude Include="decNumber\decNumber.h" />
+    <ClInclude Include="decNumber\decNumberLocal.h" />
+    <ClInclude Include="decNumber\decPacked.h" />
+    <ClInclude Include="devtype.h" />
+    <ClInclude Include="ecpsvm.h" />
+    <ClInclude Include="esa390.h" />
+    <ClInclude Include="feat370.h" />
+    <ClInclude Include="feat390.h" />
+    <ClInclude Include="feat900.h" />
+    <ClInclude Include="featall.h" />
+    <ClInclude Include="featchk.h" />
+    <ClInclude Include="feature.h" />
+    <ClInclude Include="fillfnam.h" />
+    <ClInclude Include="fishhang.h" />
+    <ClInclude Include="fthreads.h" />
+    <ClInclude Include="getopt.h" />
+    <ClInclude Include="hbyteswp.h" />
+    <ClInclude Include="hchan.h" />
+    <ClInclude Include="hconsole.h" />
+    <ClInclude Include="hconsts.h" />
+    <ClInclude Include="hdl.h" />
+    <ClInclude Include="hercifc.h" />
+    <ClInclude Include="hercules.h" />
+    <ClInclude Include="hercwind.h" />
+    <ClInclude Include="herc_getopt.h" />
+    <ClInclude Include="hetlib.h" />
+    <ClInclude Include="hextapi.h" />
+    <ClInclude Include="hexterns.h" />
+    <ClInclude Include="history.h" />
+    <ClInclude Include="hmacros.h" />
+    <ClInclude Include="hostinfo.h" />
+    <ClInclude Include="hostopts.h" />
+    <ClInclude Include="hscutl.h" />
+    <ClInclude Include="hsocket.h" />
+    <ClInclude Include="hstdinc.h" />
+    <ClInclude Include="hstdint.h" />
+    <ClInclude Include="hstructs.h" />
+    <ClInclude Include="hthreads.h" />
+    <ClInclude Include="httpmisc.h" />
+    <ClInclude Include="htypes.h" />
+    <ClInclude Include="ieee-sol.h" />
+    <ClInclude Include="ieee-w32.h" />
+    <ClInclude Include="inline.h" />
+    <ClInclude Include="linklist.h" />
+    <ClInclude Include="logger.h" />
+    <ClInclude Include="ltdl.h" />
+    <ClInclude Include="machdep.h" />
+    <ClInclude Include="memrchr.h" />
+    <ClInclude Include="opcode.h" />
+    <ClInclude Include="parser.h" />
+    <ClInclude Include="pttrace.h" />
+    <ClInclude Include="scsitape.h" />
+    <ClInclude Include="service.h" />
+    <ClInclude Include="shared.h" />
+    <ClInclude Include="sllib.h" />
+    <ClInclude Include="sockdev.h" />
+    <ClInclude Include="sr.h" />
+    <ClInclude Include="tapedev.h" />
+    <ClInclude Include="tt32api.h" />
+    <ClInclude Include="tuntap.h" />
+    <ClInclude Include="version.h" />
+    <ClInclude Include="vstore.h" />
+    <ClInclude Include="w32chan.h" />
+    <ClInclude Include="w32ctca.h" />
+    <ClInclude Include="w32dl.h" />
+    <ClInclude Include="w32mtio.h" />
+    <ClInclude Include="w32stape.h" />
+    <ClInclude Include="w32util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="decNumber\decNumber.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

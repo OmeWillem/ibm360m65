@@ -55,42 +55,22 @@
 #include "opcode.h"
 #include "inline.h"
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
+
 /*-------------------------------------------------------------------*/
 /* Load external interrupt new PSW                                   */
 /*-------------------------------------------------------------------*/
 static void ARCH_DEP(external_interrupt) (int code, REGS *regs)
 {
-RADR    pfx;
 PSA     *psa;
 int     rc;
 
     PTT(PTT_CL_SIG,"*EXTINT",code,regs->cpuad,regs->psw.IA_L);
 
-#if defined(_FEATURE_SIE)
-    /* Set the main storage reference and change bits */
-    if(SIE_MODE(regs)
-#if defined(_FEATURE_EXPEDITED_SIE_SUBSET)
-                       && !SIE_FEATB(regs, S, EXP_TIMER)
-#endif /*defined(_FEATURE_EXPEDITED_SIE_SUBSET)*/
-#if defined(_FEATURE_EXTERNAL_INTERRUPT_ASSIST)
-                       && !SIE_FEATB(regs, EC0, EXTA)
-#endif
-                                                            )
-    {
-        /* Point to SIE copy of PSA in state descriptor */
-        psa = (void*)(regs->hostregs->mainstor + SIE_STATE(regs) + SIE_IP_PSA_OFFSET);
-        STORAGE_KEY(SIE_STATE(regs), regs->hostregs) |= (STORKEY_REF | STORKEY_CHANGE);
-    }
-    else
-#endif /*defined(_FEATURE_SIE)*/
     {
         /* Point to PSA in main storage */
-        pfx = regs->PX;
-#if defined(_FEATURE_EXPEDITED_SIE_SUBSET)
-        SIE_TRANSLATE(&pfx, ACCTYPE_SIE, regs);
-#endif /*defined(_FEATURE_EXPEDITED_SIE_SUBSET)*/
-        psa = (void*)(regs->mainstor + pfx);
-        STORAGE_KEY(pfx, regs) |= (STORKEY_REF | STORKEY_CHANGE);
+        psa = (void*)(regs->mainstor);
+        STORAGE_KEY(0, regs) |= (STORKEY_REF | STORKEY_CHANGE);
     }
 
     /* Store the interrupt code in the PSW */
@@ -99,26 +79,9 @@ int     rc;
 
     /* Zero extcpuad field unless extcall or ems signal or blockio */
     if(code != EXT_EXTERNAL_CALL_INTERRUPT
-#if defined(FEATURE_VM_BLOCKIO)
-    && code != EXT_BLOCKIO_INTERRUPT
-#endif /* defined(FEATURE_VM_BLOCKIO) */
     && code != EXT_EMERGENCY_SIGNAL_INTERRUPT)
         STORE_HW(psa->extcpad,0);
 
-#if defined(FEATURE_BCMODE)
-    /* For ECMODE, store external interrupt code at PSA+X'86' */
-    if ( ECMODE(&regs->psw) )
-#endif /*defined(FEATURE_BCMODE)*/
-        STORE_HW(psa->extint,code);
-
-    if ( !SIE_MODE(regs)
-#if defined(_FEATURE_EXPEDITED_SIE_SUBSET)
-                       || SIE_FEATB(regs, S, EXP_TIMER)
-#endif /*defined(_FEATURE_EXPEDITED_SIE_SUBSET)*/
-#if defined(_FEATURE_EXTERNAL_INTERRUPT_ASSIST)
-                       || SIE_FEATB(regs, EC0, EXTA)
-#endif
-       )
     {
         /* Store current PSW at PSA+X'18' */
         ARCH_DEP(store_psw) (regs, psa->extold);
@@ -140,17 +103,7 @@ int     rc;
     RELEASE_INTLOCK(regs);
 
 
-    if ( SIE_MODE(regs)
-#if defined(_FEATURE_EXPEDITED_SIE_SUBSET)
-                       && !SIE_FEATB(regs, S, EXP_TIMER)
-#endif /*defined(_FEATURE_EXPEDITED_SIE_SUBSET)*/
-#if defined(_FEATURE_EXTERNAL_INTERRUPT_ASSIST)
-                       && !SIE_FEATB(regs, EC0, EXTA)
-#endif
-       )
-        longjmp (regs->progjmp, SIE_INTERCEPT_EXT);
-    else
-        longjmp (regs->progjmp, SIE_NO_INTERCEPT);
+    longjmp (regs->progjmp, SIE_NO_INTERCEPT);
 
 } /* end function external_interrupt */
 
@@ -174,15 +127,9 @@ void ARCH_DEP(perform_external_interrupt) (REGS *regs)
 {
 PSA    *psa;                            /* -> Prefixed storage area  */
 U16     cpuad;                          /* Originating CPU address   */
-#if defined(FEATURE_VM_BLOCKIO)
-#if defined(FEATURE_ESAME)
-RADR    servpadr;      /* Address of 64-bit block I/O interrupt */
-#endif
-U16     servcode;      /* Service Signal or Block I/O Interrupt code */
-#endif /* defined(FEATURE_VM_BLOCKIO) */
 
     /* External interrupt if console interrupt key was depressed */
-    if ( OPEN_IC_INTKEY(regs) && !SIE_MODE(regs) )
+    if ( OPEN_IC_INTKEY(regs) )
     {
         logmsg (_("HHCCP023I External interrupt: Interrupt key\n"));
 
@@ -213,7 +160,7 @@ U16     servcode;      /* Service Signal or Block I/O Interrupt code */
         regs->malfcpu[cpuad] = 0;
 
         /* Store originating CPU address at PSA+X'84' */
-        psa = (void*)(regs->mainstor + regs->PX);
+        psa = (void*)(regs->mainstor);
         STORE_HW(psa->extcpad,cpuad);
 
         /* Reset emergency signal pending flag if there are
@@ -253,7 +200,7 @@ U16     servcode;      /* Service Signal or Block I/O Interrupt code */
         regs->emercpu[cpuad] = 0;
 
         /* Store originating CPU address at PSA+X'84' */
-        psa = (void*)(regs->mainstor + regs->PX);
+        psa = (void*)(regs->mainstor);
         STORE_HW(psa->extcpad,cpuad);
 
         /* Reset emergency signal pending flag if there are
@@ -282,7 +229,7 @@ U16     servcode;      /* Service Signal or Block I/O Interrupt code */
         OFF_IC_EXTCALL(regs);
 
         /* Store originating CPU address at PSA+X'84' */
-        psa = (void*)(regs->mainstor + regs->PX);
+        psa = (void*)(regs->mainstor);
         STORE_HW(psa->extcpad,regs->extccpu);
 
         /* Generate external call interrupt */
@@ -315,9 +262,6 @@ U16     servcode;      /* Service Signal or Block I/O Interrupt code */
     /* External interrupt if interval timer interrupt is pending */
 #if defined(FEATURE_INTERVAL_TIMER)
     if (OPEN_IC_ITIMER(regs)
-#if defined(_FEATURE_SIE)
-        && !(SIE_STATB(regs, M, ITMOF))
-#endif /*defined(_FEATURE_SIE)*/
         )
     {
         if (CPU_STEPPING_OR_TRACING_ALL)
@@ -328,147 +272,14 @@ U16     servcode;      /* Service Signal or Block I/O Interrupt code */
         ARCH_DEP(external_interrupt) (EXT_INTERVAL_TIMER_INTERRUPT, regs);
     }
 
-#if defined(FEATURE_ECPSVM)
-    if ( OPEN_IC_ECPSVTIMER(regs) )
-    {
-        OFF_IC_ECPSVTIMER(regs);
-        ARCH_DEP(external_interrupt) (EXT_VINTERVAL_TIMER_INTERRUPT,regs);
-    }
-#endif /*FEATURE_ECPSVM*/
 #endif /*FEATURE_INTERVAL_TIMER*/
 
     /* External interrupt if service signal is pending */
-    if ( OPEN_IC_SERVSIG(regs) && !SIE_MODE(regs) )
+    if ( OPEN_IC_SERVSIG(regs) )
     {
-
-#if defined(FEATURE_VM_BLOCKIO)
-        
-        /* Note: Both Block I/O and Service Signal are enabled by the */
-        /* the same CR0 bit.  Hence they are handled in the same code */
-        switch(sysblk.servcode)
-        {
-        case EXT_BLOCKIO_INTERRUPT:  /* VM Block I/O Interrupt */
-
-           if (sysblk.biodev->ccwtrace)
-           {
-           logmsg (_("%4.4X:HHCCP031I Processing Block I/O interrupt: "
-                "code=%4.4X parm=%16.16X status=%2.2X subcode=%2.2X\n"),
-                sysblk.biodev->devnum,
-                sysblk.servcode,
-                sysblk.bioparm,
-                sysblk.biostat,
-                sysblk.biosubcd
-                );
-           }
-
-           servcode = EXT_BLOCKIO_INTERRUPT;
-
-#if defined(FEATURE_ESAME)
-/* Real address used to store the 64-bit interrupt parameter */
-#define VM_BLOCKIO_INT_PARM 0x11B8
-           if (sysblk.biosubcd == 0x07)
-           {
-           /* 8-byte interrupt parm */
-           
-               if (CPU_STEPPING_OR_TRACING_ALL)
-               {
-                  logmsg (_("HHCCP028I External interrupt: Block I/O %16.16X\n"),
-                     sysblk.bioparm);
-               }
-
-               /* Set the main storage reference and change bits   */
-               /* for 64-bit interruption parameter.               */
-               /* Note: This is handled for the first 4K page in   */
-               /* ARCH_DEP(external_interrupt), but not for the    */
-               /* the second 4K page used for the 64-bit interrupt */
-               /* parameter.                                       */
-
-               /* Point to 2nd page of PSA in main storage */
-               servpadr=APPLY_PREFIXING(VM_BLOCKIO_INT_PARM,regs->PX);
-
-               STORAGE_KEY(servpadr, regs) 
-                     |= (STORKEY_REF | STORKEY_CHANGE);
-
-#if 0
-               /* Store the 64-bit interrupt parameter */
-               logmsg (_("Saving 64-bit Block I/O interrupt parm at "
-                         "%16.16X: %16.16X\n"),
-                         servpadr,
-                         sysblk.bioparm
-                      );
-#endif
-
-               STORE_DW(regs->mainstor + servpadr,sysblk.bioparm);
-               psa = (void*)(regs->mainstor + regs->PX);
-           }
-           else
-           {
-#endif  /* defined(FEATURE_ESAME) */
-
-           /* 4-byte interrupt parm */
-
-              if (CPU_STEPPING_OR_TRACING_ALL)
-              {
-                 logmsg (_("HHCCP028I External interrupt: Block I/O %8.8X\n"),
-                       (U32)sysblk.bioparm);
-              }
-
-              /* Store Block I/O parameter at PSA+X'80' */
-              psa = (void*)(regs->mainstor + regs->PX);
-              STORE_FW(psa->extparm,(U32)sysblk.bioparm);
-
-#if defined(FEATURE_ESAME)
-           }
-#endif
-
-           /* Store sub-interruption code and status at PSA+X'84' */
-           STORE_HW(psa->extcpad,(sysblk.biosubcd<<8)|sysblk.biostat);
-           
-           /* Reset interruption data */
-           sysblk.bioparm  = 0;
-           sysblk.biosubcd = 0;
-           sysblk.biostat  = 0;
-           
-           break;
-
-        case EXT_SERVICE_SIGNAL_INTERRUPT: /* Service Signal */
-        default:
-             servcode = EXT_SERVICE_SIGNAL_INTERRUPT;
-             
-            /* Apply prefixing if the parameter is a storage address */
-            if ( (sysblk.servparm & SERVSIG_ADDR) )
-                sysblk.servparm =
-                     APPLY_PREFIXING (sysblk.servparm, regs->PX);
-
-             if (CPU_STEPPING_OR_TRACING_ALL)
-             {
-                 logmsg (_("HHCCP027I External interrupt: Service signal %8.8X\n"),
-                    sysblk.servparm);
-             }
-
-             /* Store service signal parameter at PSA+X'80' */
-             psa = (void*)(regs->mainstor + regs->PX);
-             STORE_FW(psa->extparm,sysblk.servparm);
-
-        }  /* end switch(sysblk.servcode) */
-        /* Reset service parameter */
-        sysblk.servparm = 0;
-
-        /* Reset service code */
-        sysblk.servcode = 0;
-
-        /* Reset service signal pending */
-        OFF_IC_SERVSIG;
-
-        /* Generate service signal interrupt */
-        ARCH_DEP(external_interrupt) (servcode, regs);
-             
-#else /* defined(FEATURE_VM_BLOCKIO) */
 
         /* Apply prefixing if the parameter is a storage address */
         if ( (sysblk.servparm & SERVSIG_ADDR) )
-            sysblk.servparm =
-                APPLY_PREFIXING (sysblk.servparm, regs->PX);
 
         if (CPU_STEPPING_OR_TRACING_ALL)
         {
@@ -477,7 +288,7 @@ U16     servcode;      /* Service Signal or Block I/O Interrupt code */
         }
 
         /* Store service signal parameter at PSA+X'80' */
-        psa = (void*)(regs->mainstor + regs->PX);
+        psa = (void*)(regs->mainstor);
         STORE_FW(psa->extparm,sysblk.servparm);
 
         /* Reset service parameter */
@@ -489,12 +300,11 @@ U16     servcode;      /* Service Signal or Block I/O Interrupt code */
         /* Generate service signal interrupt */
         ARCH_DEP(external_interrupt) (EXT_SERVICE_SIGNAL_INTERRUPT, regs);
 
-#endif /* defined(FEATURE_VM_BLOCKIO) */
-
     }  /* end OPEN_IC_SERVSIG(regs) */
 
 } /* end function perform_external_interrupt */
 
+#endif
 
 /*-------------------------------------------------------------------*/
 /* Store Status                                                      */
@@ -514,18 +324,6 @@ PSA     *sspsa;                         /* -> Store status area      */
 
     /* Set reference and change bits */
     STORAGE_KEY(aaddr, ssreg) |= (STORKEY_REF | STORKEY_CHANGE);
-#if defined(FEATURE_ESAME)
-    /* The ESAME PSA is two pages in size */
-    if(!aaddr)
-        STORAGE_KEY(aaddr + 4096, ssreg) |= (STORKEY_REF | STORKEY_CHANGE);
-#endif /*defined(FEATURE_ESAME)*/
-
-#if defined(FEATURE_ESAME)
-    /* For store status at address, we must adjust the PSA offset */
-    /* ZZ THIS TEST IS NOT CONCLUSIVE */
-    if(aaddr != 0 && aaddr != ssreg->PX)
-        aaddr -= 512 + 4096 ;
-#endif
 
     aaddr &= 0x7FFFFE00;
 
@@ -536,46 +334,20 @@ PSA     *sspsa;                         /* -> Store status area      */
     STORE_DW(sspsa->storeptmr, cpu_timer(ssreg));
 
     /* Store clock comparator in bytes 224-231 */
-#if defined(FEATURE_ESAME)
-    STORE_DW(sspsa->storeclkc, ssreg->clkc);
-#else /*defined(FEATURE_ESAME)*/
     STORE_DW(sspsa->storeclkc, ssreg->clkc << 8);
-#endif /*defined(FEATURE_ESAME)*/
 
     /* Store PSW in bytes 256-263 */
     ARCH_DEP(store_psw) (ssreg, sspsa->storepsw);
 
     /* Store prefix register in bytes 264-267 */
-    STORE_FW(sspsa->storepfx,ssreg->PX);
-
-#if defined(FEATURE_ESAME)
-    /* Store Floating Point Control Register */
-    STORE_FW(sspsa->storefpc,ssreg->fpc);
-
-    /* Store TOD Programable register */
-    STORE_FW(sspsa->storetpr,ssreg->todpr);
-#endif /*defined(FEATURE_ESAME)*/
-
-#if defined(_900)
-    /* Only store the arch mode indicator for a PSA type store status */
-    if(!aaddr)
-#if defined(FEATURE_ESAME)
-        sspsa->arch = 1;
-#else /*defined(FEATURE_ESAME)*/
-        sspsa->arch = 0;
-#endif /*defined(FEATURE_ESAME)*/
-#endif /*defined(_900)*/
+    STORE_FW(sspsa->storepfx,0);
 
     /* Store access registers in bytes 288-351 */
     for (i = 0; i < 16; i++)
-        STORE_FW(sspsa->storear[i],ssreg->AR(i));
+        STORE_FW(sspsa->storear[i],ssreg->AR_(i));
 
     /* Store floating-point registers in bytes 352-383 */
-#if defined(FEATURE_ESAME)
-    for (i = 0; i < 32; i++)
-#else /*!defined(FEATURE_ESAME)*/
     for (i = 0; i < 8; i++)
-#endif /*!defined(FEATURE_ESAME)*/
         STORE_FW(sspsa->storefpr[i],ssreg->fpr[i]);
 
     /* Store general-purpose registers in bytes 384-447 */
@@ -605,24 +377,7 @@ PSA     *sspsa;                         /* -> Store status area      */
 
 void store_status (REGS *ssreg, U64 aaddr)
 {
-    switch(ssreg->arch_mode) {
-#if defined(_370)
-        case ARCH_370:
             aaddr &= 0x7FFFFFFF;
             s370_store_status (ssreg, aaddr);
-            break;
-#endif
-#if defined(_390)
-        case ARCH_390:
-            aaddr &= 0x7FFFFFFF;
-            s390_store_status (ssreg, aaddr);
-            break;
-#endif
-#if defined(_900)
-        case ARCH_900:
-            z900_store_status (ssreg, aaddr);
-            break;
-#endif
-    }
 }
 #endif /*!defined(_GEN_ARCH)*/

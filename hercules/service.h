@@ -69,25 +69,6 @@ typedef struct _SCCB_HEADER {
 #define SCCB_RESP_BACKOUT       0x40    /* Command backed out        */
 #define SCCB_RESP_REJECT        0xF0    /* Command reject            */
 
-// #ifdef FEATURE_SYSTEM_CONSOLE
-#define SCCB_REAS_NO_EVENTS     0x60    /* No outstanding EVENTs     */
-#define SCCB_RESP_NO_EVENTS     0xF0
-#define SCCB_REAS_EVENTS_SUP    0x62    /* All events suppressed     */
-#define SCCB_RESP_EVENTS_SUP    0xF0
-#define SCCB_REAS_INVALID_MASK  0x70    /* Invalid events mask       */
-#define SCCB_RESP_INVALID_MASK  0xF0
-#define SCCB_REAS_MAX_BUFF      0x71    /* Buffer exceeds maximum    */
-#define SCCB_RESP_MAX_BUFF      0xF0
-#define SCCB_REAS_BUFF_LEN_ERR  0x72    /* Buffer len verification   */
-#define SCCB_RESP_BUFF_LEN_ERR  0xF0
-#define SCCB_REAS_SYNTAX_ERROR  0x73    /* Buffer syntax error       */
-#define SCCB_RESP_SYNTAX_ERROR  0xF0
-#define SCCB_REAS_INVALID_MSKL  0x74    /* Invalid mask length       */
-#define SCCB_RESP_INVALID_MSKL  0xF0
-#define SCCB_REAS_EXCEEDS_SCCB  0x75    /* Exceeds SCCB max capacity */
-#define SCCB_RESP_EXCEEDS_SCCB  0xF0
-// #endif /*FEATURE_SYSTEM_CONSOLE*/
-
 /* SCP information data area */
 typedef struct _SCCB_SCP_INFO {
         HWORD   realinum;               /* Number of real storage
@@ -166,7 +147,6 @@ typedef struct _SCCB_SCP_INFO {
 #define SCCB_IFM2_EXTENDED_STORAGE_ELEMENT_INFO         0x04
 #define SCCB_IFM2_EXTENDED_STORAGE_ELEMENT_RECONFIG     0x02
 #define SCCB_IFM2_COPY_AND_REASSIGN_STORAGE_LIST        0x01
-#define SCCB_IFM3_VECTOR_FEATURE_RECONFIG               0x80
 #define SCCB_IFM3_READ_WRITE_EVENT_FEATURE              0x40
 #define SCCB_IFM3_EXTENDED_STORAGE_USABILITY_MAP_EXT    0x20
 #define SCCB_IFM3_READ_RESOURCE_GROUP_INFO              0x08
@@ -185,16 +165,12 @@ typedef struct _SCCB_SCP_INFO {
 #define SCCB_CFG2_CALLED_SPACE_IDENTIFICATION           0x02
 #define SCCB_CFG2_CHECKSUM_INSTRUCTION                  0x01
 #define SCCB_CFG3_RESUME_PROGRAM                        0x80
-#define SCCB_CFG3_PERFORM_LOCKED_OPERATION              0x40
 #define SCCB_CFG3_IMMEDIATE_AND_RELATIVE                0x10
-#define SCCB_CFG3_COMPARE_AND_MOVE_EXTENDED             0x08
-#define SCCB_CFG3_BRANCH_AND_SET_AUTHORITY              0x04
 #define SCCB_CFG3_EXTENDED_FLOATING_POINT               0x02
 #define SCCB_CFG3_EXTENDED_LOGICAL_COMPUTATION_FACILITY 0x01
 #define SCCB_CFG4_EXTENDED_TOD_CLOCK                    0x80
 #define SCCB_CFG4_EXTENDED_TRANSLATION                  0x40
 #define SCCB_CFG4_LOAD_REVERSED_FACILITY                0x20
-#define SCCB_CFG4_EXTENDED_TRANSLATION_FACILITY2        0x10
 #define SCCB_CFG4_STORE_SYSTEM_INFORMATION              0x08
 #define SCCB_CFG4_LPAR_CLUSTERING                       0x02
 #define SCCB_CFG4_IFA_FACILITY                          0x01
@@ -227,10 +203,6 @@ typedef struct _SCCB_CPU_INFO {
 #define SCCB_CPF1_RCP_BYPASS_FACILITY                   0x04
 #define SCCB_CPF1_REGION_RELOCATE_FACILITY              0x02
 #define SCCB_CPF1_EXPEDITE_TIMER_PROCESSING             0x01
-#define SCCB_CPF2_VECTOR_FEATURE_INSTALLED              0x80
-#define SCCB_CPF2_VECTOR_FEATURE_CONNECTED              0x40
-#define SCCB_CPF2_VECTOR_FEATURE_STANDBY_STATE          0x20
-#define SCCB_CPF2_CRYPTO_FEATURE_ACCESSED               0x10
 #define SCCB_CPF2_EXPEDITE_RUN_PROCESSING               0x04
 #define SCCB_CPF3_PRIVATE_SPACE_FEATURE                 0x80
 #define SCCB_CPF3_FETCH_ONLY_BIT                        0x40
@@ -288,231 +260,5 @@ typedef struct _SCCB_CSI_INFO {
 #define SCCB_CSI0_CANCEL_IO_REQUEST_FACILITY            0x02
 #define SCCB_CSI0_CONCURRENT_SENSE_FACILITY             0x01
 
-// #ifdef FEATURE_SYSTEM_CONSOLE
-/* Write Event Mask */
-typedef struct _SCCB_EVENT_MASK {
-        HWORD   reserved;
-        HWORD   length;                 /* Event mask length         */
-        BYTE    masks[32];              /* Event masks               */
-//      FWORD   cp_recv_mask;           /* These mask fields have    */
-//      FWORD   cp_send_mask;           /* the length defined by     */
-//      FWORD   sclp_recv_mask;         /* the length halfword       */
-//      FWORD   sclp_send_mask;
-    } SCCB_EVENT_MASK;
-
-#define SCCB_EVENT_CONS_RECV_MASK ( \
-        (0x80000000 >> (SCCB_EVD_TYPE_MSG-1))   | \
-        (0x80000000 >> (SCCB_EVD_TYPE_PRIOR-1)) ) 
-#define SCCB_EVENT_CONS_SEND_MASK ( \
-        (0x80000000 >> (SCCB_EVD_TYPE_OPCMD-1)) | \
-        (0x80000000 >> (SCCB_EVD_TYPE_PRIOR-1)) | \
-        (0x80000000 >> (SCCB_EVD_TYPE_CPCMD-1)) )
-
-/* Read/Write Event Data Header */
-typedef struct _SCCB_EVD_HDR {
-        HWORD   totlen;                 /* Event Data Buffer total
-                                           length                    */
-        BYTE    type;
-#define SCCB_EVD_TYPE_OPCMD     0x01    /* Operator command          */
-#define SCCB_EVD_TYPE_MSG       0x02    /* Message from Control Pgm  */
-// #if defined(FEATURE_SCEDIO )
-#define SCCB_EVD_TYPE_SCEDIO    0x07    /* SCE DASD I/O              */
-// #endif /*defined(FEATURE_SCEDIO )*/
-#define SCCB_EVD_TYPE_STATECH   0x08    /* State Change              */
-#define SCCB_EVD_TYPE_PRIOR     0x09    /* Priority message/command  */
-#define SCCB_EVD_TYPE_CPIDENT   0x0B    /* CntlProgIdent             */
-#define SCCB_EVD_TYPE_VT220     0x1A    /* VT220 Msg                 */
-#define SCCB_EVD_TYPE_SYSG      0x1B    /* 3270 Msg (SYSG console)   */
-#define SCCB_EVD_TYPE_SIGQ      0x1D    /* SigQuiesce                */
-#define SCCB_EVD_TYPE_CPCMD     0x20    /* CntlProgOpCmd             */
-        BYTE    flag;
-#define SCCB_EVD_FLAG_PROC      0x80    /* Event successful          */
-        HWORD   resv;                   /* Reserved for future use   */
-    } SCCB_EVD_HDR;
-
-
-/* Read/Write Event Data Buffer */
-typedef struct _SCCB_EVD_BK {
-        HWORD   msglen;
-        BYTE    const1[51];
-        HWORD   cplen;                  /* CP message length         */
-        BYTE    const2[24];
-        HWORD   tdlen;                  /* Text Data length          */
-        BYTE    const3[2];
-        BYTE    sdtlen;
-        BYTE    const4;                 /* Self defining tag         */
-        BYTE    tmlen;
-        BYTE    const5;                 /* Text Message format       */
-//      BYTE    txtmsg[n];
-    } SCCB_EVD_BK;
-
-/* Message Control Data Block */
-typedef struct _SCCB_MCD_BK {
-        HWORD   length;                 /* Total length of MCD       */
-        HWORD   type;                   /* Type must be 0x0001       */
-        FWORD   tag;                    /* Tag must be 0xD4C4C240    */
-        FWORD   revcd;                  /* Revision code 0x00000001  */
-    } SCCB_MCD_BK;
-
-/* Message Control Data Block Header */
-typedef struct _SCCB_OBJ_HDR {
-        HWORD   length;                 /* Total length of OBJ       */
-        HWORD   type;                   /* Object type               */
-#define SCCB_OBJ_TYPE_GENERAL   0x0001  /* General Object            */
-#define SCCB_OBJ_TYPE_CPO       0x0002  /* Control Program Object    */
-#define SCCB_OBJ_TYPE_NLS       0x0003  /* NLS data Object           */
-#define SCCB_OBJ_TYPE_MESSAGE   0x0004  /* Message Text Object       */
-    } SCCB_OBJ_HDR;
-
-/* Message Control Data Block Message Text Object */
-typedef struct _SCCB_MTO_BK {
-        BYTE    ltflag[2];              /* Line type flag            */
-#define SCCB_MTO_LTFLG0_CNTL    0x80    /* Control text line         */
-#define SCCB_MTO_LTFLG0_LABEL   0x40    /* Label text line           */
-#define SCCB_MTO_LTFLG0_DATA    0x20    /* Data text line            */
-#define SCCB_MTO_LTFLG0_END     0x10    /* Last line of message      */
-#define SCCB_MTO_LTFLG0_PROMPT  0x08    /* Prompt line - response
-                                           requested (WTOR)          */
-#define SCCB_MTO_LTFLG0_DBCS    0x04    /* DBCS text                 */
-#define SCCB_MTO_LTFLG0_MIX     0x02    /* Mixed SBCS/DBCS text      */
-#define SCCB_MTO_LTFLG1_OVER    0x01    /* Foreground presentation
-                                           field override            */
-        BYTE    presattr[4];            /* Presentation Attribute
-                                           Byte 0 - control
-                                           Byte 1 - color
-                                           Byte 2 - highlighting
-                                           Byte 3 - intensity        */
-#define SCCB_MTO_PRATTR0_ALARM  0x80    /* Sound alarm (console)     */
-#define SCCB_MTO_PRATTR3_HIGH   0xE8    /* Highlighted               */
-#define SCCB_MTO_PRATTR3_NORM   0xE4    /* Normal                    */
-    } SCCB_MTO_BK;
-
-/* Message Control Data Block General Object */
-typedef struct _SCCB_MGO_BK {
-        FWORD   seq;                    /* Message DOM ID            */
-        BYTE    time[11];               /* C'HH.MM.SS.th'            */
-        BYTE    resv1;
-        BYTE    date[7];                /* C'YYYYDDD'                */
-        BYTE    resv2;
-        BYTE    mflag[2];               /* Message Flags             */
-#define SCCB_MGO_MFLAG0_DOM     0x80    /* Delete Operator Message   */
-#define SCCB_MGO_MFLAG0_ALARM   0x40    /* Sound the SCLP alarm      */
-#define SCCB_MGO_MFLAG0_HOLD    0x20    /* Hold message until DOM    */
-        BYTE    presattr[4];            /* Presentation Attribute
-                                           Byte 0 - control
-                                           Byte 1 - color
-                                           Byte 2 - highlighting
-                                           Byte 3 - intensity        */
-#define SCCB_MGO_PRATTR0_ALARM  0x80    /* Sound alarm (console)     */
-#define SCCB_MGO_PRATTR3_HIGH   0xE8    /* Highlighted               */
-#define SCCB_MGO_PRATTR3_NORM   0xE4    /* Normal                    */
-        BYTE    bckattr[4];             /* Background presentation
-                                           attributes - covers all
-                                           message-test foreground
-                                           presentation attribute
-                                           field overrides           */
-        BYTE    sysname[8];             /* Originating system name   */
-        BYTE    jobname[8];             /* Jobname or guestname      */
-    } SCCB_MGO_BK;
-
-/* Control Program Information */
-typedef struct _SCCB_CPI_BK {
-        BYTE    id_fmt;
-        BYTE    resv0;
-        BYTE    system_type[8];
-        DBLWRD  resv1;
-        BYTE    system_name[8];
-        DBLWRD  resv2;
-        DBLWRD  system_level;
-        DBLWRD  resv3;
-        BYTE    sysplex_name[8];
-        BYTE    resv4[16];
-    } SCCB_CPI_BK;
-
-/* Message Control Data Block NLS Object */
-typedef struct _SCCB_NLS_BK {
-        HWORD   scpgid;                 /* CPGID for SBCS (def 037)  */
-        HWORD   scpsgid;                /* CPSGID for SBCS (def 637) */
-        HWORD   dcpgid;                 /* CPGID for DBCS (def 037)  */
-        HWORD   dcpsgid;                /* CPSGID for DBCS (def 637) */
-    } SCCB_NLS_BK;
-
-/* Signal Quiesce */
-typedef struct _SCCB_SGQ_BK {
-    HWORD   count;                  /* Countdown in units        */
-    BYTE    unit;                   /* Unit type                 */
-#define SCCB_SGQ_SEC 0
-#define SCCB_SGQ_MIN 1
-#define SCCB_SGQ_HR  2
-    } SCCB_SGQ_BK;
-
-// #endif /*FEATURE_SYSTEM_CONSOLE*/
-
-// #ifdef FEATURE_EXPANDED_STORAGE
-typedef struct _SCCB_XST_INFO {
-        HWORD   elmid;                  /* Extended storage element
-                                                                id   */
-        BYTE    resv1[6];
-        FWORD   elmsin;                 /* Starting increment number */
-        FWORD   elmein;                 /* Ending increment number   */
-        BYTE    elmchar;                /* Element characteristics   */
-#define SCCB_XST_INFO_ELMCHAR_REQ 0x80; /* Required element          */
-        BYTE    resv2[39];
-    } SCCB_XST_INFO;
-
-typedef struct _SCCB_XST_MAP {
-        FWORD   incnum;                 /* Increment number          */
-        FWORD   resv;
-//      BYTE    map[];                  /* Bitmap of all usable
-//                                         expanded storage blocks   */
-    } SCCB_XST_MAP;
-// #endif /*FEATURE_EXPANDED_STORAGE*/
-
- 
-// #if defined(FEATURE_SCEDIO )
-/* SCE DASD I/O Request */
-typedef struct _SCCB_SCEDIO_BK {
-        BYTE    flag0;
-        BYTE    flag1;
-#define SCCB_SCEDIO_FLG1_IOR       0x03
-#define SCCB_SCEDIO_FLG1_IOV       0x04
-        BYTE    flag2;
-        BYTE    flag3;
-#define SCCB_SCEDIO_FLG3_COMPLETE  0x80
-
-    } SCCB_SCEDIO_BK;
-
-typedef struct _SCCB_SCEDIOV_BK {
-        BYTE    type;
-#define SCCB_SCEDIOV_TYPE_INIT     0x00  
-#define SCCB_SCEDIOV_TYPE_READ     0x01   
-#define SCCB_SCEDIOV_TYPE_CREATE   0x02 
-#define SCCB_SCEDIOV_TYPE_APPEND   0x03 
-        BYTE    flag1;
-        BYTE    flag2;
-        BYTE    flag3;
-        DBLWRD  seek;
-        DBLWRD  ncomp;
-        DBLWRD  length;
-        DBLWRD  resv2;
-        DBLWRD  resv3;
-        DBLWRD  sto;
-        BYTE    filename[256];
-    } SCCB_SCEDIOV_BK;
-
-typedef struct _SCCB_SCEDIOR_BK {
-        BYTE    type;
-#define SCCB_SCEDIOR_TYPE_INIT     0x00  
-#define SCCB_SCEDIOR_TYPE_READ     0x01   
-        BYTE    flag1;
-        BYTE    flag2;
-        BYTE    flag3;
-        FWORD   origin;
-        FWORD   resv1;
-        FWORD   resv2;
-        BYTE    image[8];
-    } SCCB_SCEDIOR_BK;
-        
-// #endif /*defined(FEATURE_SCEDIO )*/
 
 #endif /*!defined(_SERVICE_H)*/

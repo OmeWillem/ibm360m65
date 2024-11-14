@@ -90,43 +90,6 @@ COMMAND ( "startall",  PANEL,        startall_cmd, "start all CPU's", NULL )
 
 COMMAND ( "stopall",   PANEL,        stopall_cmd,  "stop all CPU's\n", NULL )
 
-#ifdef _FEATURE_CPU_RECONFIG
-COMMAND ( "cf",        PANEL,        cf_cmd,
-  "Configure current CPU online or offline",
-    "Configure current CPU online or offline:  Format->  \"cf [on|off]\"\n"
-    "Where the 'current' CPU is defined as whatever CPU was defined as\n"
-    "the panel command target cpu via the \"cpu\" panel command. (Refer\n"
-    "to the 'cpu' command for further information) Entering 'cf' by itself\n"
-    "simply displays the current online/offline status of the current cpu.\n"
-    "Otherwise the current cpu is configured online or offline as specified.\n"
-    "Use 'cfall' to configure/display all CPUs online/offline state.\n"   )
-
-COMMAND ( "cfall",     PANEL,        cfall_cmd,    "configure all CPU's online or offline\n", NULL )
-#endif
-
-#ifdef _FEATURE_SYSTEM_CONSOLE
-COMMAND ( ".reply",    PANEL,        g_cmd,
-  "scp command",
-    "To reply to a system control program (i.e. guest operating system)\n"
-    "message that gets issued to the hercules console, prefix the reply\n"
-    "with a period.\n"                                                    )
-
-COMMAND ( "!message",  PANEL,        g_cmd,
-  "scp priority messsage",
-    "To enter a system control program (i.e. guest operating system)\n"
-    "priority command on the hercules console, simply prefix the command\n"
-    "with an exclamation point '!'.\n"                                    )
-
-COMMAND ( "ssd",       PANEL,        ssd_cmd,
-  "signal shutdown\n",
-    "The SSD (signal shutdown) command signals an imminent hypervisor shutdown to\n"
-    "the guest.  Guests who support this are supposed to perform a shutdown upon\n"
-    "receiving this request.\n"
-    "An implicit ssd command is given on a hercules \"quit\" command if the guest\n"
-    "supports ssd.  In that case hercules shutdown will be delayed until the guest\n"
-    "has shutdown or a 2nd quit command is given.\n"                      )
-#endif
-
 #ifdef OPTION_PTTRACE
 COMMAND ( "ptt",       PANEL+CONFIG, EXT_CMD(ptt_cmd),
   "Set or display internal trace\n",
@@ -169,19 +132,6 @@ COMMAND ( "archmode",  PANEL+CONFIG, archmode_cmd,
     "Note: \"ESAME\" (Enterprise System Architecture, Modal Extensions) is simply a\n"
     "synonym for \"z/Arch\". (they are identical to each other and mean the same thing)\n" )
 
-COMMAND ( "loadparm",  PANEL+CONFIG, loadparm_cmd, "set IPL parameter\n", NULL )
-
-COMMAND ( "lparname",  PANEL+CONFIG, lparname_cmd, "set LPAR name\n", NULL )
-
-COMMAND ( "lparnum",   PANEL+CONFIG, lparnum_cmd,  "set LPAR identification number\n", NULL )
-
-#if defined(OPTION_SET_STSI_INFO)
-COMMAND ( "model",     CONFIG,       stsi_model_cmd,"Set STSI model code", NULL )
-
-COMMAND ( "plant",     CONFIG,       stsi_plant_cmd,"Set STSI plant code", NULL )
-
-COMMAND ( "manufacturer",CONFIG,     stsi_mfct_cmd,"Set STSI manufacturer code\n", NULL )
-#endif /* defined(OPTION_SET_STSI_INFO) */
 
 COMMAND ( "pgmprdos",  CONFIG,        pgmprdos_cmd,"set LPP license setting\n", NULL )
 
@@ -303,7 +253,9 @@ COMMAND ( "v",         PANEL,        v_cmd,
     "is a hex string of up to 32 pairs of digits. The optional 'P' or 'S' or 'H'\n"
     "will force Primary, Secondary, or Home translation instead of current PSW mode.\n" )
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
 COMMAND ( "u",         PANEL,        u_cmd,         "disassemble storage", NULL )
+#endif
 
 COMMAND ( "devtmax",   PANEL+CONFIG, devtmax_cmd,   "display or set max device threads", NULL )
 
@@ -581,11 +533,6 @@ COMMAND ( "maxrates",  PANEL,        maxrates_cmd,
     "the current highest rates observed during the defined intervals.\n"  )
 #endif // OPTION_MIPS_COUNTING
 
-#if defined(_FEATURE_ASN_AND_LX_REUSE)
-COMMAND ( "asn_and_lx_reuse", CONFIG, alrf_cmd, "Enable/Disable ASN and LX reuse facility", NULL )
-COMMAND ( "alrf"            , CONFIG, alrf_cmd, "Alias for asn_and_lx_reuse\n", NULL )
-#endif /* defined(_FEATURE_ASN_AND_LX_REUSE) */
-
 #if defined(FISH_HANG)
 COMMAND ( "FishHangReport",   PANEL, FishHangReport_cmd,
   "Display thread/lock/event objects (DEBUG)\n",
@@ -622,25 +569,9 @@ COMMAND ( "cscript",   PANEL,        cscript_cmd,
     "Format: \"cscript\". This command will cancel the currently running script.\n"
     "if no script is running, no action is taken\n"                       )
 
-#if defined(FEATURE_ECPSVM)
-COMMAND ( "evm",       PANEL,        evm_cmd_1,
-  "ECPS:VM Commands (Deprecated)",
-    "Format: \"evm\". This command is deprecated.\n"
-    "use \"ecpsvm\" instead\n"                                            )
-
-COMMAND ( "ecpsvm",    PANEL,        evm_cmd,
-  "ECPS:VM Commands\n",
-    "Format: \"ecpsvm\". This command invokes ECPS:VM Subcommands.\n"
-    "Type \"ecpsvm help\" to see a list of available commands\n"          )
-#endif
-
 COMMAND ( "aea",       PANEL,        aea_cmd,       "Display AEA tables", NULL )
 COMMAND ( "aia",       PANEL,        aia_cmd,       "Display AIA fields", NULL )
-COMMAND ( "tlb",       PANEL,        tlb_cmd,       "Display TLB tables\n", NULL )
 
-#if defined(SIE_DEBUG_PERFMON)
-COMMAND ( "spm",       PANEL,        spm_cmd,       "SIE performance monitor\n", NULL )
-#endif
 #if defined(OPTION_COUNTING)
 COMMAND ( "count",     PANEL,        count_cmd,     "Display/clear overall instruction count\n", NULL )
 #endif
@@ -666,24 +597,6 @@ COMMAND ( "symptom",   CONFIG,       traceopt_cmd, "Alias for traceopt\n", NULL 
 COMMAND ( "$zapcmd",   CONFIG,       zapcmd_cmd,   NULL, NULL )     // enable/disable commands and config statements
 
 COMMAND ( "$test",     DISABLED,     test_cmd,     NULL, NULL )     // enable in config with: $zapcmd $test cmd
-
-#ifdef OPTION_CMDTGT
-COMMAND ( "cmdtgt",    PANEL,        cmdtgt_cmd,
-  "Specify the command target",
-    "Format: \"cmdtgt [herc | scp | pscp | ?]\". Specify the command target.\n" )
-
-COMMAND ( "herc",      PANEL,        herc_cmd,
-  "Hercules command",
-    "Format: \"herc [cmd]\". Send hercules cmd in any cmdtgt mode.\n"     )
-
-COMMAND ( "scp",       PANEL,        scp_cmd,
-  "Send scp command",
-    "Format: \"scp [cmd]\". Send scp cmd in any cmdtgt mode.\n"           )
-
-COMMAND ( "pscp",      PANEL,        prioscp_cmd,
-  "Send prio message scp command\n",
-    "Format: \"pscp [cmd]\". Send priority message cmd to scp in any cmdtgt mode.\n" )
-#endif // OPTION_CMDTGT
 
 // The actual command table ends here, the next entries are just for help
 // as the associated command are processed as part of commandline parsing

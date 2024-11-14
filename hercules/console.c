@@ -738,34 +738,38 @@ static BYTE will_naws[] = { IAC, WILL, NAWS };
 
     rc = expect (csock, will_term, sizeof(will_term),
                         "IAC WILL TERMINAL_TYPE");
-    if (rc < 0) return -1;
-
-    /* Request terminal type */
-    rc = send_packet (csock, req_type, sizeof(req_type),
-                        "IAC SB TERMINAL_TYPE SEND IAC SE");
-    if (rc < 0) return -1;
-
-    rc = recv_packet (csock, buf, sizeof(buf)-2, SE);
-    if (rc < 0) return -1;
-
-    /* Ignore Negotiate About Window Size */
-    if (rc >= (int)sizeof(will_naws) &&
-        memcmp (buf, will_naws, sizeof(will_naws)) == 0)
-    {
-        memmove(buf, &buf[sizeof(will_naws)], (rc - sizeof(will_naws)));
-        rc -= sizeof(will_naws);
+    if (rc < 0) {
+        termtype = "ASCII";
     }
+    else {
 
-    if (rc < (int)(sizeof(type_is) + 2)
-        || memcmp(buf, type_is, sizeof(type_is)) != 0
-        || buf[rc-2] != IAC || buf[rc-1] != SE) {
-        TNSDEBUG2("console: DBG008: Expected IAC SB TERMINAL_TYPE IS\n");
-        return -1;
-    }
-    buf[rc-2] = '\0';
-    termtype = (char *)(buf + sizeof(type_is));
-    TNSDEBUG2("console: DBG009: Received IAC SB TERMINAL_TYPE IS %s IAC SE\n",
+        /* Request terminal type */
+        rc = send_packet(csock, req_type, sizeof(req_type),
+            "IAC SB TERMINAL_TYPE SEND IAC SE");
+        if (rc < 0) return -1;
+
+        rc = recv_packet(csock, buf, sizeof(buf) - 2, SE);
+        if (rc < 0) return -1;
+
+        /* Ignore Negotiate About Window Size */
+        if (rc >= (int)sizeof(will_naws) &&
+            memcmp(buf, will_naws, sizeof(will_naws)) == 0)
+        {
+            memmove(buf, &buf[sizeof(will_naws)], (rc - sizeof(will_naws)));
+            rc -= sizeof(will_naws);
+        }
+
+        if (rc < (int)(sizeof(type_is) + 2)
+            || memcmp(buf, type_is, sizeof(type_is)) != 0
+            || buf[rc - 2] != IAC || buf[rc - 1] != SE) {
+            TNSDEBUG2("console: DBG008: Expected IAC SB TERMINAL_TYPE IS\n");
+            return -1;
+        }
+        buf[rc - 2] = '\0';
+        termtype = (char*)(buf + sizeof(type_is));
+        TNSDEBUG2("console: DBG009: Received IAC SB TERMINAL_TYPE IS %s IAC SE\n",
             termtype);
+    }
 
     /* Check terminal type string for device name suffix */
     s = strchr (termtype, '@');
@@ -1849,8 +1853,8 @@ char                    *logoout;
     }
     else
     {
-        snprintf (devmsg, sizeof(devmsg), "Connected to device %d:%4.4X",
-                  SSID_TO_LCSS(dev->ssid), dev->devnum);
+        snprintf (devmsg, sizeof(devmsg), "IBM 360 M65 DEVICE %3.3X",
+                  dev->devnum);
     }
 
     logmsg (_("HHCTE009I Client %s connected to %4.4X device %d:%4.4X\n"),
@@ -1869,16 +1873,12 @@ char                    *logoout;
         set_symbol("HOSTOSVER",cons_hostinfo.version);
         set_symbol("HOSTARCH",cons_hostinfo.machine);
         set_symbol("HOSTNUMCPUS",num_procs);
-        set_symbol("LPARNAME",str_lparname());
+//        set_symbol("LPARNAME",str_lparname());
         snprintf(conmsg,sizeof(conmsg),"%3.3X",dev->devnum);
         set_symbol("CUU",conmsg);
         snprintf(conmsg,sizeof(conmsg),"%3.3x",dev->devnum);
         set_symbol("cuu",conmsg);
         snprintf(conmsg,sizeof(conmsg),"%4.4X",dev->devnum);
-  #if defined(_FEATURE_INTEGRATED_3270_CONSOLE)
-        if (dev == sysblk.sysgdev)
-           strncpy(conmsg,"SYSG",sizeof(conmsg));
-  #endif /*defined(_FEATURE_INTEGRATED_3270_CONSOLE)*/
         set_symbol("CCUU",conmsg);
         snprintf(conmsg,sizeof(conmsg),"%4.4x",dev->devnum);
         set_symbol("ccuu",conmsg);
@@ -1900,8 +1900,8 @@ char                    *logoout;
     }
     else
     {
-        len = snprintf (buf, sizeof(buf), "%s\r\n%s\r\n%s\r\n",
-                        conmsg, hostmsg, devmsg);
+        len = snprintf (buf, sizeof(buf), "%s\r\n",
+                        devmsg);
         logoout=buf;
     }
 
@@ -1920,12 +1920,9 @@ char                    *logoout;
          (2) this is NOT the System-370 mode initial power-on state
          and it is not the SYSG console
     */
-    if (class != 'P'
-  #if defined(_FEATURE_INTEGRATED_3270_CONSOLE)
-        && dev != sysblk.sysgdev
-  #endif /*defined(_FEATURE_INTEGRATED_3270_CONSOLE)*/
-        && !INITIAL_POWERON_370())
-        device_attention (dev, CSW_DE);
+  //  if (class != 'P'
+  //      && !INITIAL_POWERON_370())
+  //      device_attention (dev, CSW_DE);
 
     /* Try to detect dropped connections */
     socket_keepalive( csock, sysblk.kaidle, sysblk.kaintv, sysblk.kacnt );
@@ -2253,9 +2250,6 @@ BYTE                   unitstat;        /* Status after receive data */
                 if (1
                     && dev->connected
                     && dev->devtype != 0x3287
-              #if defined(_FEATURE_INTEGRATED_3270_CONSOLE)
-                    && dev != sysblk.sysgdev
-              #endif /*defined(_FEATURE_INTEGRATED_3270_CONSOLE)*/
                     && !INITIAL_POWERON_370()
                 )
                 {
@@ -2267,14 +2261,6 @@ BYTE                   unitstat;        /* Status after receive data */
                             dev->devnum,
                             (rc == 0 ? "raised" : "rejected"), rc);
                 }
-
-              #if defined(_FEATURE_INTEGRATED_3270_CONSOLE)
-                /* For the SYSG console, generate an external interrupt */
-                if (dev == sysblk.sysgdev && dev->connected)
-                {
-                    sclp_sysg_attention();
-                }
-              #endif /*defined(_FEATURE_INTEGRATED_3270_CONSOLE)*/
 
                 continue; /* (note: dev->lock already released) */
 
@@ -2393,20 +2379,6 @@ loc3270_init_handler ( DEVBLK *dev, int argc, char *argv[] )
     if(!sscanf(dev->typname,"%hx",&(dev->devtype)))
         dev->devtype = 0x3270;
 
-  #if defined(_FEATURE_INTEGRATED_3270_CONSOLE)
-    /* Extra initialisation for the SYSG console */
-    if (strcasecmp(dev->typname,"SYSG") == 0)
-    {
-        dev->pmcw.flag5 &= ~PMCW5_V; // Not a regular device
-        if (sysblk.sysgdev != NULL)
-        {
-            logmsg(_("HHCTE017E Device %4.4X: Duplicate SYSG console definition\n"),
-                dev->devnum);
-            return -1;
-        }
-    }
-  #endif /*defined(_FEATURE_INTEGRATED_3270_CONSOLE)*/
-
     /* Initialize the device identifier bytes */
     dev->devid[0] = 0xFF;
     dev->devid[1] = 0x32; /* Control unit type is 3274-1D */
@@ -2473,15 +2445,6 @@ loc3270_init_handler ( DEVBLK *dev, int argc, char *argv[] )
             }
         }
     }
-
-  #if defined(_FEATURE_INTEGRATED_3270_CONSOLE)
-    /* Extra initialisation for the SYSG console */
-    if (strcasecmp(dev->typname,"SYSG") == 0)
-    {
-        /* Save the address of the SYSG console devblk */
-        sysblk.sysgdev = dev;
-    }
-  #endif /*defined(_FEATURE_INTEGRATED_3270_CONSOLE)*/
 
     return console_initialise();
 } /* end function loc3270_init_handler */
@@ -2554,14 +2517,6 @@ loc3270_query_device (DEVBLK *dev, char **class,
 static int
 loc3270_close_device ( DEVBLK *dev )
 {
-
-  #if defined(_FEATURE_INTEGRATED_3270_CONSOLE)
-    /* Clear the pointer to the SYSG console */
-    if (dev == sysblk.sysgdev)
-    {
-        sysblk.sysgdev = NULL;
-    }
-  #endif /*defined(_FEATURE_INTEGRATED_3270_CONSOLE)*/
 
     console_remove(dev);
 
@@ -3568,20 +3523,20 @@ BYTE    stat;                           /* Unit status               */
         if (!dev->keybdrem)
         {
             /* Display prompting message on console if allowed */
-            if (dev->prompt1052)
-            {
-                snprintf ((char *)dev->buf, dev->bufsize,
-                        _("HHCTE006A Enter input for console device %4.4X\n"),
-                        dev->devnum);
-                len = strlen((char *)dev->buf);
-                rc = send_packet (dev->fd, dev->buf, len, NULL);
-                if (rc < 0)
-                {
-                    dev->sense[0] = SENSE_EC;
-                    *unitstat = CSW_CE | CSW_DE | CSW_UC;
-                    break;
-                }
-            }
+            //if (dev->prompt1052)
+            //{
+            //    snprintf ((char *)dev->buf, dev->bufsize,
+            //            _("HHCTE006A Enter input for console device %4.4X\n"),
+            //            dev->devnum);
+            //    len = strlen((char *)dev->buf);
+            //    rc = send_packet (dev->fd, dev->buf, len, NULL);
+            //    if (rc < 0)
+            //    {
+            //        dev->sense[0] = SENSE_EC;
+            //        *unitstat = CSW_CE | CSW_DE | CSW_UC;
+            //        break;
+            //    }
+            //}
 
             /* Accumulate client input data into device buffer */
             while (1) {
@@ -3776,10 +3731,6 @@ HDL_DEVICE_SECTION
     HDL_DEVICE(3215, constty_device_hndinfo );
     HDL_DEVICE(3270, loc3270_device_hndinfo );
     HDL_DEVICE(3287, loc3270_device_hndinfo );
-
-  #if defined(_FEATURE_INTEGRATED_3270_CONSOLE)
-    HDL_DEVICE(SYSG, loc3270_device_hndinfo );
-  #endif /*defined(_FEATURE_INTEGRATED_3270_CONSOLE)*/
 }
 END_DEVICE_SECTION
 #endif

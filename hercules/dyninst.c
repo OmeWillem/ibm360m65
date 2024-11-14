@@ -37,24 +37,6 @@
 /* such that no naming conflicts occur.                              */
  #define copy_opcode_tables copy_opcode_tables_r
  #define opcode_table opcode_table_r
- #define opcode_01xx  opcode_01xx_r
- #define opcode_a5xx  opcode_a5xx_r
- #define opcode_a4xx  opcode_a4xx_r
- #define opcode_a7xx  opcode_a1xx_r
- #define opcode_b2xx  opcode_b2xx_r
- #define opcode_b3xx  opcode_b3xx_r
- #define opcode_b9xx  opcode_b9xx_r
- #define opcode_c0xx  opcode_c0xx_r
- #define opcode_c2xx  opcode_c2xx_r
- #define opcode_c4xx  opcode_c4xx_r                             /*208*/
- #define opcode_c6xx  opcode_c6xx_r                             /*208*/
- #define opcode_c8xx  opcode_c8xx_r
- #define opcode_e3xx  opcode_e3xx_r
- #define opcode_e5xx  opcode_e5xx_r
- #define opcode_e6xx  opcode_e6xx_r
- #define opcode_ebxx  opcode_ebxx_r
- #define opcode_ecxx  opcode_ecxx_r
- #define opcode_edxx  opcode_edxx_r
 #endif
 
 #include "opcode.h"
@@ -62,24 +44,6 @@
 #if defined(WIN32) && !defined(HDL_USE_LIBTOOL) && !defined(_MSVC_)
  #undef copy_opcode_tables
  #undef opcode_table
- #undef opcode_01xx
- #undef opcode_a5xx
- #undef opcode_a4xx
- #undef opcode_a7xx
- #undef opcode_b2xx
- #undef opcode_b3xx
- #undef opcode_b9xx
- #undef opcode_c0xx
- #undef opcode_c2xx
- #undef opcode_c4xx                                             /*208*/
- #undef opcode_c6xx                                             /*208*/
- #undef opcode_c8xx
- #undef opcode_e3xx
- #undef opcode_e5xx
- #undef opcode_e6xx
- #undef opcode_ebxx
- #undef opcode_ecxx
- #undef opcode_edxx
 #endif
 
 #include "inline.h"
@@ -101,9 +65,6 @@
 
 static zz_func save_table[256][GEN_MAXARCH];
 static zz_func save_01xx[256][GEN_MAXARCH];
-#if defined (FEATURE_VECTOR_FACILITY)
-static zz_func save_a4xx[256][GEN_MAXARCH];
-#endif
 static zz_func save_a5xx[16][GEN_MAXARCH];
 static zz_func save_a7xx[16][GEN_MAXARCH];
 static zz_func save_b2xx[256][GEN_MAXARCH];
@@ -125,90 +86,22 @@ static zz_func save_edxx[256][GEN_MAXARCH];
   static int opcodes_saved;
   static void copy_opcode_tables ();
   static void * opcode_table;
-  static void * opcode_01xx;
-#if defined (FEATURE_VECTOR_FACILITY)
-  static void * opcode_a4xx;
-#endif
-  static void * opcode_a5xx;
-  static void * opcode_a7xx;
-  static void * opcode_b2xx;
-  static void * opcode_b3xx;
-  static void * opcode_b9xx;
-  static void * opcode_c0xx;
-  static void * opcode_c2xx;                                    /*@Z9*/
-  static void * opcode_c4xx;                                    /*208*/
-  static void * opcode_c6xx;                                    /*208*/
-  static void * opcode_c8xx;
-  static void * opcode_e3xx;
-  static void * opcode_e5xx;
-  static void * opcode_e6xx;
-  static void * opcode_ebxx;
-  static void * opcode_ecxx;
-  static void * opcode_edxx;
 #endif
 
 static char *prefix[] = {
-#if defined(_370)
     "s370_dyninst_opcode_",
-#endif
-#if defined(_390)
-    "s390_dyninst_opcode_",
-#endif
-#if defined(_900)
-    "z900_dyninst_opcode_"
-#endif
     };
 
 
 static void opcode_save()    
 {
     memcpy(save_table,opcode_table,sizeof(save_table));
-    memcpy(save_01xx,opcode_01xx,sizeof(save_01xx));
-#if defined (FEATURE_VECTOR_FACILITY)
-    memcpy(save_a4xx,opcode_a4xx,sizeof(save_a4xx));
-#endif
-    memcpy(save_a5xx,opcode_a5xx,sizeof(save_a5xx));
-    memcpy(save_a7xx,opcode_a7xx,sizeof(save_a7xx));
-    memcpy(save_b2xx,opcode_b2xx,sizeof(save_b2xx));
-    memcpy(save_b3xx,opcode_b3xx,sizeof(save_b3xx));
-    memcpy(save_b9xx,opcode_b9xx,sizeof(save_b9xx));
-    memcpy(save_c0xx,opcode_c0xx,sizeof(save_c0xx));
-    memcpy(save_c2xx,opcode_c2xx,sizeof(save_c2xx));            /*@Z9*/
-    memcpy(save_c4xx,opcode_c4xx,sizeof(save_c4xx));            /*208*/
-    memcpy(save_c6xx,opcode_c6xx,sizeof(save_c6xx));            /*208*/
-    memcpy(save_c8xx,opcode_c8xx,sizeof(save_c8xx));
-    memcpy(save_e3xx,opcode_e3xx,sizeof(save_e3xx));
-    memcpy(save_e5xx,opcode_e5xx,sizeof(save_e5xx));
-    memcpy(save_e6xx,opcode_e6xx,sizeof(save_e6xx));
-    memcpy(save_ebxx,opcode_ebxx,sizeof(save_ebxx));
-    memcpy(save_ecxx,opcode_ecxx,sizeof(save_ecxx));
-    memcpy(save_edxx,opcode_edxx,sizeof(save_edxx));
 }
 
 
 static void opcode_restore()
 {
     memcpy(opcode_table,save_table,sizeof(save_table));
-    memcpy(opcode_01xx,save_01xx,sizeof(save_01xx));
-#if defined (FEATURE_VECTOR_FACILITY)
-    memcpy(opcode_a4xx,save_a4xx,sizeof(save_a4xx));
-#endif
-    memcpy(opcode_a5xx,save_a5xx,sizeof(save_a5xx));
-    memcpy(opcode_a7xx,save_a7xx,sizeof(save_a7xx));
-    memcpy(opcode_b2xx,save_b2xx,sizeof(save_b2xx));
-    memcpy(opcode_b3xx,save_b3xx,sizeof(save_b3xx));
-    memcpy(opcode_b9xx,save_b9xx,sizeof(save_b9xx));
-    memcpy(opcode_c0xx,save_c0xx,sizeof(save_c0xx));
-    memcpy(opcode_c2xx,save_c2xx,sizeof(save_c2xx));            /*@Z9*/
-    memcpy(opcode_c4xx,save_c4xx,sizeof(save_c4xx));            /*208*/
-    memcpy(opcode_c6xx,save_c6xx,sizeof(save_c6xx));            /*208*/
-    memcpy(opcode_c8xx,save_c8xx,sizeof(save_c8xx));
-    memcpy(opcode_e3xx,save_e3xx,sizeof(save_e3xx));
-    memcpy(opcode_e5xx,save_e5xx,sizeof(save_e5xx));
-    memcpy(opcode_e6xx,save_e6xx,sizeof(save_e6xx));
-    memcpy(opcode_ebxx,save_ebxx,sizeof(save_ebxx));
-    memcpy(opcode_ecxx,save_ecxx,sizeof(save_ecxx));
-    memcpy(opcode_edxx,save_edxx,sizeof(save_edxx));
 }
 
 
@@ -328,26 +221,6 @@ int opcode, extop;
     {
         HDL_RESOLVE(copy_opcode_tables);
         HDL_RESOLVE(opcode_table);
-        HDL_RESOLVE(opcode_01xx);
-#if defined(FEATURE_VECTOR_FACILITY)
-        HDL_RESOLVE(opcode_a4xx);
-#endif
-        HDL_RESOLVE(opcode_a5xx);
-        HDL_RESOLVE(opcode_a7xx);
-        HDL_RESOLVE(opcode_b2xx);
-        HDL_RESOLVE(opcode_b3xx);
-        HDL_RESOLVE(opcode_b9xx);
-        HDL_RESOLVE(opcode_c0xx);
-        HDL_RESOLVE(opcode_c2xx);                               /*@Z9*/
-        HDL_RESOLVE(opcode_c4xx);                               /*208*/
-        HDL_RESOLVE(opcode_c6xx);                               /*208*/
-        HDL_RESOLVE(opcode_c8xx);
-        HDL_RESOLVE(opcode_e3xx);
-        HDL_RESOLVE(opcode_e5xx);
-        HDL_RESOLVE(opcode_e6xx);
-        HDL_RESOLVE(opcode_ebxx);
-        HDL_RESOLVE(opcode_ecxx);
-        HDL_RESOLVE(opcode_edxx);
 
         opcode_save();
 
@@ -358,103 +231,7 @@ int opcode, extop;
 
     for(opcode = 0; opcode < 256; opcode++)
     {
-        switch(opcode)
-        {
-            case 0x01:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_01xx, save_01xx);
-                break;
-
-#if defined (FEATURE_VECTOR_FACILITY)
-            case 0xA4:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, v_opcode_a4xx, save_a4xx);
-                break;
-#endif
-
-            case 0xA5:
-                for(extop = 0; extop < 16; extop++)
-                    assign_extop1(opcode, extop, opcode_a5xx, save_a5xx);
-                break;
-
-            case 0xA7:
-                for(extop = 0; extop < 16; extop++)
-                    assign_extop1(opcode, extop, opcode_a7xx, save_a7xx);
-                break;
-
-            case 0xB2:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_b2xx, save_b2xx);
-                break;
-
-            case 0xB3:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_b3xx, save_b3xx);
-                break;
-
-            case 0xB9:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_b9xx, save_b9xx);
-                break;
-
-            case 0xC0:
-                for(extop = 0; extop < 16; extop++)
-                    assign_extop1(opcode, extop, opcode_c0xx, save_c0xx);
-                break;
-
-            case 0xC2:                                                     /*@Z9*/
-                for(extop = 0; extop < 16; extop++)                        /*@Z9*/
-                    assign_extop1(opcode, extop, opcode_c2xx, save_c2xx);  /*@Z9*/
-                break;                                                     /*@Z9*/
-
-            case 0xC4:                                                     /*208*/
-                for(extop = 0; extop < 16; extop++)                        /*208*/
-                    assign_extop1(opcode, extop, opcode_c4xx, save_c4xx);  /*208*/
-                break;                                                     /*208*/
-
-            case 0xC6:                                                     /*208*/
-                for(extop = 0; extop < 16; extop++)                        /*208*/
-                    assign_extop1(opcode, extop, opcode_c6xx, save_c6xx);  /*208*/
-                break;                                                     /*208*/
-
-            case 0xC8:
-                for(extop = 0; extop < 16; extop++)
-                    assign_extop1(opcode, extop, opcode_c8xx, save_c8xx);
-                break;
-
-            case 0xE3:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_e3xx, save_e3xx);
-                break;
-
-            case 0xE5:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_e5xx, save_e5xx);
-                break;
-
-            case 0xE6:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_e6xx, save_e6xx);
-                break;
-
-            case 0xEB:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_ebxx, save_ebxx);
-                break;
-
-            case 0xEC:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_ecxx, save_ecxx);
-                break;
-
-            case 0xED:
-                for(extop = 0; extop < 256; extop++)
-                    assign_extop(opcode, extop, opcode_edxx, save_edxx);
-                break;
-
-            default:
                 assign_opcode(opcode, opcode_table, save_table);
-        }
 
     }
 

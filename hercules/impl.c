@@ -134,9 +134,6 @@ int i;
             if (IS_CPU_ONLINE(i)
              && sysblk.regs[i]->cpustate == CPUSTATE_STARTED
              && (!WAITSTATE(&sysblk.regs[i]->psw)
-#if defined(_FEATURE_WAITSTATE_ASSIST)
-             && !(sysblk.regs[i]->sie_active && WAITSTATE(&sysblk.regs[i]->guestregs->psw))
-#endif
                                            ))
             {
                 /* If the cpu is running but not executing

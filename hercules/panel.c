@@ -197,10 +197,6 @@ static FILE *confp   = NULL;            /* Console file pointer      */
 ///////////////////////////////////////////////////////////////////////
 
 #define CMD_PREFIX_STR   "Command ==> " /* Keep same len as below!   */
-#ifdef  OPTION_CMDTGT
-#define CMD_PREFIX_STR1  "SCP ======> " /* Keep same len as above!   */
-#define CMD_PREFIX_STR2  "PrioSCP ==> " /* Keep same len as above!   */
-#endif // OPTION_CMDTGT
 
 #define CMD_PREFIX_LEN  (strlen(CMD_PREFIX_STR))
 #define CMDLINE_ROW     ((short)(cons_rows-1))
@@ -902,11 +898,6 @@ static void NP_screen_redraw (REGS *regs)
     NPmips_valid     = NPsios_valid     = 0;
 #endif /*defined(OPTION_MIPS_COUNTING)*/
 
-#if defined(_FEATURE_SIE)
-    if(regs->sie_active)
-        regs = regs->guestregs;
-#endif /*defined(_FEATURE_SIE)*/
-
     /*
      * Draw the static parts of the NP screen
      */
@@ -942,27 +933,17 @@ static void NP_screen_redraw (REGS *regs)
     draw_text("ment");
 
     /* 4th line - PSW */
-    NPpswmode = (regs->arch_mode == ARCH_900);
+    NPpswmode = 0;
     NPpswzhost =
-#if defined(_FEATURE_SIE)
-                 !NPpswmode && SIE_MODE(regs) && regs->hostregs->arch_mode == ARCH_900;
-#else
                  0;
-#endif /*defined(_FEATURE_SIE)*/
     set_pos (4, NPpswmode || NPpswzhost ? 19 : 10);
     draw_text ("PSW");
 
     /* Lines 6 .. 13 : register area */
     set_color (COLOR_LIGHT_GREY, COLOR_BLACK);
-    NPregmode = (regs->arch_mode == ARCH_900 && (NPregdisp == 0 || NPregdisp == 1));
+    NPregmode = 0;
     NPregzhost =
-#if defined(_FEATURE_SIE)
-                 (regs->arch_mode != ARCH_900
-               && SIE_MODE(regs) && regs->hostregs->arch_mode == ARCH_900
-               && (NPregdisp == 0 || NPregdisp == 1));
-#else
                  0;
-#endif /*defined(_FEATURE_SIE)*/
     if (NPregmode == 1 || NPregzhost)
     {
         for (i = 0; i < 8; i++)
@@ -1130,11 +1111,6 @@ static void NP_update(REGS *regs)
         }
     }
 
-#if defined(_FEATURE_SIE)
-    if(SIE_MODE(regs))
-        regs = regs->hostregs;
-#endif /*defined(_FEATURE_SIE)*/
-
     /* line 1 : cpu number and percent busy */
     if (!NPcpunum_valid || NPcpunum != regs->cpuad)
     {
@@ -1166,18 +1142,9 @@ static void NP_update(REGS *regs)
     }
 #endif /*defined(OPTION_MIPS_COUNTING)*/
 
-#if defined(_FEATURE_SIE)
-    if(regs->sie_active)
-        regs = regs->guestregs;
-#endif /*defined(_FEATURE_SIE)*/
-
-    mode = (regs->arch_mode == ARCH_900);
+    mode = 0;
     zhost =
-#if defined(_FEATURE_SIE)
-            !mode && SIE_MODE(regs) && regs->hostregs->arch_mode == ARCH_900;
-#else // !defined(_FEATURE_SIE)
             0;
-#endif // defined(_FEATURE_SIE)
 
     /* Redraw the psw template if the mode changed */
     if (NPpswmode != mode || NPpswzhost != zhost)
@@ -1237,7 +1204,7 @@ static void NP_update(REGS *regs)
                   regs->loadstate                    ? 'L' : '.',
                   regs->checkstop                    ? 'C' : '.',
                   PROBSTATE(&regs->psw)              ? 'P' : '.',
-                  SIE_MODE(regs)                     ? 'S' : '.',
+                                                             '.',
                   mode                               ? 'Z' : '.');
     if (!NPpswstate_valid || strcmp(NPpswstate, buf))
     {
@@ -1249,15 +1216,9 @@ static void NP_update(REGS *regs)
     }
 
     /* Redraw the register template if the regmode switched */
-    mode = (regs->arch_mode == ARCH_900 && (NPregdisp == 0 || NPregdisp == 1));
+    mode = 0;
     zhost =
-#if defined(_FEATURE_SIE)
-            (regs->arch_mode != ARCH_900
-          && SIE_MODE(regs) && regs->hostregs->arch_mode == ARCH_900
-          && (NPregdisp == 0 || NPregdisp == 1));
-#else // !defined(_FEATURE_SIE)
                  0;
-#endif /*defined(_FEATURE_SIE)*/
     if (NPregmode != mode || NPregzhost != zhost)
     {
         NPregmode = mode;
@@ -1379,11 +1340,11 @@ static void NP_update(REGS *regs)
                 }
                 break;
             case 2:
-                if (!NPregs_valid || NPregs[i] != regs->AR(i))
+                if (!NPregs_valid || NPregs[i] != regs->AR_(i))
                 {
                     set_pos (6 + (i/4)*2, 3 + (i%4)*9);
-                    draw_fw (regs->AR(i));
-                    NPregs[i] = regs->AR(i);
+                    draw_fw (regs->AR_(i));
+                    NPregs[i] = regs->AR_(i);
                 }
                 break;
             case 3:
@@ -1395,7 +1356,7 @@ static void NP_update(REGS *regs)
                 }
                 break;
             case 4:
-                aaddr = APPLY_PREFIXING (addr, regs->PX);
+                aaddr = addr;
                 addr += 4;
                 if (aaddr + 3 > regs->mainlim)
                     break;
@@ -1720,16 +1681,6 @@ REGS *copy_regs(int cpu)
         return &sysblk.dummyregs;
     }
 
-#if defined(_FEATURE_SIE)
-    if (regs->sie_active)
-    {
-        memcpy (&copysieregs, regs->guestregs, sysblk.regs_copy_len);
-        copyregs.guestregs = &copysieregs;
-        copysieregs.hostregs = &copyregs;
-        regs = &copysieregs;
-    }
-    else
-#endif // defined(_FEATURE_SIE)
         regs = &copyregs;
 
     SET_PSW_IA(regs);
@@ -2014,7 +1965,7 @@ char    buf[1024];                      /* Buffer workarea           */
                         case 'O':                   /* Store */
                         case 'o':
                             regs = copy_regs(sysblk.pcpu);
-                            aaddr = APPLY_PREFIXING (NPaddress, regs->PX);
+                            aaddr = NPaddress;
                             if (aaddr > regs->mainlim)
                                 break;
                             store_fw (regs->mainstor + aaddr, NPdata);
@@ -2464,8 +2415,7 @@ char    buf[1024];                      /* Buffer workarea           */
 
                 /* Process the command when the ENTER key is pressed */
                 if (kbbuf[i] == '\n') {
-                    if (cmdlen == 0 && NPDup == 0 && !sysblk.inststep &&
-                        sysblk.cmdtgt == 0) {
+                    if (cmdlen == 0 && NPDup == 0 && !sysblk.inststep) {
                         history_show();
                     } else {
                         cmdline[cmdlen] = '\0';
@@ -2837,28 +2787,7 @@ FinishShutdown:
                 set_pos (CMDLINE_ROW, 1);
                 set_color (COLOR_DEFAULT_LIGHT, COLOR_DEFAULT_BG);
 
-#if defined(OPTION_CMDTGT)
-                switch(sysblk.cmdtgt)
-                {
-                  case 0: // cmdtgt herc 
-                  {
-                    draw_text(CMD_PREFIX_STR);
-                    break;
-                  }
-                  case 1: // cmdtgt scp
-                  {
-                    draw_text(CMD_PREFIX_STR1);
-                    break;
-                  }
-                  case 2: // cmdtgt pscp
-                  {
-                    draw_text(CMD_PREFIX_STR2);
-                    break;
-                  }
-                }
-#else // !defined(OPTION_CMDTGT)
                 draw_text (CMD_PREFIX_STR);
-#endif // defined(OPTION_CMDTGT)
 
                 set_color (COLOR_DEFAULT_FG, COLOR_DEFAULT_BG);
                 PUTC_CMDLINE ();
@@ -2882,18 +2811,6 @@ FinishShutdown:
                     char ibuf[32];
                     len += sprintf(buf+len, "PSW=%8.8X%8.8X ",
                                    fetch_fw(curpsw), fetch_fw(curpsw+4));
-                    if (regs->arch_mode == ARCH_900)
-                        len += sprintf (buf+len, "%16.16"I64_FMT"X ",
-                                        fetch_dw (curpsw+8));
-#if defined(_FEATURE_SIE)
-                    else
-            if( SIE_MODE(regs) )
-            {
-                            for(i = 0;i < 16;i++)
-                                buf[len++] = '-';
-                            buf[len++] = ' ';
-            }
-#endif /*defined(_FEATURE_SIE)*/
                     len += sprintf (buf+len, "%2d%c%c%c%c%c%c%c%c",
                            regs->psw.amode64                  ? 64 :
                            regs->psw.amode                    ? 31 : 24, 
@@ -2903,8 +2820,8 @@ FinishShutdown:
                            regs->loadstate                    ? 'L' : '.',
                            regs->checkstop                    ? 'C' : '.',
                            PROBSTATE(&regs->psw)              ? 'P' : '.',
-                           SIE_MODE(regs)                     ? 'S' : '.',
-                           regs->arch_mode == ARCH_900        ? 'Z' : '.');
+                                                                      '.',
+                                                                      '.');
                     buf[len++] = ' ';
                     sprintf (ibuf, "instcount=%s", format_int(INSTCOUNT(regs)));
                     if (len + (int)strlen(ibuf) < cons_cols)

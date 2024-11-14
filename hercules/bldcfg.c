@@ -170,7 +170,7 @@ static void config_storage(unsigned mainsize, unsigned xpndsize)
 int off;
 
     /* Obtain main storage */
-    sysblk.mainsize = mainsize * 1024 * 1024ULL;
+    sysblk.mainsize = mainsize * 1024ULL;
 
     sysblk.mainstor = calloc((size_t)(sysblk.mainsize + 8192), 1);
 
@@ -181,7 +181,7 @@ int off;
 
     if (sysblk.mainstor == NULL)
     {
-        logmsg(_("HHCCF031S Cannot obtain %dMB main storage: %s\n"),
+        logmsg(_("HHCCF031S Cannot obtain %dKB main storage: %s\n"),
                 mainsize, strerror(errno));
         delayed_exit(1);
     }
@@ -218,27 +218,7 @@ int off;
 
     if (xpndsize != 0)
     {
-#ifdef _FEATURE_EXPANDED_STORAGE
-
-        /* Obtain expanded storage */
-        sysblk.xpndsize = xpndsize * (1024*1024 / XSTORE_PAGESIZE);
-        sysblk.xpndstor = calloc(sysblk.xpndsize, XSTORE_PAGESIZE);
-        if (sysblk.xpndstor)
-            sysblk.xpnd_clear = 1;
-        else
-            sysblk.xpndstor = malloc((size_t)sysblk.xpndsize * XSTORE_PAGESIZE);
-        if (sysblk.xpndstor == NULL)
-        {
-            logmsg(_("HHCCF033S Cannot obtain %dMB expanded storage: "
-                    "%s\n"),
-                    xpndsize, strerror(errno));
-            delayed_exit(1);
-        }
-        /* Initial power-on reset for expanded storage */
-        xstorage_clear();
-#else /*!_FEATURE_EXPANDED_STORAGE*/
         logmsg(_("HHCCF034W Expanded storage support not installed\n"));
-#endif /*!_FEATURE_EXPANDED_STORAGE*/
     } /* end if(sysblk.xpndsize) */
 }
 
@@ -678,11 +658,6 @@ char   *stodprio;                       /* -> Timer thread priority  */
 char   *scpuprio;                       /* -> CPU thread priority    */
 char   *sdevprio;                       /* -> Device thread priority */
 char   *slogofile;                      /* -> 3270 logo file         */
-#if defined(_FEATURE_ECPSVM)
-char   *secpsvmlevel;                   /* -> ECPS:VM Keyword        */
-char   *secpsvmlvl;                     /* -> ECPS:VM level (or 'no')*/
-int    ecpsvmac;                        /* -> ECPS:VM add'l arg cnt  */
-#endif /*defined(_FEATURE_ECPSVM)*/
 #if defined(OPTION_SHARED_DEVICES)
 char   *sshrdport;                      /* -> Shared device port nbr */
 #endif /*defined(OPTION_SHARED_DEVICES)*/
@@ -710,10 +685,6 @@ DEVBLK *dev;                            /* -> Device Block           */
 char   *sdevnum;                        /* -> Device number string   */
 char   *sdevtype;                       /* -> Device type string     */
 int     devtmax;                        /* Max number device threads */
-#if defined(_FEATURE_ECPSVM)
-int     ecpsvmavail;                    /* ECPS:VM Available flag    */
-int     ecpsvmlevel;                    /* ECPS:VM declared level    */
-#endif /*defined(_FEATURE_ECPSVM)*/
 BYTE    c;                              /* Work area for sscanf      */
 char   *styp;                           /* -> Engine type string     */
 char   *styp_values[] = {"CP","CF","AP","IL","??","IP"}; /* type values */
@@ -753,7 +724,7 @@ char    pathname[MAX_PATH];             /* file path in host format  */
     /* Set the default system parameter values */
     serial = 0x000001;
     model = 0x0586;
-    mainsize = 2;
+    mainsize = 256;
     xpndsize = 0;
     maxcpu = 0;
     numcpu = 0;
@@ -761,14 +732,7 @@ char    pathname[MAX_PATH];             /* file path in host format  */
     sysepoch = 1900;
     yroffset = 0;
     tzoffset = 0;
-#if defined(_390)
-    sysblk.arch_mode = ARCH_390;
-#else
     sysblk.arch_mode = ARCH_370;
-#endif
-#if defined(_900)
-    sysblk.arch_z900 = ARCH_900;
-#endif
     sysblk.pgminttr = OS_NONE;
 
     sysblk.timerint = DEFAULT_TIMER_REFRESH_USECS;
@@ -785,17 +749,9 @@ char    pathname[MAX_PATH];             /* file path in host format  */
     sysblk.kaidle = KEEPALIVE_IDLE_TIME;
     sysblk.kaintv = KEEPALIVE_PROBE_INTERVAL;
     sysblk.kacnt  = KEEPALIVE_PROBE_COUNT;
-#if defined(_FEATURE_ECPSVM)
-    ecpsvmavail = 0;
-    ecpsvmlevel = 20;
-#endif /*defined(_FEATURE_ECPSVM)*/
 #if defined(OPTION_SHARED_DEVICES)
     shrdport = 0;
 #endif /*defined(OPTION_SHARED_DEVICES)*/
-
-#if defined(_FEATURE_ASN_AND_LX_REUSE)
-    sysblk.asnandlxreuse = 0;  /* ASN And LX Reuse is defaulted to DISABLE */
-#endif
   
 #ifdef PANEL_REFRESH_RATE
     sysblk.panrate = PANEL_REFRESH_RATE_SLOW;
@@ -976,11 +932,6 @@ char    pathname[MAX_PATH];             /* file path in host format  */
         scpuprio = NULL;
         sdevprio = NULL;
         slogofile = NULL;
-#if defined(_FEATURE_ECPSVM)
-        secpsvmlevel = NULL;
-        secpsvmlvl = NULL;
-        ecpsvmac = 0;
-#endif /*defined(_FEATURE_ECPSVM)*/
 
 #if defined(OPTION_SHARED_DEVICES)
         sshrdport = NULL;
@@ -996,7 +947,6 @@ char    pathname[MAX_PATH];             /* file path in host format  */
             sxpndsize = addargv[1];
             config_cnslport = strdup(addargv[2]);
             snumcpu = addargv[3];
-            set_loadparm(addargv[4]);
         }
         else
         {
@@ -1084,26 +1034,6 @@ char    pathname[MAX_PATH];             /* file path in host format  */
             {
                 slogofile=operand;
             }
-#if defined(_FEATURE_ECPSVM)
-            /* ECPS:VM support */
-            else if(strcasecmp(keyword, "ecps:vm") == 0)
-            {
-                secpsvmlevel=operand;
-                secpsvmlvl=addargv[0];
-                ecpsvmac=addargc;
-                logmsg(_("HHCCF061W Warning in %s line %d: "
-                    "ECPS:VM Statement deprecated. Use ECPSVM instead\n"),
-                    fname, inc_stmtnum[inc_level]);
-                addargc=0;
-            }
-            else if(strcasecmp(keyword, "ecpsvm") == 0)
-            {
-                secpsvmlevel=operand;
-                secpsvmlvl=addargv[0];
-                ecpsvmac=addargc;
-                addargc=0;
-            }
-#endif /*defined(_FEATURE_ECPSVM)*/
 
 #if defined(OPTION_SHARED_DEVICES)
             else if (strcasecmp (keyword, "shrdport") == 0)
@@ -1176,9 +1106,8 @@ char    pathname[MAX_PATH];             /* file path in host format  */
         if (smainsize != NULL)
         {
             if (sscanf(smainsize, "%u%c", &mainsize, &c) != 1
-             || mainsize < 2
-             || (mainsize > 4095 && sizeof(sysblk.mainsize) < 8)
-             || (mainsize > 4095 && sizeof(size_t) < 8))
+             || mainsize < 16
+             || (mainsize > 8192))
             {
                 logmsg(_("HHCCF013S Error in %s line %d: "
                         "Invalid main storage size %s\n"),
@@ -1331,18 +1260,7 @@ char    pathname[MAX_PATH];             /* file path in host format  */
         /* Parse number of VFs operand */
         if (snumvec != NULL)
         {
-#ifdef _FEATURE_VECTOR_FACILITY
-            if (sscanf(snumvec, "%hu%c", &numvec, &c) != 1
-                || numvec > MAX_CPU_ENGINES)
-            {
-                logmsg(_("HHCCF019S Error in %s line %d: "
-                        "Invalid number of VFs %s\n"),
-                        fname, inc_stmtnum[inc_level], snumvec);
-                delayed_exit(1);
-            }
-#else /*!_FEATURE_VECTOR_FACILITY*/
             logmsg(_("HHCCF020W Vector Facility support not configured\n"));
-#endif /*!_FEATURE_VECTOR_FACILITY*/
         }
         sysblk.numvec = numvec;
 
@@ -1445,72 +1363,6 @@ char    pathname[MAX_PATH];             /* file path in host format  */
             hlogofile[sizeof(hlogofile)-1] = '\0';
         }
 
-#if defined(_FEATURE_ECPSVM)
-        /* Parse ECPS:VM level */
-        if(secpsvmlevel != NULL)
-        {
-            while(1)        /* Dummy while loop for break support */
-            {
-                ecpsvmavail=0;
-                ecpsvmlevel=0;
-                if(strcasecmp(secpsvmlevel,"no")==0)
-                {
-                    ecpsvmavail=0;
-                    break;
-                }
-                if(strcasecmp(secpsvmlevel,"yes")==0)
-                {
-                    ecpsvmavail=1;
-                    ecpsvmlevel=20;
-                    break;
-                }
-                if(strcasecmp(secpsvmlevel,"level")==0)
-                {
-                    ecpsvmavail=1;
-                    if(ecpsvmac==0)
-                    {
-                        logmsg(_("HHCCF062W Warning in %s line %d: "
-                                "Missing ECPSVM level value. 20 Assumed\n"),
-                                fname, inc_stmtnum[inc_level]);
-                        ecpsvmavail=1;
-                        ecpsvmlevel=20;
-                        break;
-                    }
-                    if (sscanf(secpsvmlvl, "%d%c", &ecpsvmlevel, &c) != 1)
-                    {
-                        logmsg(_("HHCCF051W Warning in %s line %d: "
-                                "Invalid ECPSVM level value : %s. 20 Assumed\n"),
-                                fname, inc_stmtnum[inc_level], secpsvmlevel);
-                        ecpsvmavail=1;
-                        ecpsvmlevel=20;
-                        break;
-                    }
-                    break;
-                }
-                ecpsvmavail=1;
-                if (sscanf(secpsvmlevel, "%d%c", &ecpsvmlevel, &c) != 1)
-                {
-                    logmsg(_("HHCCF051W Error in %s line %d: "
-                            "Invalid ECPSVM keyword : %s. NO Assumed\n"),
-                            fname, inc_stmtnum[inc_level], secpsvmlevel);
-                    ecpsvmavail=0;
-                    ecpsvmlevel=0;
-                    break;
-                }
-                else
-                {
-                    logmsg(_("HHCCF063W Warning in %s line %d: "
-                            "Specifying ECPSVM level directly is deprecated. Use the 'LEVEL' keyword instead.\n"),
-                            fname, inc_stmtnum[inc_level]);
-                    break;
-                }
-                break;
-            }
-            sysblk.ecpsvm.available=ecpsvmavail;
-            sysblk.ecpsvm.level=ecpsvmlevel;
-        }
-#endif /*defined(_FEATURE_ECPSVM)*/
-
 #if defined(OPTION_SHARED_DEVICES)
         /* Parse shared device port number operand */
         if (sshrdport != NULL)
@@ -1600,14 +1452,9 @@ char    pathname[MAX_PATH];             /* file path in host format  */
     sysblk.shrdport = shrdport;
 #endif /*defined(OPTION_SHARED_DEVICES)*/
 
-#if defined(_370) || defined(_390)
     if(dfltver)
         version =
-#if defined(_900)
-                  (sysblk.arch_mode == ARCH_900) ? 0x00 :
-#endif
                                                           0xFD;
-#endif
     /* Build CPU identifier */
     sysblk.cpuid = ((U64)version << 56)
                  | ((U64)serial << 32)
@@ -1645,8 +1492,10 @@ char    pathname[MAX_PATH];             /* file path in host format  */
     /* Set the timezone offset */
     adjust_tod_epoch((tzoffset/100*3600+(tzoffset%100)*60)*16000000LL);
 
+#if !defined(SOFTWARE_M65) && !defined(HARDWARE_M65)
     /* Gabor Hoffer (performance option) */
     copy_opcode_tables();
+#endif
 
     /*****************************************************************/
     /* Parse configuration file device statements...                 */
@@ -1745,25 +1594,6 @@ char    pathname[MAX_PATH];             /* file path in host format  */
         dev->mainlim = sysblk.mainsize - 1;
     }
 
-#if defined(_FEATURE_REGION_RELOCATE)
-    /* Initialize base zone storage view (SIE compat) */
-    for(i = 0; i < FEATURE_SIE_MAXZONES; i++)
-    {
-        sysblk.zpb[i].mso = 0;
-        sysblk.zpb[i].msl = (sysblk.mainsize - 1) >> 20;
-        if(sysblk.xpndsize)
-        {
-            sysblk.zpb[i].eso = 0;
-            sysblk.zpb[i].esl = ((size_t)sysblk.xpndsize * XSTORE_PAGESIZE - 1) >> 20;
-        }
-        else
-        {
-            sysblk.zpb[i].eso = -1;
-            sysblk.zpb[i].esl = -1;
-        }
-    }
-#endif
-
     /* Initialize dummy regs.
      * Dummy regs are used by the panel or gui when the target cpu
      * (sysblk.pcpu) is not configured (ie cpu_thread not started).
@@ -1784,11 +1614,7 @@ char    pathname[MAX_PATH];             /* file path in host format  */
 #endif
 
     /* Set default maximum number of CPUs */
-#ifdef _FEATURE_CPU_RECONFIG
-    sysblk.maxcpu = sysblk.arch_mode == ARCH_370 ? numcpu : MAX_CPU_ENGINES;
-#else
     sysblk.maxcpu = numcpu;
-#endif /*_FEATURE_CPU_RECONFIG*/
 
     /* Set maximum number of CPUs to specified value */
     if (maxcpu > 0) {
