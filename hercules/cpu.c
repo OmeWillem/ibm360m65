@@ -1515,12 +1515,12 @@ retry:
             D_fprintf(lf, "Execution gone astray! IC does not match: HERC=%x, M65=%x\n", ia, ic);
             max_retries = 0;
         }
-        int sysm = newstate.RW_INT.psw_bit.F >> 32;
+        int sysm = newstate.RW.psw_bit.F >> 32;
         if (sysm != regs.psw.sysmask) {
             D_fprintf(lf, "Execution gone astray! SYSMASK does not match: HERC=%x, M65=%x\n", regs.psw.sysmask, sysm);
             max_retries = 0;
         }
-        int cond = newstate.RW_INT.psw_bit.B34 * 2 + newstate.RW_INT.psw_bit.B35;
+        int cond = newstate.RW.psw_bit.B34 * 2 + newstate.RW.psw_bit.B35;
         if (cond != regs.psw.cc) {
             RETRY;
             D_fprintf(lf, "Execution gone astray! CC does not match: HERC=%x, M65=%x\n", regs.psw.cc, cond);
